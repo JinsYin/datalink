@@ -27,14 +27,14 @@ public class LinkInfo implements Serializable {
     @JsonProperty("syncType")
     private SyncType syncType;
 
-    @JsonProperty("linkId")
-    private String linkId;
+    @JsonProperty("id")
+    private String id;
 
-    @JsonProperty("linkName")
-    private String linkName;
+    @JsonProperty("name")
+    private String name;
 
-    @JsonProperty("linkDesc")
-    private String linkDesc;
+    @JsonProperty("description")
+    private String description;
 
     @JsonProperty("nodes")
     private List<Node> nodes;
