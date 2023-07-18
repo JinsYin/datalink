@@ -1,6 +1,6 @@
 package cn.guruguru.datalink.protocol.node.extract;
 
-import cn.guruguru.datalink.protocol.node.Node;
+import cn.guruguru.datalink.protocol.node.ExtractNode;
 
-public abstract class CdcExtractNode extends Node.ExtractNode {
+public abstract class CdcExtractNode extends ExtractNode {
 }

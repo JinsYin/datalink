@@ -1,7 +1,5 @@
 package cn.guruguru.datalink.protocol.node;
 
-import cn.guruguru.datalink.protocol.node.Node;
-
 import java.io.Serializable;
 
 /**
