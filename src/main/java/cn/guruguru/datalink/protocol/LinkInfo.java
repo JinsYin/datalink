@@ -2,11 +2,15 @@ package cn.guruguru.datalink.protocol;
 
 
 import cn.guruguru.datalink.protocol.enums.SyncType;
+import cn.guruguru.datalink.protocol.node.Node;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.inlong.sort.protocol.transformation.relation.NodeRelation;
 
-import java.util.Properties;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Data structure for synchronization
@@ -16,21 +20,33 @@ import java.util.Properties;
  */
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-public class LinkInfo {
+public class LinkInfo implements Serializable {
     // 开发模式（FORM/JSON/SQL/CANVAS）
-    // private SyncMode syncMode;
+    // private LinkMode linkMode;
 
+    @JsonProperty("syncType")
     private SyncType syncType;
 
-    private String syncName;
+    @JsonProperty("linkId")
+    private String linkId;
 
-    private String syncDesc;
+    @JsonProperty("linkName")
+    private String linkName;
 
-    // 任务配置（SQL 模式除外）
-    private LinkConf linkConf;
+    @JsonProperty("linkDesc")
+    private String linkDesc;
 
-    // 将自动转成 SET 语句
-    private Properties flinkConf;
+    @JsonProperty("nodes")
+    private List<Node> nodes;
+
+    @JsonProperty("nodeRelations")
+    private List<NodeRelation> nodeRelations;
+
+    // 节点位置（仅限画布模式）
+    // private Optional<List<NodeLocation>> nodeLocations;
+
+    // 引擎配置属性，最终将转成 SET 语句
+    @JsonProperty("properties")
+    private Map<String, String> properties;
 }
 
