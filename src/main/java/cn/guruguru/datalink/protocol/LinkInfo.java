@@ -1,7 +1,7 @@
 package cn.guruguru.datalink.protocol;
 
 
-import cn.guruguru.datalink.protocol.enums.SyncType;
+import cn.guruguru.datalink.protocol.enums.RuntimeMode;
 import cn.guruguru.datalink.protocol.node.Node;
 import cn.guruguru.datalink.protocol.transformation.relation.Relation;
 import lombok.AllArgsConstructor;
@@ -22,10 +22,10 @@ import java.util.Map;
 @AllArgsConstructor
 public class LinkInfo implements Serializable {
     // 开发模式（FORM/JSON/SQL/CANVAS）
-    // private LinkMode linkMode;
+    // private DevelopmentMode devMode;
 
-    @JsonProperty("syncType")
-    private SyncType syncType;
+    @JsonProperty("runtimeMode")
+    private RuntimeMode runtimeMode;
 
     @JsonProperty("id")
     private String id;
