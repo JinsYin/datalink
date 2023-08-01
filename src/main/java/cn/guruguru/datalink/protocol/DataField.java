@@ -10,9 +10,9 @@ import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonInc
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonSubTypes;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.apache.inlong.sort.protocol.transformation.FunctionParam;
 
 import javax.annotation.Nullable;
-import java.io.Serializable;
 
 /**
  * Data Field
@@ -24,7 +24,7 @@ import java.io.Serializable;
         @JsonSubTypes.Type(value = DataField.class, name = "dataField"), // InLong Sort: field
 })
 @Data
-public class DataField implements Serializable {
+public class DataField implements FunctionParam {
     private static final long serialVersionUID = 5871970550803344673L;
 
     @JsonProperty("name")
