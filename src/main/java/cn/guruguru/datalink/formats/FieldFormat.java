@@ -13,15 +13,15 @@ public class FieldFormat {
     @JsonProperty("type")
     private String type;
     @JsonProperty("precision")
-    private int precision;
+    private Integer precision;
     @JsonProperty("scale")
-    private int scale;
+    private Integer scale;
 
     @JsonCreator
     public FieldFormat(@JsonProperty("field") String field,
                          @JsonProperty("type") String type,
-                         @JsonProperty("precision") int precision,
-                         @JsonProperty("scale") int scale) {
+                         @JsonProperty("precision") Integer precision,
+                         @JsonProperty("scale") Integer scale) {
         this.field = field;
         this.type = type;
         this.precision = precision;
