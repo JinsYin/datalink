@@ -1,8 +1,8 @@
 package cn.guruguru.datalink.protocol.node.extract;
 
-import cn.guruguru.datalink.protocol.DataField;
+import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.ExtractNode;
-import cn.guruguru.datalink.protocol.transformation.WatermarkField;
+import cn.guruguru.datalink.protocol.field.WatermarkField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonInclude;

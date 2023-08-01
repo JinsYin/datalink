@@ -1,4 +1,4 @@
-package cn.guruguru.datalink.protocol;
+package cn.guruguru.datalink.protocol.field;
 
 import cn.guruguru.datalink.formats.FieldFormat;
 import com.google.common.base.Preconditions;
@@ -10,7 +10,6 @@ import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonInc
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonSubTypes;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.apache.inlong.sort.protocol.transformation.FunctionParam;
 
 import javax.annotation.Nullable;
 
@@ -22,9 +21,10 @@ import javax.annotation.Nullable;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = DataField.class, name = "dataField"), // InLong Sort: field
+        @JsonSubTypes.Type(value = MetaField.class, name = "metaField"),
 })
 @Data
-public class DataField implements FunctionParam {
+public class DataField implements Field {
     private static final long serialVersionUID = 5871970550803344673L;
 
     @JsonProperty("name")

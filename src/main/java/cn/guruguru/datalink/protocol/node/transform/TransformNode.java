@@ -1,8 +1,7 @@
 package cn.guruguru.datalink.protocol.node.transform;
 
-import cn.guruguru.datalink.protocol.DataField;
+import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.Node;
-import cn.guruguru.datalink.protocol.transformation.relation.FieldRelation;
 import com.google.common.base.Preconditions;
 import lombok.Data;
 import lombok.NoArgsConstructor;

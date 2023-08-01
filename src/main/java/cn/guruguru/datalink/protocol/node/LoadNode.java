@@ -1,6 +1,6 @@
 package cn.guruguru.datalink.protocol.node;
 
-import cn.guruguru.datalink.protocol.DataField;
+import cn.guruguru.datalink.protocol.field.DataField;
 import com.google.common.base.Preconditions;
 import lombok.Data;
 import lombok.NoArgsConstructor;

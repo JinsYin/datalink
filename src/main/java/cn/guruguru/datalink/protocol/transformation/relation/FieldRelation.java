@@ -1,6 +1,7 @@
 package cn.guruguru.datalink.protocol.transformation.relation;
 
-import cn.guruguru.datalink.protocol.DataField;
+import cn.guruguru.datalink.protocol.field.DataField;
+import cn.guruguru.datalink.protocol.field.Field;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCreator;
@@ -20,13 +21,8 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 public class FieldRelation implements Serializable {
-    /**
-     * Input field
-     *
-     * @see org.apache.inlong.sort.protocol.transformation.FunctionParam
-     */
     @JsonProperty("inputField")
-    private DataField inputField;
+    private Field inputField;
     @JsonProperty("outputField")
     private DataField outputField;
 

@@ -1,6 +1,6 @@
 package cn.guruguru.datalink.protocol.node.load;
 
-import cn.guruguru.datalink.protocol.DataField;
+import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.LoadNode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

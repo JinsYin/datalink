@@ -1,6 +1,6 @@
 package cn.guruguru.datalink.protocol.node;
 
-import cn.guruguru.datalink.protocol.DataField;
+import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.extract.cdc.MysqlCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.JdbcScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.KafkaScanNode;

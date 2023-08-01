@@ -1,6 +1,6 @@
 package cn.guruguru.datalink.protocol.node.extract.scan;
 
-import cn.guruguru.datalink.protocol.DataField;
+import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.extract.ScanExtractNode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -1,8 +1,8 @@
 package cn.guruguru.datalink.protocol.node.extract.cdc;
 
-import cn.guruguru.datalink.protocol.DataField;
+import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.extract.CdcExtractNode;
-import cn.guruguru.datalink.protocol.transformation.WatermarkField;
+import cn.guruguru.datalink.protocol.field.WatermarkField;
 
 import javax.annotation.Nullable;
 import java.util.List;

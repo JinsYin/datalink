@@ -1,6 +1,5 @@
-package cn.guruguru.datalink.protocol.transformation;
+package cn.guruguru.datalink.protocol.field;
 
-import cn.guruguru.datalink.protocol.DataField;
 import com.google.common.base.Preconditions;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,14 +26,14 @@ public class WatermarkField {
     @JsonProperty("timeAttr")
     private DataField timeAttr;
     @JsonProperty("interval")
-    private StringConstantParam interval;
+    private StringConstantField interval;
     @JsonProperty("timeUnit")
-    private TimeUnitConstantParam timeUnit;
+    private TimeUnitConstantField timeUnit;
 
     @JsonCreator
     public WatermarkField(@JsonProperty("timeAttr") DataField timeAttr,
-                          @JsonProperty("interval") StringConstantParam interval,
-                          @JsonProperty("timeUnit") TimeUnitConstantParam timeUnit) {
+                          @JsonProperty("interval") StringConstantField interval,
+                          @JsonProperty("timeUnit") TimeUnitConstantField timeUnit) {
         this.timeAttr = Preconditions.checkNotNull(timeAttr, "timeAttr is null");
         this.interval = interval;
         this.timeUnit = timeUnit;
@@ -56,7 +55,7 @@ public class WatermarkField {
                 timeAttr.format(), interval.format(), timeUnit.format());
     }
 
-    public List<FunctionParam> getParams() {
+    public List<Field> getParams() {
         return Arrays.asList(timeAttr, interval, timeUnit);
     }
 
