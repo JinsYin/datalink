@@ -7,7 +7,7 @@ import cn.guruguru.datalink.parser.ParseResult;
  */
 public class SparkSqlParseResult implements ParseResult {
     @Override
-    public void execute() throws Exception {
+    public String getSqlScript() {
         throw new UnsupportedOperationException("Spark engine not supported");
     }
 }

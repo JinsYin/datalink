@@ -6,10 +6,11 @@ package cn.guruguru.datalink.parser;
  * @see org.apache.inlong.sort.parser.result.ParseResult
  */
 public interface ParseResult {
+
     /**
-     * Execute the parse result without waiting
+     * Generate corresponding SQL scripts for different engines
      *
-     * @throws Exception The exception may throws when executing
+     * @return SQL Script
      */
-    void execute() throws Exception;
+    String getSqlScript();
 }
