@@ -1,4 +1,4 @@
-package cn.guruguru.datalink.protocol.transformation.relation;
+package cn.guruguru.datalink.protocol.relation;
 
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.field.Field;

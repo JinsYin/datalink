@@ -2,7 +2,7 @@ package cn.guruguru.datalink.protocol.node;
 
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.load.LakehouseLoadNode;
-import cn.guruguru.datalink.protocol.transformation.relation.FieldRelation;
+import cn.guruguru.datalink.protocol.relation.FieldRelation;
 import com.google.common.base.Preconditions;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package cn.guruguru.datalink.protocol.transformation.relation;
+package cn.guruguru.datalink.protocol.relation;
 
 import com.google.common.base.Preconditions;
 import lombok.Data;

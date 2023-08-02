@@ -3,7 +3,7 @@ package cn.guruguru.datalink.protocol;
 
 import cn.guruguru.datalink.protocol.enums.RuntimeMode;
 import cn.guruguru.datalink.protocol.node.Node;
-import cn.guruguru.datalink.protocol.transformation.relation.Relation;
+import cn.guruguru.datalink.protocol.relation.Relation;
 import com.google.common.base.Preconditions;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +11,6 @@ import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCre
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.inlong.sort.protocol.transformation.relation.NodeRelation;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;

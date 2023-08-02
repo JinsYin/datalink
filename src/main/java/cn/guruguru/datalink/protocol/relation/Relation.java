@@ -1,4 +1,4 @@
-package cn.guruguru.datalink.protocol.transformation.relation;
+package cn.guruguru.datalink.protocol.relation;
 
 import lombok.Data;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
