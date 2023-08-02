@@ -1,7 +1,5 @@
 package cn.guruguru.datalink.parser;
 
-import org.apache.inlong.sort.parser.result.ParseResult;
-
 /**
  * Parser interface
  *

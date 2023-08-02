@@ -1,7 +1,7 @@
 package cn.guruguru.datalink.parser.impl;
 
+import cn.guruguru.datalink.parser.ParseResult;
 import cn.guruguru.datalink.parser.Parser;
-import org.apache.inlong.sort.parser.result.ParseResult;
 
 /**
  * [TODO] Spark sql parser
