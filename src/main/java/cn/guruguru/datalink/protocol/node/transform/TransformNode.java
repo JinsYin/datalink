@@ -2,6 +2,7 @@ package cn.guruguru.datalink.protocol.node.transform;
 
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.Node;
+import cn.guruguru.datalink.protocol.transformation.relation.FieldRelation;
 import com.google.common.base.Preconditions;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,8 +12,6 @@ import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonInc
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonSubTypes;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.apache.inlong.sort.protocol.enums.FilterStrategy;
-import org.apache.inlong.sort.protocol.transformation.FilterFunction;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
@@ -39,6 +38,8 @@ public class TransformNode implements Node, Serializable {
     private String name;
     @JsonProperty("fields")
     private List<DataField> fields;
+    @JsonProperty("fieldRelations")
+    private List<FieldRelation> fieldRelations;
     /**
      * Filter clauses for Flink SQL, e.g. `WHERE age > 0 LIMIT 10`
      */
@@ -50,11 +51,15 @@ public class TransformNode implements Node, Serializable {
     public TransformNode(@JsonProperty("id") String id,
                          @JsonProperty("name") String name,
                          @JsonProperty("fields") List<DataField> fields,
+                         @JsonProperty("fieldRelations") List<FieldRelation> fieldRelations,
                          @Nullable @JsonProperty("filterClause") String filterClause) {
         this.id = Preconditions.checkNotNull(id, "id is null");
         this.name = name;
         this.fields = Preconditions.checkNotNull(fields, "fields is null");
         Preconditions.checkState(!fields.isEmpty(), "fields is empty");
+        this.fieldRelations = Preconditions.checkNotNull(fieldRelations,
+                "fieldRelations is null");
+        Preconditions.checkState(!fieldRelations.isEmpty(), "fieldRelations is empty");
         this.filterClause = filterClause;
     }
 

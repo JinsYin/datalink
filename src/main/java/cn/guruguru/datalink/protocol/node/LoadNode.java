@@ -1,6 +1,7 @@
 package cn.guruguru.datalink.protocol.node;
 
 import cn.guruguru.datalink.protocol.field.DataField;
+import cn.guruguru.datalink.protocol.transformation.relation.FieldRelation;
 import com.google.common.base.Preconditions;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,6 +35,8 @@ public abstract class LoadNode implements Node, Serializable {
     private String name;
     @JsonProperty("fields")
     private List<DataField> fields;
+    @JsonProperty("fieldRelations")
+    private List<FieldRelation> fieldRelations;
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("properties")
@@ -49,12 +52,16 @@ public abstract class LoadNode implements Node, Serializable {
     public LoadNode(@JsonProperty("id") String id,
                     @JsonProperty("name") String name,
                     @JsonProperty("fields") List<DataField> fields,
+                    @JsonProperty("fieldRelations") List<FieldRelation> fieldRelations,
                     @Nullable @JsonProperty("filterClause") String filterClause,
                     @Nullable @JsonProperty("properties") Map<String, String> properties) {
         this.id = Preconditions.checkNotNull(id, "id is null");
         this.name = name;
         this.fields = Preconditions.checkNotNull(fields, "fields is null");
         Preconditions.checkState(!fields.isEmpty(), "fields is empty");
+        this.fieldRelations = Preconditions.checkNotNull(fieldRelations,
+                "fieldRelations is null");
+        Preconditions.checkState(!fieldRelations.isEmpty(), "fieldRelations is empty");
         this.filterClause = filterClause;
         this.properties = properties;
     }
