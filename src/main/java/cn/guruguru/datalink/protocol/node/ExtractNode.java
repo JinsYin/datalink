@@ -29,12 +29,6 @@ public abstract class ExtractNode implements Node, Serializable {
     private String name;
     @JsonProperty("fields")
     private List<DataField> fields;
-    /**
-     * Filter conditions for Flink SQL, e.g. `WHERE age > 0 LIMIT 10`
-     */
-    @Nullable
-    @JsonProperty("filter")
-    private String filter;
     @Nullable
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("properties")
@@ -44,13 +38,11 @@ public abstract class ExtractNode implements Node, Serializable {
     public ExtractNode(@JsonProperty("id") String id,
                        @JsonProperty("name") String name,
                        @JsonProperty("fields") List<DataField> fields,
-                       @Nullable @JsonProperty("filter") String filter,
                        @Nullable @JsonProperty("properties") Map<String, String> properties) {
         this.id = Preconditions.checkNotNull(id, "id is null");
         this.name = name;
         this.fields = Preconditions.checkNotNull(fields, "fields is null");
         Preconditions.checkState(!fields.isEmpty(), "fields is empty");
-        this.filter = filter;
         this.properties = properties;
     }
 }

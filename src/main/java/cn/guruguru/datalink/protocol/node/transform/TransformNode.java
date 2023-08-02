@@ -14,6 +14,7 @@ import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTyp
 import org.apache.inlong.sort.protocol.enums.FilterStrategy;
 import org.apache.inlong.sort.protocol.transformation.FilterFunction;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -38,25 +39,23 @@ public class TransformNode implements Node, Serializable {
     private String name;
     @JsonProperty("fields")
     private List<DataField> fields;
-    @JsonProperty("filters")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<FilterFunction> filters;
-    @JsonProperty("filterStrategy")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private FilterStrategy filterStrategy;
+    /**
+     * Filter clauses for Flink SQL, e.g. `WHERE age > 0 LIMIT 10`
+     */
+    @Nullable
+    @JsonProperty("filterClause")
+    private String filterClause;
 
     @JsonCreator
     public TransformNode(@JsonProperty("id") String id,
                          @JsonProperty("name") String name,
                          @JsonProperty("fields") List<DataField> fields,
-                         @JsonProperty("filters") List<FilterFunction> filters,
-                         @JsonProperty("filterStrategy") FilterStrategy filterStrategy) {
+                         @Nullable @JsonProperty("filterClause") String filterClause) {
         this.id = Preconditions.checkNotNull(id, "id is null");
         this.name = name;
         this.fields = Preconditions.checkNotNull(fields, "fields is null");
         Preconditions.checkState(!fields.isEmpty(), "fields is empty");
-        this.filters = filters;
-        this.filterStrategy = filterStrategy;
+        this.filterClause = filterClause;
     }
 
     @JsonIgnore

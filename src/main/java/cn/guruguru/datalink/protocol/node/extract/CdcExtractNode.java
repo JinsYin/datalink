@@ -27,9 +27,8 @@ public abstract class CdcExtractNode extends ExtractNode {
                            String name,
                            List<DataField> fields,
                            @Nullable Map<String, String> properties,
-                           @Nullable String filter,
                            @Nullable WatermarkField watermarkField) {
-        super(id, name, fields, filter, properties);
+        super(id, name, fields, properties);
         this.watermarkField = watermarkField;
     }
 }

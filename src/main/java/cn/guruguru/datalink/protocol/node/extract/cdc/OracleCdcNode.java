@@ -10,8 +10,8 @@ import java.util.Map;
 
 public class OracleCdcNode extends CdcExtractNode {
 
-    public OracleCdcNode(String id, String name, List<DataField> fields, @Nullable Map<String, String> properties, @Nullable String filter, @Nullable WatermarkField watermarkField) {
-        super(id, name, fields, properties, filter, watermarkField);
+    public OracleCdcNode(String id, String name, List<DataField> fields, @Nullable Map<String, String> properties, @Nullable WatermarkField watermarkField) {
+        super(id, name, fields, properties, watermarkField);
     }
 
     @Override

@@ -18,8 +18,8 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 @JsonTypeName("mysql-cdc")
 public class MysqlCdcNode extends CdcExtractNode {
-    public MysqlCdcNode(String id, String name, List<DataField> fields, @Nullable Map<String, String> properties, @Nullable String filter, @Nullable WatermarkField watermarkField) {
-        super(id, name, fields, properties, filter, watermarkField);
+    public MysqlCdcNode(String id, String name, List<DataField> fields, @Nullable Map<String, String> properties, @Nullable WatermarkField watermarkField) {
+        super(id, name, fields, properties, watermarkField);
     }
 
     @Override

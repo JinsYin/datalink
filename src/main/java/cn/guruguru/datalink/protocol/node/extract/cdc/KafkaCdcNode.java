@@ -51,8 +51,8 @@ public class KafkaCdcNode extends CdcExtractNode {
     @JsonProperty("scanTimestampMillis")
     private String scanTimestampMillis;
 
-    public KafkaCdcNode(String id, String name, List<DataField> fields, @Nullable Map<String, String> properties, @Nullable String filter, @Nullable WatermarkField watermarkField) {
-        super(id, name, fields, properties, filter, watermarkField);
+    public KafkaCdcNode(String id, String name, List<DataField> fields, @Nullable Map<String, String> properties, @Nullable WatermarkField watermarkField) {
+        super(id, name, fields, properties, watermarkField);
     }
 
     public Map<String, String> tableOptions() {
