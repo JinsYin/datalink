@@ -6,13 +6,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeName;
-import org.apache.inlong.common.enums.MetaField;
-import org.apache.inlong.sort.protocol.Metadata;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * MySQL Scan Node
@@ -23,7 +20,7 @@ import java.util.Set;
 @JsonTypeName("mysql-scan")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
-public class MySqlScanNode extends ScanExtractNode implements Metadata, Serializable {
+public class MySqlScanNode extends ScanExtractNode implements Serializable {
     @Override
     public Map<String, String> tableOptions() {
         return super.tableOptions();
@@ -42,15 +39,5 @@ public class MySqlScanNode extends ScanExtractNode implements Metadata, Serializ
     @Override
     public List<DataField> getPartitionFields() {
         return super.getPartitionFields();
-    }
-
-    @Override
-    public boolean isVirtual(MetaField metaField) {
-        return false;
-    }
-
-    @Override
-    public Set<MetaField> supportedMetaFields() {
-        return null;
     }
 }
