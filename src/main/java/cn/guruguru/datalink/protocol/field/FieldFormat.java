@@ -1,4 +1,4 @@
-package cn.guruguru.datalink.formats;
+package cn.guruguru.datalink.protocol.field;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

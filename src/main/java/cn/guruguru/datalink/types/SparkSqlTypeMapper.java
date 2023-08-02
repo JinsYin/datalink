@@ -1,6 +1,6 @@
 package cn.guruguru.datalink.types;
 
-import cn.guruguru.datalink.formats.FieldFormat;
+import cn.guruguru.datalink.protocol.field.FieldFormat;
 import cn.guruguru.datalink.protocol.node.ExtractNode;
 
 public class SparkSqlTypeMapper implements TypeMapper {

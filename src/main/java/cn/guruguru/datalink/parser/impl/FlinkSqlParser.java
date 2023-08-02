@@ -1,6 +1,6 @@
 package cn.guruguru.datalink.parser.impl;
 
-import cn.guruguru.datalink.formats.FieldFormat;
+import cn.guruguru.datalink.protocol.field.FieldFormat;
 import cn.guruguru.datalink.parser.ParseResult;
 import cn.guruguru.datalink.parser.Parser;
 import cn.guruguru.datalink.parser.result.FlinkSqlParseResult;

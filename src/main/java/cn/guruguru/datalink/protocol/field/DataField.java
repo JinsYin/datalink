@@ -1,6 +1,5 @@
 package cn.guruguru.datalink.protocol.field;
 
-import cn.guruguru.datalink.formats.FieldFormat;
 import com.google.common.base.Preconditions;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;

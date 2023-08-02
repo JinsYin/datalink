@@ -1,6 +1,6 @@
 package cn.guruguru.datalink.protocol.node.extract.cdc;
 
-import cn.guruguru.datalink.formats.FieldFormat;
+import cn.guruguru.datalink.protocol.field.FieldFormat;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.field.WatermarkField;
 import cn.guruguru.datalink.protocol.node.extract.CdcExtractNode;
