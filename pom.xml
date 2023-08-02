@@ -14,6 +14,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <inlong.version>1.6.0</inlong.version>
         <lombok.version>1.18.2</lombok.version>
+        <flink.version>1.15.4</flink.version>
+        <junit.version>4.12</junit.version>
     </properties>
 
     <dependencies>
@@ -36,6 +38,21 @@
             <artifactId>sort-core</artifactId>
             <version>${inlong.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- Flink Table Common for using its types -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-table-common</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
+        <!-- Test dependency -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
