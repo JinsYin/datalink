@@ -24,7 +24,7 @@ import java.util.Map;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = LakehouseLoadNode.class, name = "lakehouse-cdc"),
+        @JsonSubTypes.Type(value = LakehouseLoadNode.class, name = "LakehouseLoad"),
 })
 @NoArgsConstructor
 @Data

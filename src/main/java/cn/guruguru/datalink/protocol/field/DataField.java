@@ -19,8 +19,8 @@ import javax.annotation.Nullable;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = DataField.class, name = "dataField"), // InLong Sort: field
-        @JsonSubTypes.Type(value = MetaField.class, name = "metaField"),
+        @JsonSubTypes.Type(value = DataField.class, name = "DataField"), // InLong Sort: field
+        @JsonSubTypes.Type(value = MetaField.class, name = "MetaField"),
 })
 @Data
 public class DataField implements Field {

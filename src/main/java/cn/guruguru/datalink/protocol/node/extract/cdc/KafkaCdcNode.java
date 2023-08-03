@@ -25,7 +25,7 @@ import java.util.Set;
  * @see https://nightlies.apache.org/flink/flink-docs-release-1.17/docs/connectors/table/kafka/#cdc-changelog-source
  */
 @EqualsAndHashCode(callSuper = true)
-@JsonTypeName("kafka-cdc")
+@JsonTypeName("KafkaCdc")
 public class KafkaCdcNode extends CdcExtractNode implements Metadata, Serializable {
     private static final long serialVersionUID = 1L;
 

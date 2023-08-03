@@ -16,7 +16,7 @@ import java.io.Serializable;
  *
  * @see org.apache.inlong.sort.protocol.transformation.FieldRelation
  */
-@JsonTypeName("fieldRelation")
+@JsonTypeName("FieldRelation")
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @Data
 @NoArgsConstructor

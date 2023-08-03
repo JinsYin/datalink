@@ -25,9 +25,9 @@ import java.util.Map;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = KafkaScanNode.class, name = "kafka-scan"),
-        @JsonSubTypes.Type(value = JdbcScanNode.class, name = "jdbc-scan"),
-        @JsonSubTypes.Type(value = MySqlScanNode.class, name = "mysql-scan"),
+        @JsonSubTypes.Type(value = KafkaScanNode.class, name = "KafkaScan"),
+        @JsonSubTypes.Type(value = JdbcScanNode.class, name = "JdbcScan"),
+        @JsonSubTypes.Type(value = MySqlScanNode.class, name = "MysqlScan"),
 })
 @EqualsAndHashCode(callSuper = true)
 @Data

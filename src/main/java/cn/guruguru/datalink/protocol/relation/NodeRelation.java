@@ -17,10 +17,9 @@ import java.util.List;
  *
  * @see org.apache.inlong.sort.protocol.transformation.relation.NodeRelation
  */
-@JsonTypeName("nodeRelation")
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = NodeRelation.class, name = "map") // InLong Sort: baseRelation
+        @JsonSubTypes.Type(value = NodeRelation.class, name = "Map") // InLong Sort: baseRelation
 })
 @Data
 @NoArgsConstructor

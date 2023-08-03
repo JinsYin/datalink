@@ -19,7 +19,7 @@ import java.util.Map;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@JsonTypeName("jdbc-scan")
+@JsonTypeName("JdbcScan")
 @NoArgsConstructor(force = true)
 public class JdbcScanNode extends ScanExtractNode implements Serializable {
 

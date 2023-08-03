@@ -20,7 +20,7 @@ import java.util.Map;
  * @see https://nightlies.apache.org/flink/flink-docs-master/docs/connectors/table/jdbc/#connector-options
  */
 @EqualsAndHashCode(callSuper = true)
-@JsonTypeName("mysql-scan")
+@JsonTypeName("MysqlScan")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor
 public class MySqlScanNode extends JdbcScanNode {

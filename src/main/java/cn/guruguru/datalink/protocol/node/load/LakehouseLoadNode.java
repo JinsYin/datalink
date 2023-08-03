@@ -22,7 +22,7 @@ import java.util.Map;
 @Data
 @NoArgsConstructor(force = true)
 @EqualsAndHashCode(callSuper = true)
-@JsonTypeName("lakehouse-load")
+@JsonTypeName("LakehouseLoad")
 public class LakehouseLoadNode extends LoadNode {
 
     @Nonnull

@@ -12,9 +12,9 @@ import java.io.Serializable;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = ConstantField.class, name = "constantField"),
-        @JsonSubTypes.Type(value = TimeUnitConstantField.class, name = "timeUnitConstantField"),
-        @JsonSubTypes.Type(value = StringConstantField.class, name = "stringConstantField")
+        @JsonSubTypes.Type(value = ConstantField.class, name = "ConstantField"),
+        @JsonSubTypes.Type(value = TimeUnitConstantField.class, name = "TimeUnitConstantField"),
+        @JsonSubTypes.Type(value = StringConstantField.class, name = "StringConstantField")
 })
 @NoArgsConstructor
 @Data

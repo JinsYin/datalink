@@ -23,7 +23,7 @@ import java.util.Map;
  * @see org.apache.inlong.sort.protocol.node.transform.TransformNode
  */
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = TransformNode.class, name = "transform"), // InLong Sort: baseTransform
+        @JsonSubTypes.Type(value = TransformNode.class, name = "Transform"), // InLong Sort: baseTransform
 })
 @Data
 @NoArgsConstructor

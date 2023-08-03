@@ -9,6 +9,7 @@ import cn.guruguru.datalink.protocol.node.extract.scan.JdbcScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.KafkaScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
 import cn.guruguru.datalink.protocol.node.load.LakehouseLoadNode;
+import cn.guruguru.datalink.protocol.node.transform.TransformNode;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonSubTypes;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -27,16 +28,18 @@ import java.util.TreeMap;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
         // cdc
-        @JsonSubTypes.Type(value = KafkaCdcNode.class, name = "kafka-cdc"),
-        @JsonSubTypes.Type(value = MysqlCdcNode.class, name = "mysql-cdc"),
-        @JsonSubTypes.Type(value = OracleCdcNode.class, name = "oracle-cdc"),
-        @JsonSubTypes.Type(value = MongoCdcNode.class, name = "mongo-cdc"),
+        @JsonSubTypes.Type(value = KafkaCdcNode.class, name = "KafkaCdc"),
+        @JsonSubTypes.Type(value = MysqlCdcNode.class, name = "MysqlCdc"),
+        @JsonSubTypes.Type(value = OracleCdcNode.class, name = "OracleCdc"),
+        @JsonSubTypes.Type(value = MongoCdcNode.class, name = "MongoCdc"),
         // scan
-        @JsonSubTypes.Type(value = JdbcScanNode.class, name = "jdbc-scan"),
-        @JsonSubTypes.Type(value = MySqlScanNode.class, name = "mysql-scan"),
-        @JsonSubTypes.Type(value = KafkaScanNode.class, name = "kafka-scan"),
+        @JsonSubTypes.Type(value = JdbcScanNode.class, name = "JdbcScan"),
+        @JsonSubTypes.Type(value = MySqlScanNode.class, name = "MysqlScan"),
+        @JsonSubTypes.Type(value = KafkaScanNode.class, name = "KafkaScan"),
+        // transform
+        @JsonSubTypes.Type(value = TransformNode.class, name = "Transform"),
         // load
-        @JsonSubTypes.Type(value = LakehouseLoadNode.class, name = "lakehouse-load"),
+        @JsonSubTypes.Type(value = LakehouseLoadNode.class, name = "LakehouseLoad"),
 
 })
 public interface Node {

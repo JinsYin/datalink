@@ -25,7 +25,7 @@ import java.util.Map;
  * @see org.apache.inlong.sort.protocol.node.extract.MongoExtractNode
  */
 @EqualsAndHashCode(callSuper = true)
-@JsonTypeName("mongo-cdc")
+@JsonTypeName("MongoCdc")
 @Data
 public class MongoCdcNode extends CdcExtractNode implements Serializable {
     private static final long serialVersionUID = 1L;

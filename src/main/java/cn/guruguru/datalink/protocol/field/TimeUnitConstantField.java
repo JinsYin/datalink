@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
  * @see org.apache.inlong.sort.protocol.transformation.TimeUnitConstantParam
  */
 @EqualsAndHashCode(callSuper = true)
-@JsonTypeName("timeUnitConstantField")
+@JsonTypeName("TimeUnitConstantField")
 @Data
 @NoArgsConstructor
 public class TimeUnitConstantField extends ConstantField {

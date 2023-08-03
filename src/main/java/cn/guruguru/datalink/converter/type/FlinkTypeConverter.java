@@ -31,13 +31,13 @@ public class FlinkTypeConverter implements TypeConverter {
     @Override
     public FieldFormat toEngineType(String nodeType, FieldFormat fieldFormat) {
         switch (nodeType) {
-            case "mysql-scan":
+            case "MysqlScan":
                 return convertMysqlType(fieldFormat);
-            case "oracle-scan":
+            case "OracleScan":
                 return convertOracleType(fieldFormat);
-            case "oracle-cdc":
+            case "OracleCdc":
                 return convertOracleCdcType(fieldFormat);
-            case "lakehouse-load":
+            case "LakehouseLoad":
                 return convertArcticMixedIcebergType(fieldFormat);
             default:
                 throw new UnsupportedOperationException("Unsupported data source type:" + nodeType);
