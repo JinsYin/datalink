@@ -16,7 +16,7 @@ public class FlinkTypeConverter implements TypeConverter {
      * @param fieldFormat source field
      */
     @Override
-    public FieldFormat deriveEngineType(ExtractNode extractNode, FieldFormat fieldFormat) {
+    public FieldFormat toEngineType(ExtractNode extractNode, FieldFormat fieldFormat) {
         String sourceType = extractNode.getClass().getAnnotation(JsonTypeName.class).value();
         String fieldName = fieldFormat.getField();
         String fieldType = StringUtils.upperCase(fieldFormat.getType());

@@ -292,7 +292,7 @@ public class FlinkSqlParser implements Parser {
             FieldRelation fieldRelation = fieldRelationMap.get(field.getName());
             FieldFormat fieldFormat = field.getFieldFormat();
             if (fieldRelation == null) {
-                String targetType = typeMapper.deriveEngineType(new MySqlScanNode(), fieldFormat).getType(); // TODO
+                String targetType = typeMapper.toEngineType(new MySqlScanNode(), fieldFormat).getType(); // TODO
                 sb.append("\n    CAST(NULL as ").append(targetType).append(") AS ").append(field.format()).append(",");
                 continue;
             }
@@ -311,12 +311,12 @@ public class FlinkSqlParser implements Parser {
                 if (complexType || sameType || fieldFormat == null) {
                     sb.append("\n    ").append(inputField.format()).append(" AS ").append(field.format()).append(",");
                 } else {
-                    String targetType = typeMapper.deriveEngineType(new MySqlScanNode(), fieldFormat).getType();
+                    String targetType = typeMapper.toEngineType(new MySqlScanNode(), fieldFormat).getType();
                     sb.append("\n    CAST(").append(inputField.format()).append(" as ")
                             .append(targetType).append(") AS ").append(field.format()).append(",");
                 }
             } else {
-                String targetType = typeMapper.deriveEngineType(new MySqlScanNode(), field.getFieldFormat()).getType();
+                String targetType = typeMapper.toEngineType(new MySqlScanNode(), field.getFieldFormat()).getType();
                 sb.append("\n    CAST(").append(inputField.format()).append(" as ")
                         .append(targetType).append(") AS ").append(field.format()).append(",");
             }
@@ -471,7 +471,7 @@ public class FlinkSqlParser implements Parser {
                 }
                 sb.append(metadataNode.format(metaFieldInfo.getMetaKey()));
             } else {
-                sb.append(typeMapper.deriveEngineType(new MySqlScanNode(), field.getFieldFormat()).getType());
+                sb.append(typeMapper.toEngineType(new MySqlScanNode(), field.getFieldFormat()).getType());
             }
             sb.append(",\n");
         }

@@ -17,5 +17,5 @@ public interface TypeConverter extends Serializable {
      * @param fieldFormat source field
      * @return engine field
      */
-    FieldFormat deriveEngineType(ExtractNode extractNode, FieldFormat fieldFormat);
+    FieldFormat toEngineType(ExtractNode extractNode, FieldFormat fieldFormat);
 }
