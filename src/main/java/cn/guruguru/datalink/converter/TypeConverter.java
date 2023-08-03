@@ -1,12 +1,12 @@
-package cn.guruguru.datalink.types;
+package cn.guruguru.datalink.converter;
 
 import cn.guruguru.datalink.protocol.field.FieldFormat;
 import cn.guruguru.datalink.protocol.node.ExtractNode;
 
 /**
- * Type mapper interface
+ * Type converter interface
  */
-public interface TypeMapper {
+public interface TypeConverter {
     /**
      * Converts DataSource DDL to computing engine DDL
      *

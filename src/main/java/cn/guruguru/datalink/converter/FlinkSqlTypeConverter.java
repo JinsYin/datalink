@@ -1,11 +1,11 @@
-package cn.guruguru.datalink.types;
+package cn.guruguru.datalink.converter;
 
 import cn.guruguru.datalink.protocol.field.FieldFormat;
 import cn.guruguru.datalink.protocol.node.ExtractNode;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeName;
 
-public class FlinkSqlTypeMapper implements TypeMapper {
+public class FlinkSqlTypeConverter implements TypeConverter {
 
     @Override
     public String deriveEngineSql(ExtractNode extractNode, String ddl) {
