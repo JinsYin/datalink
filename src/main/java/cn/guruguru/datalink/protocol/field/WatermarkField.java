@@ -18,10 +18,12 @@ import java.util.List;
  *
  * @see org.apache.inlong.sort.protocol.transformation.WatermarkField
  */
-@JsonTypeName("watermark")
+@JsonTypeName(WatermarkField.TYPE)
 @Data
 @NoArgsConstructor
 public class WatermarkField {
+
+    public static final String TYPE = "watermark";
 
     @JsonProperty("timeAttr")
     private DataField timeAttr;

@@ -19,11 +19,12 @@ import javax.annotation.Nullable;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = DataField.class, name = "DataField"), // InLong Sort: field
-        @JsonSubTypes.Type(value = MetaField.class, name = "MetaField"),
+        @JsonSubTypes.Type(value = DataField.class, name = DataField.TYPE), // InLong Sort: field
+        @JsonSubTypes.Type(value = MetaField.class, name = MetaField.TYPE),
 })
 @Data
 public class DataField implements Field {
+    public static final String TYPE = "DataField";
     private static final long serialVersionUID = 5871970550803344673L;
 
     @JsonProperty("name")

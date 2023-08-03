@@ -16,10 +16,12 @@ import javax.annotation.Nonnull;
  * @see org.apache.inlong.sort.protocol.transformation.TimeUnitConstantParam
  */
 @EqualsAndHashCode(callSuper = true)
-@JsonTypeName("TimeUnitConstantField")
+@JsonTypeName(TimeUnitConstantField.TYPE)
 @Data
 @NoArgsConstructor
 public class TimeUnitConstantField extends ConstantField {
+    public static final String TYPE = "TimeUnitConstantField";
+
     private static final long serialVersionUID = 659127597540343115L;
 
     @JsonProperty("timeUnit")

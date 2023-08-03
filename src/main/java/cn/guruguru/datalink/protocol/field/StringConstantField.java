@@ -13,9 +13,11 @@ import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTyp
  */
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@JsonTypeName("StringConstantField")
+@JsonTypeName(StringConstantField.TYPE)
 @Data
 public class StringConstantField extends ConstantField {
+    public static final String TYPE = "StringConstantField";
+
     private static final long serialVersionUID = 1779799826901827567L;
 
     /**

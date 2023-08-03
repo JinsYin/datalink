@@ -12,13 +12,14 @@ import java.io.Serializable;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = ConstantField.class, name = "ConstantField"),
-        @JsonSubTypes.Type(value = TimeUnitConstantField.class, name = "TimeUnitConstantField"),
-        @JsonSubTypes.Type(value = StringConstantField.class, name = "StringConstantField")
+        @JsonSubTypes.Type(value = ConstantField.class, name = ConstantField.TYPE),
+        @JsonSubTypes.Type(value = TimeUnitConstantField.class, name = TimeUnitConstantField.TYPE),
+        @JsonSubTypes.Type(value = StringConstantField.class, name = StringConstantField.TYPE)
 })
 @NoArgsConstructor
 @Data
 public class ConstantField implements Field, Serializable {
+    public static final String TYPE = "ConstantField";
 
     private static final long serialVersionUID = 7216146498324134122L;
 

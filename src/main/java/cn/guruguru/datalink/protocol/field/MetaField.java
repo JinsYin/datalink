@@ -12,6 +12,8 @@ import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonPro
  */
 @Getter
 public class MetaField extends DataField {
+    public static final String TYPE = "MetaField";
+
     private static final long serialVersionUID = -3436204467879205139L;
 
     @JsonProperty("metaKey")
