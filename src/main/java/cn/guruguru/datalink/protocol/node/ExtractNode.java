@@ -8,6 +8,7 @@ import cn.guruguru.datalink.protocol.node.extract.cdc.OracleCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.JdbcScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.KafkaScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
+import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
 import com.google.common.base.Preconditions;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,14 +32,14 @@ import java.util.Map;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
         // cdc
-        @JsonSubTypes.Type(value = KafkaCdcNode.class, name = "KafkaCdc"),
-        @JsonSubTypes.Type(value = MysqlCdcNode.class, name = "MysqlCdc"),
-        @JsonSubTypes.Type(value = OracleCdcNode.class, name = "OracleCdc"),
-        @JsonSubTypes.Type(value = MongoCdcNode.class, name = "MongoCdc"),
+        @JsonSubTypes.Type(value = KafkaCdcNode.class, name = KafkaCdcNode.TYPE),
+        @JsonSubTypes.Type(value = MysqlCdcNode.class, name = MysqlCdcNode.TYPE),
+        @JsonSubTypes.Type(value = OracleCdcNode.class, name = OracleCdcNode.TYPE),
+        @JsonSubTypes.Type(value = MongoCdcNode.class, name = MongoCdcNode.TYPE),
         // scan
-        @JsonSubTypes.Type(value = JdbcScanNode.class, name = "JdbcScan"),
-        @JsonSubTypes.Type(value = MySqlScanNode.class, name = "MysqlScan"),
-        @JsonSubTypes.Type(value = KafkaScanNode.class, name = "KafkaScan"),
+        @JsonSubTypes.Type(value = OracleScanNode.class, name = OracleScanNode.TYPE),
+        @JsonSubTypes.Type(value = MySqlScanNode.class, name = MySqlScanNode.TYPE),
+        @JsonSubTypes.Type(value = KafkaScanNode.class, name = KafkaScanNode.TYPE),
 })
 @Data
 @NoArgsConstructor

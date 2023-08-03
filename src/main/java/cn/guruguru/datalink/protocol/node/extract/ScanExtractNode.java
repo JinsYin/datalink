@@ -5,6 +5,7 @@ import cn.guruguru.datalink.protocol.node.ExtractNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.JdbcScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.KafkaScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
+import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -25,9 +26,9 @@ import java.util.Map;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = KafkaScanNode.class, name = "KafkaScan"),
-        @JsonSubTypes.Type(value = JdbcScanNode.class, name = "JdbcScan"),
-        @JsonSubTypes.Type(value = MySqlScanNode.class, name = "MysqlScan"),
+        @JsonSubTypes.Type(value = KafkaScanNode.class, name = KafkaScanNode.TYPE),
+        @JsonSubTypes.Type(value = OracleScanNode.class, name = OracleScanNode.TYPE),
+        @JsonSubTypes.Type(value = MySqlScanNode.class, name = MySqlScanNode.TYPE),
 })
 @EqualsAndHashCode(callSuper = true)
 @Data

@@ -25,8 +25,9 @@ import java.util.Set;
  * @see https://nightlies.apache.org/flink/flink-docs-release-1.17/docs/connectors/table/kafka/#cdc-changelog-source
  */
 @EqualsAndHashCode(callSuper = true)
-@JsonTypeName("KafkaCdc")
+@JsonTypeName(KafkaCdcNode.TYPE)
 public class KafkaCdcNode extends CdcExtractNode implements Metadata, Serializable {
+    public static final String TYPE = "KafkaCdc";
     private static final long serialVersionUID = 1L;
 
     @Nonnull
@@ -83,5 +84,10 @@ public class KafkaCdcNode extends CdcExtractNode implements Metadata, Serializab
 
     public List<DataField> getPartitionFields() {
         return super.getPartitionFields();
+    }
+
+    @Override
+    public String getNodeType() {
+        return TYPE;
     }
 }

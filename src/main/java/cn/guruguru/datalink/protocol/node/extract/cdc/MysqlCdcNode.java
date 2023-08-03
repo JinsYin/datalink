@@ -20,8 +20,9 @@ import java.util.Set;
  * @see org.apache.inlong.sort.protocol.node.extract.MySqlExtractNode
  */
 @EqualsAndHashCode(callSuper = true)
-@JsonTypeName("MysqlCdc")
+@JsonTypeName(MysqlCdcNode.TYPE)
 public class MysqlCdcNode extends CdcExtractNode implements Metadata, Serializable {
+    public static final String TYPE = "MysqlCdc";
     public MysqlCdcNode(String id, String name, List<DataField> fields, @Nullable Map<String, String> properties, @Nullable WatermarkField watermarkField) {
         super(id, name, fields, properties, watermarkField);
     }

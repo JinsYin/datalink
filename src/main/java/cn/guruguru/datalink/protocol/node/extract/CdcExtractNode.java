@@ -28,10 +28,10 @@ import java.util.Map;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = KafkaCdcNode.class, name = "KafkaCdc"),
-        @JsonSubTypes.Type(value = MysqlCdcNode.class, name = "MysqlCdc"),
-        @JsonSubTypes.Type(value = OracleCdcNode.class, name = "OracleCdc"),
-        @JsonSubTypes.Type(value = MongoCdcNode.class, name = "MongoCdc"),
+        @JsonSubTypes.Type(value = KafkaCdcNode.class, name = KafkaCdcNode.TYPE),
+        @JsonSubTypes.Type(value = MysqlCdcNode.class, name = MysqlCdcNode.TYPE),
+        @JsonSubTypes.Type(value = OracleCdcNode.class, name = OracleCdcNode.TYPE),
+        @JsonSubTypes.Type(value = MongoCdcNode.class, name = MongoCdcNode.TYPE),
 })
 @EqualsAndHashCode(callSuper = true)
 @Data

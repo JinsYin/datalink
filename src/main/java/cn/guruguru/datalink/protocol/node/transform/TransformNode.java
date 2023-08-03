@@ -23,12 +23,14 @@ import java.util.Map;
  * @see org.apache.inlong.sort.protocol.node.transform.TransformNode
  */
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = TransformNode.class, name = "Transform"), // InLong Sort: baseTransform
+        @JsonSubTypes.Type(value = TransformNode.class, name = TransformNode.TYPE), // InLong Sort: baseTransform
 })
 @Data
 @NoArgsConstructor
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 public class TransformNode implements Node, Serializable {
+    public static final String TYPE = "Transform";
+
     private static final long serialVersionUID = -1202158328274891592L;
 
     @JsonProperty("id")

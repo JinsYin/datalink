@@ -19,9 +19,8 @@ import java.util.Map;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@JsonTypeName("JdbcScan")
 @NoArgsConstructor(force = true)
-public class JdbcScanNode extends ScanExtractNode implements Serializable {
+public abstract class JdbcScanNode extends ScanExtractNode implements Serializable {
 
     @JsonProperty("url")
     @Nonnull

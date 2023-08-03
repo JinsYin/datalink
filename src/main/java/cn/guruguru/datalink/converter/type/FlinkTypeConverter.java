@@ -2,6 +2,12 @@ package cn.guruguru.datalink.converter.type;
 
 import cn.guruguru.datalink.converter.TypeConverter;
 import cn.guruguru.datalink.protocol.field.FieldFormat;
+import cn.guruguru.datalink.protocol.node.extract.cdc.KafkaCdcNode;
+import cn.guruguru.datalink.protocol.node.extract.cdc.MysqlCdcNode;
+import cn.guruguru.datalink.protocol.node.extract.cdc.OracleCdcNode;
+import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
+import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
+import cn.guruguru.datalink.protocol.node.load.LakehouseLoadNode;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.table.types.logical.BigIntType;
 import org.apache.flink.table.types.logical.BooleanType;
@@ -31,13 +37,13 @@ public class FlinkTypeConverter implements TypeConverter {
     @Override
     public FieldFormat toEngineType(String nodeType, FieldFormat fieldFormat) {
         switch (nodeType) {
-            case "MysqlScan":
+            case MySqlScanNode.TYPE:
                 return convertMysqlType(fieldFormat);
-            case "OracleScan":
+            case OracleScanNode.TYPE:
                 return convertOracleType(fieldFormat);
-            case "OracleCdc":
+            case OracleCdcNode.TYPE:
                 return convertOracleCdcType(fieldFormat);
-            case "LakehouseLoad":
+            case LakehouseLoadNode.TYPE:
                 return convertArcticMixedIcebergType(fieldFormat);
             default:
                 throw new UnsupportedOperationException("Unsupported data source type:" + nodeType);

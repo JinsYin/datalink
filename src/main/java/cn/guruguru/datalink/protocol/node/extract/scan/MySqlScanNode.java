@@ -20,11 +20,11 @@ import java.util.Map;
  * @see https://nightlies.apache.org/flink/flink-docs-master/docs/connectors/table/jdbc/#connector-options
  */
 @EqualsAndHashCode(callSuper = true)
-@JsonTypeName("MysqlScan")
+@JsonTypeName(MySqlScanNode.TYPE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor
 public class MySqlScanNode extends JdbcScanNode {
-
+    public static final String TYPE = "MysqlScan";
     private static final long serialVersionUID = -5521981462461235277L;
 
     @JsonCreator

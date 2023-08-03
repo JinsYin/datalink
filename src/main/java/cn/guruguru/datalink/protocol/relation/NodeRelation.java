@@ -19,12 +19,13 @@ import java.util.List;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = NodeRelation.class, name = "Map") // InLong Sort: baseRelation
+        @JsonSubTypes.Type(value = NodeRelation.class, name = NodeRelation.TYPE) // InLong Sort: baseRelation
 })
 @Data
 @NoArgsConstructor
 public class NodeRelation implements Serializable {
     private static final long serialVersionUID = 5491943876653981952L;
+    public static final String TYPE = "Map";
 
     @JsonProperty("inputs")
     private List<String> inputs;

@@ -22,8 +22,10 @@ import java.util.Map;
 @Data
 @NoArgsConstructor(force = true)
 @EqualsAndHashCode(callSuper = true)
-@JsonTypeName("LakehouseLoad")
+@JsonTypeName(LakehouseLoadNode.TYPE)
 public class LakehouseLoadNode extends LoadNode {
+
+    public static final String TYPE = "LakehouseLoad";
 
     @Nonnull
     @JsonProperty("url")

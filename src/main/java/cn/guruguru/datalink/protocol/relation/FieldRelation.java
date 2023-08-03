@@ -16,11 +16,13 @@ import java.io.Serializable;
  *
  * @see org.apache.inlong.sort.protocol.transformation.FieldRelation
  */
-@JsonTypeName("FieldRelation")
+@JsonTypeName(FieldRelation.TYPE)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @Data
 @NoArgsConstructor
 public class FieldRelation implements Serializable {
+    public static final String TYPE = "FieldRelation";
+
     @JsonProperty("inputField")
     private Field inputField;
     @JsonProperty("outputField")
