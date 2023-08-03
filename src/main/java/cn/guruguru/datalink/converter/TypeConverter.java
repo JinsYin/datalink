@@ -3,19 +3,12 @@ package cn.guruguru.datalink.converter;
 import cn.guruguru.datalink.protocol.field.FieldFormat;
 import cn.guruguru.datalink.protocol.node.ExtractNode;
 
+import java.io.Serializable;
+
 /**
  * Type converter interface
  */
-public interface TypeConverter {
-    /**
-     * Converts DataSource DDL to computing engine DDL
-     *
-     * @param extractNode extract node
-     * @param ddl DataSource DDL
-     * @return DDL of computing engine
-     */
-    String deriveEngineSql(ExtractNode extractNode, String ddl);
-
+public interface TypeConverter extends Serializable {
     /**
      * Converts field type
      *

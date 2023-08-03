@@ -1,17 +1,12 @@
-package cn.guruguru.datalink.converter;
+package cn.guruguru.datalink.converter.type;
 
+import cn.guruguru.datalink.converter.TypeConverter;
 import cn.guruguru.datalink.protocol.field.FieldFormat;
 import cn.guruguru.datalink.protocol.node.ExtractNode;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeName;
 
-public class FlinkSqlTypeConverter implements TypeConverter {
-
-    @Override
-    public String deriveEngineSql(ExtractNode extractNode, String ddl) {
-        String sourceType = ExtractNode.class.getAnnotation(JsonTypeName.class).value();
-        return null;
-    }
+public class FlinkTypeConverter implements TypeConverter {
 
     /**
      * Derive the engine type for the given datasource field type

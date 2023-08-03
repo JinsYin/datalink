@@ -1,13 +1,10 @@
-package cn.guruguru.datalink.converter;
+package cn.guruguru.datalink.converter.type;
 
+import cn.guruguru.datalink.converter.TypeConverter;
 import cn.guruguru.datalink.protocol.field.FieldFormat;
 import cn.guruguru.datalink.protocol.node.ExtractNode;
 
-public class SparkSqlTypeConverter implements TypeConverter {
-    @Override
-    public String deriveEngineSql(ExtractNode extractNode, String ddl) {
-        throw new UnsupportedOperationException("Spark engine not supported");
-    }
+public class SparkTypeConverter implements TypeConverter {
 
     @Override
     public FieldFormat deriveEngineType(ExtractNode extractNode, FieldFormat fieldFormat) {
