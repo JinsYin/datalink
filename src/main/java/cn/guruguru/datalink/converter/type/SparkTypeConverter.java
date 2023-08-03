@@ -7,7 +7,7 @@ import cn.guruguru.datalink.protocol.node.ExtractNode;
 public class SparkTypeConverter implements TypeConverter {
 
     @Override
-    public FieldFormat toEngineType(ExtractNode extractNode, FieldFormat fieldFormat) {
+    public FieldFormat toEngineType(String nodeType, FieldFormat fieldFormat) {
         throw new UnsupportedOperationException("Spark engine not supported");
     }
 }

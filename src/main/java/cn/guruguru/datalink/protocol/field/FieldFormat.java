@@ -5,24 +5,25 @@ import lombok.NoArgsConstructor;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCreator;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.annotation.Nullable;
+
 @Data
 @NoArgsConstructor
 public class FieldFormat {
-    @JsonProperty("field")
-    private String field;
     @JsonProperty("type")
     private String type;
     @JsonProperty("precision")
     private Integer precision;
     @JsonProperty("scale")
     private Integer scale;
+    // @JsonProperty("timeZone")
+    // @Nullable
+    // private String timeZone;
 
     @JsonCreator
-    public FieldFormat(@JsonProperty("field") String field,
-                         @JsonProperty("type") String type,
-                         @JsonProperty("precision") Integer precision,
-                         @JsonProperty("scale") Integer scale) {
-        this.field = field;
+    public FieldFormat(@JsonProperty("type") String type,
+                       @JsonProperty("precision") Integer precision,
+                       @JsonProperty("scale") Integer scale) {
         this.type = type;
         this.precision = precision;
         this.scale = scale;

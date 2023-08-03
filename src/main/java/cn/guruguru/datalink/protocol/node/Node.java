@@ -12,6 +12,7 @@ import cn.guruguru.datalink.protocol.node.load.LakehouseLoadNode;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonSubTypes;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeName;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -70,5 +71,9 @@ public interface Node {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     default List<DataField> getPartitionFields() {
         return null;
+    }
+
+    default String getNodeType() {
+        return this.getClass().getAnnotation(JsonTypeName.class).value();
     }
 }

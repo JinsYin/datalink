@@ -1,7 +1,6 @@
 package cn.guruguru.datalink.converter;
 
 import cn.guruguru.datalink.protocol.field.FieldFormat;
-import cn.guruguru.datalink.protocol.node.ExtractNode;
 
 import java.io.Serializable;
 
@@ -13,9 +12,9 @@ public interface TypeConverter extends Serializable {
      * Converts field type
      *
      * @see org.apache.inlong.sort.formats.base.TableFormatUtils#deriveLogicalType(FormatInfo)
-     * @param extractNode extract node
+     * @param nodeType node type
      * @param fieldFormat source field
      * @return engine field
      */
-    FieldFormat toEngineType(ExtractNode extractNode, FieldFormat fieldFormat);
+    FieldFormat toEngineType(String nodeType, FieldFormat fieldFormat);
 }

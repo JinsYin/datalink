@@ -22,6 +22,7 @@ import cn.guruguru.datalink.converter.type.FlinkTypeConverter;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeName;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -259,7 +260,7 @@ public class FlinkSqlParser implements Parser {
         fieldRelations.forEach(s -> {
             fieldRelationMap.put(s.getOutputField().getName(), s);
         });
-        parseFieldRelations(node.getFields(), fieldRelationMap, sb);
+        parseFieldRelations(node.getNodeType(), node.getFields(), fieldRelationMap, sb);
         String tableName = nodeMap.get(relation.getInputs().get(0)).genTableName();
         sb.append("\n    FROM `").append(tableName).append("` ");
         parseFilterFields(filterClause, sb);
@@ -286,13 +287,13 @@ public class FlinkSqlParser implements Parser {
      * @param fieldRelationMap The field relation map
      * @param sb Container for storing sql
      */
-    private void parseFieldRelations(List<DataField> fields,
+    private void parseFieldRelations(String nodeType, List<DataField> fields,
                                      Map<String, FieldRelation> fieldRelationMap, StringBuilder sb) {
         for (DataField field : fields) {
             FieldRelation fieldRelation = fieldRelationMap.get(field.getName());
             FieldFormat fieldFormat = field.getFieldFormat();
             if (fieldRelation == null) {
-                String targetType = typeMapper.toEngineType(new MySqlScanNode(), fieldFormat).getType(); // TODO
+                String targetType = typeMapper.toEngineType(nodeType, fieldFormat).getType(); // TODO
                 sb.append("\n    CAST(NULL as ").append(targetType).append(") AS ").append(field.format()).append(",");
                 continue;
             }
@@ -311,12 +312,12 @@ public class FlinkSqlParser implements Parser {
                 if (complexType || sameType || fieldFormat == null) {
                     sb.append("\n    ").append(inputField.format()).append(" AS ").append(field.format()).append(",");
                 } else {
-                    String targetType = typeMapper.toEngineType(new MySqlScanNode(), fieldFormat).getType();
+                    String targetType = typeMapper.toEngineType(nodeType, fieldFormat).getType();
                     sb.append("\n    CAST(").append(inputField.format()).append(" as ")
                             .append(targetType).append(") AS ").append(field.format()).append(",");
                 }
             } else {
-                String targetType = typeMapper.toEngineType(new MySqlScanNode(), field.getFieldFormat()).getType();
+                String targetType = typeMapper.toEngineType(nodeType, field.getFieldFormat()).getType();
                 sb.append("\n    CAST(").append(inputField.format()).append(" as ")
                         .append(targetType).append(") AS ").append(field.format()).append(",");
             }
@@ -453,6 +454,7 @@ public class FlinkSqlParser implements Parser {
      */
     private String parseFields(List<DataField> fields, Node node, String filterPrimaryKey) {
         StringBuilder sb = new StringBuilder();
+        String nodeType = node.getClass().getAnnotation(JsonTypeName.class).value();
         for (DataField field : fields) {
             if (StringUtils.isNotBlank(filterPrimaryKey) && field.getName().equals(filterPrimaryKey)) {
                 continue;
@@ -471,7 +473,7 @@ public class FlinkSqlParser implements Parser {
                 }
                 sb.append(metadataNode.format(metaFieldInfo.getMetaKey()));
             } else {
-                sb.append(typeMapper.toEngineType(new MySqlScanNode(), field.getFieldFormat()).getType());
+                sb.append(typeMapper.toEngineType(nodeType, field.getFieldFormat()).getType());
             }
             sb.append(",\n");
         }
