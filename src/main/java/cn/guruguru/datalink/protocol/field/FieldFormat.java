@@ -28,4 +28,16 @@ public class FieldFormat {
         this.precision = precision;
         this.scale = scale;
     }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder(type);
+        if (precision != null) {
+            sb.append("(").append(precision);
+            if (scale != null) {
+                sb.append(",").append(scale);
+            }
+            sb.append(")");
+        }
+        return sb.toString();
+    }
 }

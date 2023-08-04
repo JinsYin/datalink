@@ -16,6 +16,8 @@
         <lombok.version>1.18.2</lombok.version>
         <flink.version>1.15.4</flink.version>
         <junit.version>4.12</junit.version>
+        <jsqlparser.version>4.6</jsqlparser.version>
+        <calcite.version>1.27.0</calcite.version>
     </properties>
 
     <dependencies>
@@ -53,6 +55,25 @@
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <!-- SQL Parser for Flink -->
+        <dependency>
+            <groupId>com.github.jsqlparser</groupId>
+            <artifactId>jsqlparser</artifactId>
+            <version>${jsqlparser.version}</version>
+        </dependency>
+
+        <!-- SQL Parser for Spark -->
+        <dependency>
+            <groupId>org.apache.calcite</groupId>
+            <artifactId>calcite-core</artifactId>
+            <version>${calcite.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.calcite</groupId>
+            <artifactId>calcite-server</artifactId>
+            <version>${calcite.version}</version>
         </dependency>
     </dependencies>
 

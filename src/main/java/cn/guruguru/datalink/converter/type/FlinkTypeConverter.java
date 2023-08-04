@@ -2,8 +2,6 @@ package cn.guruguru.datalink.converter.type;
 
 import cn.guruguru.datalink.converter.TypeConverter;
 import cn.guruguru.datalink.protocol.field.FieldFormat;
-import cn.guruguru.datalink.protocol.node.extract.cdc.KafkaCdcNode;
-import cn.guruguru.datalink.protocol.node.extract.cdc.MysqlCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.OracleCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
@@ -133,13 +131,14 @@ public class FlinkTypeConverter implements TypeConverter {
             case "DOUBLE PRECISION":
             case "REAL":
             case "NUMBER": // NUMBER(p, s)
-                return new FieldFormat(new DecimalType().asSummaryString(), precision, scale);
+                return new FieldFormat(new DecimalType().getTypeRoot().name(), precision, scale);
             case "DATE":
                 return new FieldFormat(new DateType().asSummaryString(), null, null);
             case "TIMESTAMP": // TODO: TIMESTAMP [(p)] [WITHOUT TIMEZONE]
-                return new FieldFormat(new TimestampType().asSummaryString(), precision, null); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
+                return new FieldFormat(new TimestampType(precision).asSerializableString(), precision, null); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
             case "CHAR": // CHAR(n)
             case "VARCHAR": // VARCHAR(n)
+            case "VARCHAR2": // it is not mentioned in the Flink document
             case "CLOB":
                 return new FieldFormat(new VarCharType(VarCharType.MAX_LENGTH).asSummaryString(), null, null);
             case "RAW": // RAW(s)
