@@ -9,6 +9,7 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
+        <java.version>8</java.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -19,6 +20,12 @@
         <jsqlparser.version>4.6</jsqlparser.version>
         <calcite.version>1.27.0</calcite.version>
     </properties>
+
+    <!-- 下载仓库配置 -->
+    <repositories>
+    </repositories>
+
+    <!-- 发布仓库配置 -->
 
     <dependencies>
         <!-- Lombok -->
@@ -76,5 +83,28 @@
             <version>${calcite.version}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Maven Compiler Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <compilerArgument>-parameters</compilerArgument>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
