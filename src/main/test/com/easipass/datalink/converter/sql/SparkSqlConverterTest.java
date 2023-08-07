@@ -16,6 +16,6 @@ public class SparkSqlConverterTest {
                 + "LASTUPDATEDDT TIMESTAMP(6)"
                 + ")";
         SparkSqlConverter sparkSqlConverter = new SparkSqlConverter();
-        sparkSqlConverter.toEngineDDL("Oracle", createSQL);
+        sparkSqlConverter.toEngineDDL("Oracle", "p1_catalog1", null, createSQL);
     }
 }

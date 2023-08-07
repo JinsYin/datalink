@@ -10,10 +10,12 @@ import org.apache.calcite.sql.parser.ddl.SqlDdlParserImpl;
 import org.apache.calcite.sql.pretty.SqlPrettyWriter;
 import org.apache.calcite.sql.validate.SqlConformanceEnum;
 
+import javax.annotation.Nullable;
+
 public class SparkSqlConverter implements SqlConverter {
 
     @Override
-    public String toEngineDDL(String sourceType, String ddl)  {
+    public String toEngineDDL(String sourceType, String catalog, @Nullable String database, String ddl)  {
         SqlParser.Config sqlParserConfig = SqlParser.Config.DEFAULT
                 .withLex(Lex.ORACLE).withConformance(SqlConformanceEnum.ORACLE_12)
                 .withParserFactory(SqlDdlParserImpl.FACTORY);
