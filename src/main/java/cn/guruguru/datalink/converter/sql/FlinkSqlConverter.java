@@ -1,6 +1,7 @@
 package cn.guruguru.datalink.converter.sql;
 
 import cn.guruguru.datalink.converter.SqlConverter;
+import cn.guruguru.datalink.converter.enums.DDLDialect;
 import cn.guruguru.datalink.converter.sql.result.FlinkSqlConverterResult;
 import cn.guruguru.datalink.converter.type.FlinkTypeConverter;
 import cn.guruguru.datalink.protocol.field.FieldFormat;
@@ -30,8 +31,8 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
      * @param ddl DDL SQL from Data Source
      */
     @Override
-    public FlinkSqlConverterResult toEngineDDL(String dialect, String catalog, @Nullable String database, String ddl) {
-        Preconditions.checkNotNull(dialect,"sourceType is required");
+    public FlinkSqlConverterResult toEngineDDL(DDLDialect dialect, String catalog, @Nullable String database, String ddl) {
+        Preconditions.checkNotNull(dialect,"dialect is required");
         Preconditions.checkNotNull(catalog,"catalog is required");
         Preconditions.checkNotNull(ddl,"ddl is required");
         if (!ddl.trim().toUpperCase().startsWith("CREATE TABLE")) {
@@ -48,8 +49,8 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
             throw new RuntimeException(e);
         }
         FlinkSqlConverterResult result;
-        switch (dialect) {
-            case "Oracle":
+        switch (dialect.getNodeType()) {
+            case OracleScanNode.TYPE:
                 result = convertOracleType(catalog, database, createTable);
                 break;
             default:

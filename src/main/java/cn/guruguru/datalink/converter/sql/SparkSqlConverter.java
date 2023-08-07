@@ -1,6 +1,7 @@
 package cn.guruguru.datalink.converter.sql;
 
 import cn.guruguru.datalink.converter.SqlConverter;
+import cn.guruguru.datalink.converter.enums.DDLDialect;
 import org.apache.calcite.config.Lex;
 import org.apache.calcite.sql.SqlDialect;
 import org.apache.calcite.sql.SqlNode;
@@ -15,7 +16,7 @@ import javax.annotation.Nullable;
 public class SparkSqlConverter implements SqlConverter<String> {
 
     @Override
-    public String toEngineDDL(String sourceType, String catalog, @Nullable String database, String ddl)  {
+    public String toEngineDDL(DDLDialect dialect, String catalog, @Nullable String database, String ddl)  {
         SqlParser.Config sqlParserConfig = SqlParser.Config.DEFAULT
                 .withLex(Lex.ORACLE).withConformance(SqlConformanceEnum.ORACLE_12)
                 .withParserFactory(SqlDdlParserImpl.FACTORY);

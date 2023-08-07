@@ -1,5 +1,6 @@
 package cn.guruguru.datalink.converter.sql;
 
+import cn.guruguru.datalink.converter.enums.DDLDialect;
 import cn.guruguru.datalink.converter.sql.result.FlinkSqlConverterResult;
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,7 +16,8 @@ public class FlinkSqlConverterTest {
             + "\t\"TASKINTERVAL\" VARCHAR2(10) NOT NULL DEFAULT 0\n"
             + "   )";
         FlinkSqlConverter flinkSqlConverter = new FlinkSqlConverter();
-        FlinkSqlConverterResult actualResult = flinkSqlConverter.toEngineDDL("Oracle", "P1_CATALOG1", "DB1", createSQL);
+    FlinkSqlConverterResult actualResult =
+        flinkSqlConverter.toEngineDDL(DDLDialect.Oracle, "P1_CATALOG1", "DB1", createSQL);
         String actualDDL = actualResult.getDdl();
         String expectedDDL =
             "CREATE TABLE `P1_CATALOG1`.`ADM_BDPP`.`PARAMSYS` (\n"

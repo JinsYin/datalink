@@ -1,5 +1,6 @@
 package cn.guruguru.datalink.converter.sql;
 
+import cn.guruguru.datalink.converter.enums.DDLDialect;
 import org.junit.Test;
 
 public class SparkSqlConverterTest {
@@ -16,6 +17,6 @@ public class SparkSqlConverterTest {
                 + "LASTUPDATEDDT TIMESTAMP(6)"
                 + ")";
         SparkSqlConverter sparkSqlConverter = new SparkSqlConverter();
-        sparkSqlConverter.toEngineDDL("Oracle", "p1_catalog1", null, createSQL);
+        sparkSqlConverter.toEngineDDL(DDLDialect.Oracle, "p1_catalog1", null, createSQL);
     }
 }
