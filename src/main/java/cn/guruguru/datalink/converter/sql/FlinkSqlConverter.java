@@ -10,6 +10,7 @@ import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
+import org.apache.flink.table.types.logical.LogicalType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +65,7 @@ public class FlinkSqlConverter implements SqlConverter {
             // construct field type for data source
             FieldFormat fieldFormat = constructFieldFormat(columnTypeName, columnTypeArgs);
             // convert to flink type
-            FieldFormat engineFieldFormat = flinkTypeConverter.toEngineType(OracleScanNode.TYPE, fieldFormat);
+            LogicalType engineFieldFormat = flinkTypeConverter.toEngineType(OracleScanNode.TYPE, fieldFormat);
             // construct to a flink column
             StringBuilder engineColumn = new StringBuilder(columnName);
             engineColumn.append(" ").append(engineFieldFormat);

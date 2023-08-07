@@ -293,7 +293,7 @@ public class FlinkSqlParser implements Parser {
             FieldRelation fieldRelation = fieldRelationMap.get(field.getName());
             FieldFormat fieldFormat = field.getFieldFormat();
             if (fieldRelation == null) {
-                String targetType = typeMapper.toEngineType(nodeType, fieldFormat).getType(); // TODO
+                String targetType = typeMapper.toEngineType(nodeType, fieldFormat).asSummaryString();
                 sb.append("\n    CAST(NULL as ").append(targetType).append(") AS ").append(field.format()).append(",");
                 continue;
             }
@@ -312,12 +312,12 @@ public class FlinkSqlParser implements Parser {
                 if (complexType || sameType || fieldFormat == null) {
                     sb.append("\n    ").append(inputField.format()).append(" AS ").append(field.format()).append(",");
                 } else {
-                    String targetType = typeMapper.toEngineType(nodeType, fieldFormat).getType();
+                    String targetType = typeMapper.toEngineType(nodeType, fieldFormat).asSummaryString();
                     sb.append("\n    CAST(").append(inputField.format()).append(" as ")
                             .append(targetType).append(") AS ").append(field.format()).append(",");
                 }
             } else {
-                String targetType = typeMapper.toEngineType(nodeType, field.getFieldFormat()).getType();
+                String targetType = typeMapper.toEngineType(nodeType, field.getFieldFormat()).asSummaryString();
                 sb.append("\n    CAST(").append(inputField.format()).append(" as ")
                         .append(targetType).append(") AS ").append(field.format()).append(",");
             }
@@ -473,7 +473,7 @@ public class FlinkSqlParser implements Parser {
                 }
                 sb.append(metadataNode.format(metaFieldInfo.getMetaKey()));
             } else {
-                sb.append(typeMapper.toEngineType(nodeType, field.getFieldFormat()).getType());
+                sb.append(typeMapper.toEngineType(nodeType, field.getFieldFormat()).asSummaryString());
             }
             sb.append(",\n");
         }

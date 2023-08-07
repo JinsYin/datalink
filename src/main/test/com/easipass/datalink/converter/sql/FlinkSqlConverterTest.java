@@ -21,10 +21,10 @@ public class FlinkSqlConverterTest {
         String actual = flinkSqlConverter.toEngineDDL("Oracle", createSQL);
         String expected =
             "CREATE TABLE ADM_BDPP.SPARK_PARAM (\n"
-                + "    ID DECIMAL(20,0) NOT NULL,\n"
+                + "    ID DECIMAL(20, 0) NOT NULL,\n"
                 + "    APP_NAME STRING,\n"
-                + "    SRC_ID DECIMAL(20,0),\n"
-                + "    TGT_ID DECIMAL(20,0),\n"
+                + "    SRC_ID DECIMAL(20, 0),\n"
+                + "    TGT_ID DECIMAL(20, 0),\n"
                 + "    APP_FUNC STRING,\n"
                 + "    CONTENT BYTES,\n"
                 + "    LASTUPDATEDDT TIMESTAMP(6)\n"

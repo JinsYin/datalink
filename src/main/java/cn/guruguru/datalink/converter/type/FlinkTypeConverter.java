@@ -7,6 +7,7 @@ import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
 import cn.guruguru.datalink.protocol.node.load.LakehouseLoadNode;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.flink.table.types.logical.ArrayType;
 import org.apache.flink.table.types.logical.BigIntType;
 import org.apache.flink.table.types.logical.BooleanType;
 import org.apache.flink.table.types.logical.DateType;
@@ -15,6 +16,9 @@ import org.apache.flink.table.types.logical.DoubleType;
 import org.apache.flink.table.types.logical.FloatType;
 import org.apache.flink.table.types.logical.IntType;
 import org.apache.flink.table.types.logical.LocalZonedTimestampType;
+import org.apache.flink.table.types.logical.LogicalType;
+import org.apache.flink.table.types.logical.MapType;
+import org.apache.flink.table.types.logical.RowType;
 import org.apache.flink.table.types.logical.SmallIntType;
 import org.apache.flink.table.types.logical.TimeType;
 import org.apache.flink.table.types.logical.TimestampType;
@@ -23,7 +27,9 @@ import org.apache.flink.table.types.logical.VarBinaryType;
 import org.apache.flink.table.types.logical.VarCharType;
 import org.apache.flink.table.types.logical.ZonedTimestampType;
 
-public class FlinkTypeConverter implements TypeConverter {
+import java.util.Collections;
+
+public class FlinkTypeConverter implements TypeConverter<LogicalType> {
 
     /**
      * Derive the engine type for the given datasource field type
@@ -33,7 +39,7 @@ public class FlinkTypeConverter implements TypeConverter {
      * @param fieldFormat source field
      */
     @Override
-    public FieldFormat toEngineType(String nodeType, FieldFormat fieldFormat) {
+    public LogicalType toEngineType(String nodeType, FieldFormat fieldFormat) {
         switch (nodeType) {
             case MySqlScanNode.TYPE:
                 return convertMysqlType(fieldFormat);
@@ -57,53 +63,53 @@ public class FlinkTypeConverter implements TypeConverter {
      * @param fieldFormat mysql field format
      * @return Flink SQL Field Type
      */
-    private FieldFormat convertMysqlType(FieldFormat fieldFormat) {
+    private LogicalType convertMysqlType(FieldFormat fieldFormat) {
         String fieldType = StringUtils.upperCase(fieldFormat.getType());
         Integer precision = fieldFormat.getPrecision();
         Integer scale = fieldFormat.getScale();
         switch (fieldType) {
             case "TINYINT":
                 if (precision == 1) { // TINYINT(1)
-                    return new FieldFormat(new BooleanType().asSummaryString(), null, null);
+                    return new BooleanType();
                 } else {
-                    return new FieldFormat(new TinyIntType().asSummaryString(), null, null);
+                    return new TinyIntType();
                 }
             case "SMALLINT":
             case "TINYINT UNSIGNED":
-                return new FieldFormat(new SmallIntType().asSummaryString(), null, null);
+                return new SmallIntType();
             case "INT":
             case "MEDIUMINT":
             case "SMALLINT UNSIGNED":
-                return new FieldFormat(new IntType().asSummaryString(), null, null);
+                return new IntType();
             case "BIGINT":
             case "INT UNSIGNED": // TODO
-                return new FieldFormat(new BigIntType().asSummaryString(), null, null);
+                return new BigIntType();
             case "BIGINT UNSIGNED": // TODO
-                return new FieldFormat(new DecimalType().asSummaryString(), 20, 0);
+                return new DecimalType(20, 0);
             case "FLOAT":
-                return new FieldFormat(new FloatType().asSummaryString(), null, null);
+                return new FloatType();
             case "DOUBLE":
             case "DOUBLE PRECISION":
-                return new FieldFormat(new DoubleType().asSummaryString(), 20, 0);
+                return new DoubleType();
             case "NUMERIC": // NUMERIC(p, s)
             case "DECIMAL": // DECIMAL(p, s)
-                return new FieldFormat(new DecimalType().asSummaryString(), precision, scale);
+                return new DecimalType(precision, scale);
             case "BOOLEAN": // TINYINT(1)
-                return new FieldFormat(new BooleanType().asSummaryString(), null, null);
+                return new BooleanType();
             case "DATE":
-                return new FieldFormat(new DateType().asSummaryString(), null, null);
+                return new DateType();
             case "TIME": // TIME [(p)]
-                return new FieldFormat(new TimeType().asSummaryString(), precision, null); // TIME [(p)] [WITHOUT TIMEZONE]
+                return new TimeType(precision); // TIME [(p)] [WITHOUT TIMEZONE]
             case "DATETIME": // DATETIME [(p)]
-                return new FieldFormat(new TimestampType().asSummaryString(), precision, null); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
+                return new TimestampType(precision); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
             case "CHAR": // CHAR(n)
             case "VARCHAR": // VARCHAR(n)
             case "TEXT":
-                return new FieldFormat(new VarCharType(VarCharType.MAX_LENGTH).asSummaryString(), null, null); // STRING
+                return VarCharType.STRING_TYPE; // STRING
             case "BINARY":
             case "VARBINARY":
             case "BLOB":
-                return new FieldFormat(new VarBinaryType(VarBinaryType.MAX_LENGTH).asSummaryString(), null, null); // BYTES
+                return new VarBinaryType(VarBinaryType.MAX_LENGTH); // BYTES
             default:
                 throw new UnsupportedOperationException("Unsupported MySQL data type:" + fieldType);
         }
@@ -117,33 +123,33 @@ public class FlinkTypeConverter implements TypeConverter {
      * @param fieldFormat Oracle Field Type
      * @return Flink SQL Field Type
      */
-    private FieldFormat convertOracleType(FieldFormat fieldFormat) {
+    private LogicalType convertOracleType(FieldFormat fieldFormat) {
         String fieldType = StringUtils.upperCase(fieldFormat.getType());
         Integer precision = fieldFormat.getPrecision();
         Integer scale = fieldFormat.getScale();
         switch (fieldType) {
             case "BINARY_FLOAT":
-                return new FieldFormat(new FloatType().asSummaryString(), null, null);
+                return new FloatType();
             case "BINARY_DOUBLE":
-                return new FieldFormat(new DoubleType().asSummaryString(), null, null);
+                return new DoubleType();
             case "SMALLINT":
             case "FLOAT": // FLOAT(s)
             case "DOUBLE PRECISION":
             case "REAL":
             case "NUMBER": // NUMBER(p, s)
-                return new FieldFormat(new DecimalType().getTypeRoot().name(), precision, scale);
+                return new DecimalType(precision, scale);
             case "DATE":
-                return new FieldFormat(new DateType().asSummaryString(), null, null);
+                return new DateType();
             case "TIMESTAMP": // TODO: TIMESTAMP [(p)] [WITHOUT TIMEZONE]
-                return new FieldFormat(new TimestampType(precision).asSerializableString(), precision, null); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
+                return new TimestampType(precision); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
             case "CHAR": // CHAR(n)
             case "VARCHAR": // VARCHAR(n)
             case "VARCHAR2": // it is not mentioned in the Flink document
             case "CLOB":
-                return new FieldFormat(new VarCharType(VarCharType.MAX_LENGTH).asSummaryString(), null, null);
+                return VarCharType.STRING_TYPE;
             case "RAW": // RAW(s)
             case "BLOB":
-                return new FieldFormat(new VarBinaryType(VarBinaryType.MAX_LENGTH).asSummaryString(), null, null);
+                return new VarBinaryType(VarBinaryType.MAX_LENGTH);
             default:
                 throw new UnsupportedOperationException("Unsupported Oracle data type:" + fieldType);
         }
@@ -156,42 +162,42 @@ public class FlinkTypeConverter implements TypeConverter {
      * @param fieldFormat Oracle CDC Field Type
      * @return Flink SQL Field Type
      */
-    private FieldFormat convertOracleCdcType(FieldFormat fieldFormat) {
+    private LogicalType convertOracleCdcType(FieldFormat fieldFormat) {
         String fieldType = StringUtils.upperCase(fieldFormat.getType());
         Integer precision = fieldFormat.getPrecision();
         Integer scale = fieldFormat.getScale();
         switch (fieldType) {
             case "NUMBER":
                 if (precision == 1) { // NUMBER(1)
-                    return new FieldFormat(new BooleanType().asSummaryString(), null, null);
+                    return new BooleanType();
                 } else if (scale <= 0 && precision - scale < 3) { // NUMBER(p, s <= 0), p - s < 3
-                    return new FieldFormat(new TinyIntType().asSummaryString(), null, null);
+                    return new TinyIntType();
                 } else if (scale <= 0 && precision - scale < 5) { // NUMBER(p, s <= 0), p - s < 5
-                    return new FieldFormat(new SmallIntType().asSummaryString(), null, null);
+                    return new SmallIntType();
                 } else if (scale <= 0 && precision - scale < 10) { // NUMBER(p, s <= 0), p - s < 10
-                    return new FieldFormat(new IntType().asSummaryString(), null, null);
+                    return new IntType();
                 } else if (scale <= 0 && precision - scale < 19) { // NUMBER(p, s <= 0), p - s < 19
-                    return new FieldFormat(new BigIntType().asSummaryString(), null, null);
+                    return new BigIntType();
                 } else if (scale > 0 && precision - scale >= 19 && precision - scale <= 38) { // NUMBER(p, s <= 0), 19 <= p - s <= 38
-                    return new FieldFormat(new DecimalType().asSummaryString(), precision - scale, 0);
+                    return new DecimalType(precision - scale, 0);
                 } else if (scale <= 0 && precision - scale > 38) { // NUMBER(p, s <= 0), p - s > 38
-                    return new FieldFormat(new VarCharType(VarCharType.MAX_LENGTH).asSummaryString(), null, null);
+                    return new VarCharType(VarCharType.MAX_LENGTH);
                 } else if (scale > 0) { // NUMBER(p, s > 0)
-                    return new FieldFormat(new DecimalType().asSummaryString(), precision, scale);
+                    return new DecimalType(precision, scale);
                 }
             case "FLOAT":
             case "BINARY_FLOAT":
-                return new FieldFormat(new FloatType().asSummaryString(), null, null);
+                return new FloatType();
             case "DOUBLE PRECISION":
             case "BINARY_DOUBLE":
-                return new FieldFormat(new DecimalType().asSummaryString(), null, null);
+                return new DecimalType();
             case "DATE":
             case "TIMESTAMP": // TIMESTAMP [(p)]
-                return new FieldFormat(new TimestampType().asSummaryString(), precision, null); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
+                return new TimestampType(precision); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
             case "TIMESTAMP [(p)] WITH TIME ZONE": // TODO
-                return new FieldFormat(new ZonedTimestampType().asSummaryString(), precision, null); // TIMESTAMP [(p)] WITH TIME ZONE
+                return new ZonedTimestampType(precision); // TIMESTAMP [(p)] WITH TIME ZONE
             case "TIMESTAMP [(p)] WITH LOCAL TIME ZONE": // TODO
-                return new FieldFormat(new LocalZonedTimestampType().asSummaryString(), precision, null); // TIMESTAMP_LTZ [(p)]
+                return new LocalZonedTimestampType(precision); // TIMESTAMP_LTZ [(p)]
             case "CHAR": // CHAR(n)
             case "NCHAR": // NCHAR(n)
             case "NVARCHAR2": // NVARCHAR2(n)
@@ -201,13 +207,13 @@ public class FlinkTypeConverter implements TypeConverter {
             case "NCLOB":
             case "XMLType":
             case "SYS.XMLTYPE":
-                return new FieldFormat(new VarCharType(VarCharType.MAX_LENGTH).asSummaryString(), null, null);
+                return VarCharType.STRING_TYPE;
             case "BLOB":
             case "ROWID":
-                return new FieldFormat(new VarBinaryType(VarBinaryType.MAX_LENGTH).asSummaryString(), null, null);
+                return new VarBinaryType(VarBinaryType.MAX_LENGTH);
             case "INTERVAL DAY TO SECOND":
             case "INTERVAL YEAR TO MONTH":
-                return new FieldFormat(new BigIntType().asSummaryString(), null, null);
+                return new BigIntType();
             default:
                 throw new UnsupportedOperationException("Unsupported Oracle CDC data type:" + fieldType);
         }
@@ -220,43 +226,43 @@ public class FlinkTypeConverter implements TypeConverter {
    * @param fieldFormat Arctic Mixed Iceberg Field Type
    * @return Flink SQL Field Type
    */
-  private FieldFormat convertArcticMixedIcebergType(FieldFormat fieldFormat) {
+  private LogicalType convertArcticMixedIcebergType(FieldFormat fieldFormat) {
       String fieldType = StringUtils.upperCase(fieldFormat.getType());
       Integer precision = fieldFormat.getPrecision();
       Integer scale = fieldFormat.getScale();
       switch (fieldType) {
           case "STRING":
-              return new FieldFormat(new VarCharType(VarCharType.MAX_LENGTH).asSummaryString(), null, null);
+              return VarCharType.STRING_TYPE;
           case "BOOLEAN":
-              return new FieldFormat(new BooleanType().asSummaryString(), null, null);
+              return new BooleanType();
           case "INT":
-              return new FieldFormat(new IntType().asSummaryString(), null, null);
+              return new IntType();
           case "LONG":
-              return new FieldFormat(new BigIntType().asSummaryString(), null, null);
+              return new BigIntType();
           case "FLOAT":
-              return new FieldFormat(new FloatType().asSummaryString(), null, null);
+              return new FloatType();
           case "DOUBLE":
-              return new FieldFormat(new DoubleType().asSummaryString(), null, null);
+              return new DoubleType();
           case "DECIMAL": // DECIMAL(p, s)
-              return new FieldFormat(new DecimalType().asSummaryString(), precision, scale);
+              return new DecimalType(precision, scale);
           case "DATE":
-              return new FieldFormat(new DateType().asSummaryString(), null, null);
+              return new DateType();
           case "TIMESTAMP":
-              return new FieldFormat(new TimestampType().asSummaryString(), TimestampType.DEFAULT_PRECISION, null); // TIMESTAMP(6)
+              return new TimestampType(TimestampType.DEFAULT_PRECISION); // TIMESTAMP(6)
           case "TIMESTAMPTZ":
-              return new FieldFormat(new LocalZonedTimestampType().asSerializableString(), TimestampType.DEFAULT_PRECISION, null); // TIMESTAMP(6) WITH LCOAL TIME ZONE
+              return new LocalZonedTimestampType(TimestampType.DEFAULT_PRECISION); // TIMESTAMP(6) WITH LCOAL TIME ZONE
           case "FIXED": // FIXED(p)
-              return new FieldFormat(new VarBinaryType(VarBinaryType.MAX_LENGTH).asSummaryString(), precision, null); // BINARY(p)
+              return new VarBinaryType(precision); // BINARY(p)
           case "UUID":
-              return new FieldFormat(new VarBinaryType(VarBinaryType.MAX_LENGTH).asSummaryString(), 16, null); // BINARY(16)
-          case "BINARY":
-              return new FieldFormat(new VarBinaryType(VarBinaryType.MAX_LENGTH).asSummaryString(), null, null);
+              return new VarBinaryType(16); // BINARY(16)
+          case "BINARY": // TODO ?
+              return new VarBinaryType(precision);
           case "ARRAY": // TODO
-              return new FieldFormat("ARRAY", null, null);
+              return new ArrayType(VarCharType.STRING_TYPE);
           case "MAP": // TODO
-              return new FieldFormat("MAP", null, null); // or: MULTISET
+              return new MapType(VarCharType.STRING_TYPE, VarCharType.STRING_TYPE); // or: MULTISET
           case "STRUCT": // TODO
-              return new FieldFormat("ROW", null, null);
+              return new RowType(Collections.emptyList());
           default:
               throw new UnsupportedOperationException("Unsupported Lakehouse data type:" + fieldType);
         }

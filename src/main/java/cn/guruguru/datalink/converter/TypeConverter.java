@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * Type converter interface
  */
-public interface TypeConverter extends Serializable {
+public interface TypeConverter<T> extends Serializable {
     /**
      * Converts field type
      *
@@ -16,5 +16,5 @@ public interface TypeConverter extends Serializable {
      * @param fieldFormat source field
      * @return engine field
      */
-    FieldFormat toEngineType(String nodeType, FieldFormat fieldFormat);
+    T toEngineType(String nodeType, FieldFormat fieldFormat);
 }
