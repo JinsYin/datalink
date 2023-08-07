@@ -1,5 +1,6 @@
 package cn.guruguru.datalink.converter.sql;
 
+import cn.guruguru.datalink.converter.sql.result.FlinkSqlConverterResult;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,18 +15,15 @@ public class FlinkSqlConverterTest {
             + "\t\"TASKINTERVAL\" VARCHAR2(10) NOT NULL DEFAULT 0\n"
             + "   )";
         FlinkSqlConverter flinkSqlConverter = new FlinkSqlConverter();
-        String actual = flinkSqlConverter.toEngineDDL("Oracle", "p1_catalog1", "db1", createSQL);
-        String expected =
-            "CREATE TABLE ADM_BDPP.SPARK_PARAM (\n"
-                + "    ID DECIMAL(20, 0) NOT NULL,\n"
-                + "    APP_NAME STRING,\n"
-                + "    SRC_ID DECIMAL(20, 0),\n"
-                + "    TGT_ID DECIMAL(20, 0),\n"
-                + "    APP_FUNC STRING,\n"
-                + "    CONTENT BYTES,\n"
-                + "    LASTUPDATEDDT TIMESTAMP(6)\n"
+        FlinkSqlConverterResult actualResult = flinkSqlConverter.toEngineDDL("Oracle", "P1_CATALOG1", "DB1", createSQL);
+        String actualDDL = actualResult.getDdl();
+        String expectedDDL =
+            "CREATE TABLE `P1_CATALOG1`.`ADM_BDPP`.`PARAMSYS` (\n"
+                + "    \"PARAM_SEQUENCE\" DECIMAL(15, 0) NOT NULL,\n"
+                + "    \"TASKNAME\" STRING NOT NULL,\n"
+                + "    \"TASKINTERVAL\" STRING NOT NULL\n"
                 + ")";
-        System.out.println(actual);
-        Assert.assertEquals(expected, actual);
+        System.out.println(actualDDL);
+        Assert.assertEquals(expectedDDL, actualDDL);
     }
 }

@@ -1,6 +1,7 @@
 package cn.guruguru.datalink.converter.sql;
 
 import cn.guruguru.datalink.converter.SqlConverter;
+import cn.guruguru.datalink.converter.sql.result.FlinkSqlConverterResult;
 import cn.guruguru.datalink.converter.type.FlinkTypeConverter;
 import cn.guruguru.datalink.protocol.field.FieldFormat;
 import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-public class FlinkSqlConverter implements SqlConverter {
+public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> {
 
     private static final FlinkTypeConverter flinkTypeConverter = new FlinkTypeConverter();
 
@@ -29,7 +30,7 @@ public class FlinkSqlConverter implements SqlConverter {
      * @param ddl DDL SQL from Data Source
      */
     @Override
-    public String toEngineDDL(String dialect, String catalog, @Nullable String database, String ddl) {
+    public FlinkSqlConverterResult toEngineDDL(String dialect, String catalog, @Nullable String database, String ddl) {
         Preconditions.checkNotNull(dialect,"sourceType is required");
         Preconditions.checkNotNull(catalog,"catalog is required");
         Preconditions.checkNotNull(ddl,"ddl is required");
@@ -46,28 +47,28 @@ public class FlinkSqlConverter implements SqlConverter {
             log.error("parse CREATE TABLE SQL error:{}", ddl);
             throw new RuntimeException(e);
         }
-        String engineDDL;
+        FlinkSqlConverterResult result;
         switch (dialect) {
             case "Oracle":
-                engineDDL = convertOracleType(catalog, database, createTable);
+                result = convertOracleType(catalog, database, createTable);
                 break;
             default:
                 throw new UnsupportedOperationException("Unsupported data source type:" + dialect);
         }
         log.info("end parse {} DDL:{}", dialect, ddl);
-        return engineDDL;
+        return result;
     }
 
-    private String convertOracleType(String catalog, @Nullable String database, CreateTable createTable) {
+    private FlinkSqlConverterResult convertOracleType(String catalog, @Nullable String database, CreateTable createTable) {
         String tableName = createTable.getTable().getName().replaceAll("\"", "");
-        String schemaName = createTable.getTable().getSchemaName();
-        Preconditions.checkState(database != null || schemaName != null,"database is required");
-        if (schemaName != null) {
-            schemaName = schemaName.replaceAll("\"", "");
+        String databaseName = createTable.getTable().getSchemaName();
+        Preconditions.checkState(database != null || databaseName != null,"database is required");
+        if (databaseName != null) {
+            databaseName = databaseName.replaceAll("\"", "");
         } else {
-            schemaName = database;
+            databaseName = database;
         }
-        String tableIdentifier = String.format("`%s`.`%s`.`%s`", catalog, schemaName, tableName);
+        String tableIdentifier = String.format("`%s`.`%s`.`%s`", catalog, databaseName, tableName);
         List<String> flinkColumns = new ArrayList<>(createTable.getColumnDefinitions().size());
         for(ColumnDefinition col: createTable.getColumnDefinitions())
         {
@@ -83,16 +84,16 @@ public class FlinkSqlConverter implements SqlConverter {
             engineColumn.append(" ").append(engineFieldFormat);
             if (col.getColumnSpecs() != null) {
                 String columnSpec = String.join(" ", col.getColumnSpecs());
-                // format for Oracle
-                columnSpec = columnSpec.replaceAll("\\sDEFAULT\\s(\\d)+", ""); // remove DEFAULT keyword
+                // remove unnecessary keywords for Oracle
+                columnSpec = columnSpec.replaceAll("\\sDEFAULT\\s(\\S)+", ""); // remove DEFAULT keyword
                 engineColumn.append(" ").append(columnSpec);
             }
             flinkColumns.add(engineColumn.toString());
         }
         // generate `CREATE TABLE` statement
         String flinkDDL = generateFlinkDDL(tableIdentifier, flinkColumns);
-        log.info("generated spark ddl: {}", flinkDDL);
-        return flinkDDL;
+        log.info("generated flink ddl: {}", flinkDDL);
+        return new FlinkSqlConverterResult(catalog, databaseName, tableName, flinkDDL);
     }
 
     /**

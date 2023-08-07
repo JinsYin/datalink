@@ -12,7 +12,7 @@ import org.apache.calcite.sql.validate.SqlConformanceEnum;
 
 import javax.annotation.Nullable;
 
-public class SparkSqlConverter implements SqlConverter {
+public class SparkSqlConverter implements SqlConverter<String> {
 
     @Override
     public String toEngineDDL(String sourceType, String catalog, @Nullable String database, String ddl)  {
