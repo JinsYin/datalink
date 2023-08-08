@@ -19,7 +19,27 @@ public class FlinkSqlConverterResult implements SqlConverterResult {
     }
 
     @Override
+    public String getCatalogName() {
+        return this.catalog;
+    }
+
+    @Override
+    public String getDatabaseName() {
+        return this.database;
+    }
+
+    @Override
+    public String getTableName() {
+        return this.table;
+    }
+
+    @Override
     public String getTableIdentifier() {
         return String.format("`%s`.`%s`.`%s`", catalog, database, table);
+    }
+
+    @Override
+    public String getConverterResult() {
+        return this.ddl;
     }
 }
