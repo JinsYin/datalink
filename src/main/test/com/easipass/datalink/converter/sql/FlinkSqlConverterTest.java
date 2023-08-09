@@ -13,7 +13,7 @@ public class FlinkSqlConverterTest {
         "CREATE TABLE \"ADM_BDPP\".\"PARAMSYS\" \n"
             + "   (\t\"PARAM_SEQUENCE\" NUMBER(15,0) NOT NULL ENABLE, \n"
             + "  TASKNAME VARCHAR2(50) NOT NULL DEFAULT '123', \n"
-            + "\t\"TASKINTERVAL\" VARCHAR2(10) NOT NULL DEFAULT 0\n"
+            + "\t\"TASKINTERVAL\" VARCHAR2(10 CHAR) NOT NULL DEFAULT 0\n"
             + "   )";
         FlinkSqlConverter flinkSqlConverter = new FlinkSqlConverter();
     FlinkSqlConverterResult actualResult =

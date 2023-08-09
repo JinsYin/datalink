@@ -12,11 +12,14 @@ import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.table.types.logical.LogicalType;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> {
@@ -111,10 +114,25 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
         Integer scale = null;
         if (columnTypeArgs != null) {
             if (columnTypeArgs.size() == 1){
-                precision = Integer.valueOf(columnTypeArgs.get(0));
-            } else if (columnTypeArgs.size() == 2){
-                precision = Integer.valueOf(columnTypeArgs.get(0));
-                scale = Integer.valueOf(columnTypeArgs.get(1));
+                String arg0 = columnTypeArgs.get(0);
+                if (StringUtils.isNumeric(arg0)) {
+                    precision = Integer.valueOf(columnTypeArgs.get(0));
+                } else if (Pattern.matches("\\d+\\s.+", arg0)) { // Oracle: VARCHAR(32 CHAR)
+                    Matcher matcher = Pattern.compile("(\\d+)\\s.+").matcher(arg0);
+                    if (matcher.find()) {
+                        String number = matcher.group(1);
+                        precision = Integer.valueOf(number);
+                    }
+                }
+            } else if (columnTypeArgs.size() == 2) {
+                String arg0 = columnTypeArgs.get(0);
+                String arg1 = columnTypeArgs.get(1);
+                if (StringUtils.isNumeric(arg0)) {
+                    precision = Integer.valueOf(arg0);
+                }
+                if (StringUtils.isNumeric(arg1)) {
+                    scale = Integer.valueOf(arg1);
+                }
             }
         }
         return new FieldFormat(columnTypeName, precision, scale);
