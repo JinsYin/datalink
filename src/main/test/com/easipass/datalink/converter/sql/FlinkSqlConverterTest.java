@@ -18,7 +18,7 @@ public class FlinkSqlConverterTest {
         FlinkSqlConverter flinkSqlConverter = new FlinkSqlConverter();
     FlinkSqlConverterResult actualResult =
         flinkSqlConverter.toEngineDDL(DDLDialect.Oracle, "P1_CATALOG1", "DB1", createSQL);
-        String actualDDL = actualResult.getDdl();
+        String actualDDL = actualResult.getConverterResult();
         String expectedDDL =
             "CREATE TABLE `P1_CATALOG1`.`ADM_BDPP`.`PARAMSYS` (\n"
                 + "    `PARAM_SEQUENCE` DECIMAL(15, 0) NOT NULL,\n"

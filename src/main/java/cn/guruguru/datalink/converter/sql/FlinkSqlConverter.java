@@ -43,8 +43,9 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
         log.info("start parse {} DDL:{}", dialect, ddl);
         CreateTable createTable;
         try {
-            // remove ENABLE keyword for Oracle
-            ddl = ddl.replaceAll("\\sENABLE", "");
+            // remove some keywords and clauses for Oracle
+            ddl = ddl.replaceAll("\\sENABLE", "")
+                    .replaceAll("USING INDEX ", "");
             createTable = (CreateTable) CCJSqlParserUtil.parse(ddl);
         } catch (JSQLParserException e) {
             log.error("parse CREATE TABLE SQL error:{}", ddl);
