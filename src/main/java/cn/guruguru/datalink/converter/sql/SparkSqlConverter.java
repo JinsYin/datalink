@@ -16,7 +16,8 @@ import javax.annotation.Nullable;
 public class SparkSqlConverter implements SqlConverter<String> {
 
     @Override
-    public String toEngineDDL(DDLDialect dialect, String catalog, @Nullable String database, String ddl)  {
+    public String toEngineDDL(DDLDialect dialect, String catalog, @Nullable String database, String ddl)
+            throws RuntimeException  {
         SqlParser.Config sqlParserConfig = SqlParser.Config.DEFAULT
                 .withLex(Lex.ORACLE).withConformance(SqlConformanceEnum.ORACLE_12)
                 .withParserFactory(SqlDdlParserImpl.FACTORY);

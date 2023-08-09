@@ -31,12 +31,14 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
      * @param ddl DDL SQL from Data Source
      */
     @Override
-    public FlinkSqlConverterResult toEngineDDL(DDLDialect dialect, String catalog, @Nullable String database, String ddl) {
+    public FlinkSqlConverterResult toEngineDDL(DDLDialect dialect, String catalog, @Nullable String database, String ddl)
+            throws RuntimeException {
         Preconditions.checkNotNull(dialect,"dialect is required");
         Preconditions.checkNotNull(catalog,"catalog is required");
         Preconditions.checkNotNull(ddl,"ddl is required");
         if (!ddl.trim().toUpperCase().startsWith("CREATE TABLE")) {
-            throw new UnsupportedOperationException("Only support CREATE TABLE statement:" + ddl);
+            log.info("Only support CREATE TABLE statement, submitted statement:" + ddl);
+            throw new UnsupportedOperationException("Only support CREATE TABLE statement, submitted statement:" + ddl);
         }
         log.info("start parse {} DDL:{}", dialect, ddl);
         CreateTable createTable;

@@ -17,5 +17,5 @@ public interface SqlConverter<T> extends Serializable {
      * @param database database
      * @param ddl DDL SQL from Data Source
      */
-    T toEngineDDL(DDLDialect dialect, String catalog, @Nullable String database, String ddl) throws JSQLParserException, SqlParseException;
+    T toEngineDDL(DDLDialect dialect, String catalog, @Nullable String database, String ddl) throws RuntimeException;
 }
