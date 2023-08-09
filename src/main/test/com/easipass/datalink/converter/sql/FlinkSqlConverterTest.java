@@ -12,7 +12,7 @@ public class FlinkSqlConverterTest {
     String createSQL =
         "CREATE TABLE \"ADM_BDPP\".\"PARAMSYS\" \n"
             + "   (\t\"PARAM_SEQUENCE\" NUMBER(15,0) NOT NULL ENABLE, \n"
-            + "\t\"TASKNAME\" VARCHAR2(50) NOT NULL DEFAULT '123', \n"
+            + "  TASKNAME VARCHAR2(50) NOT NULL DEFAULT '123', \n"
             + "\t\"TASKINTERVAL\" VARCHAR2(10) NOT NULL DEFAULT 0\n"
             + "   )";
         FlinkSqlConverter flinkSqlConverter = new FlinkSqlConverter();
@@ -21,10 +21,10 @@ public class FlinkSqlConverterTest {
         String actualDDL = actualResult.getDdl();
         String expectedDDL =
             "CREATE TABLE `P1_CATALOG1`.`ADM_BDPP`.`PARAMSYS` (\n"
-                + "    \"PARAM_SEQUENCE\" DECIMAL(15, 0) NOT NULL,\n"
-                + "    \"TASKNAME\" STRING NOT NULL,\n"
-                + "    \"TASKINTERVAL\" STRING NOT NULL\n"
-                + ")";
+                + "    `PARAM_SEQUENCE` DECIMAL(15, 0) NOT NULL,\n"
+                + "    `TASKNAME` STRING NOT NULL,\n"
+                + "    `TASKINTERVAL` STRING NOT NULL\n"
+                + ");";
         System.out.println(actualDDL);
         Assert.assertEquals(expectedDDL, actualDDL);
     }

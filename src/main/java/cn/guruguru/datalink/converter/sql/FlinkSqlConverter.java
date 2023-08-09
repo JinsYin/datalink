@@ -62,27 +62,28 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
 
     private FlinkSqlConverterResult convertOracleType(String catalog, @Nullable String database, CreateTable createTable) {
         String tableName = createTable.getTable().getName().replaceAll("\"", "");
-        String databaseName = createTable.getTable().getSchemaName();
-        Preconditions.checkState(database != null || databaseName != null,"database is required");
-        if (databaseName != null) {
-            databaseName = databaseName.replaceAll("\"", "");
+        String ddlDatabase = createTable.getTable().getSchemaName();
+        Preconditions.checkState(database != null || ddlDatabase != null,"database is required");
+        if (ddlDatabase != null) {
+            ddlDatabase = ddlDatabase.replaceAll("\"", "");
         } else {
-            databaseName = database;
+            ddlDatabase = database;
         }
-        String tableIdentifier = String.format("`%s`.`%s`.`%s`", catalog, databaseName, tableName);
+        String tableIdentifier = String.format("`%s`.`%s`.`%s`", catalog, ddlDatabase, tableName);
         List<String> flinkColumns = new ArrayList<>(createTable.getColumnDefinitions().size());
         for(ColumnDefinition col: createTable.getColumnDefinitions())
         {
-            String columnName = col.getColumnName();
+            String columnName = col.getColumnName().replaceAll("\"", ""); // remove double quotes for oracle column
             String columnTypeName = col.getColDataType().getDataType();
             List<String> columnTypeArgs = col.getColDataType().getArgumentsStringList();
             // construct field type for data source
             FieldFormat fieldFormat = constructFieldFormat(columnTypeName, columnTypeArgs);
             // convert to flink type
-            LogicalType engineFieldFormat = flinkTypeConverter.toEngineType(OracleScanNode.TYPE, fieldFormat);
+            LogicalType engineFieldType = flinkTypeConverter.toEngineType(OracleScanNode.TYPE, fieldFormat);
             // construct to a flink column
-            StringBuilder engineColumn = new StringBuilder(columnName);
-            engineColumn.append(" ").append(engineFieldFormat);
+            StringBuilder engineColumn = new StringBuilder();
+            engineColumn.append("`").append(columnName).append("`");
+            engineColumn.append(" ").append(engineFieldType);
             if (col.getColumnSpecs() != null) {
                 String columnSpec = String.join(" ", col.getColumnSpecs());
                 // remove unnecessary keywords for Oracle
@@ -91,10 +92,10 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
             }
             flinkColumns.add(engineColumn.toString());
         }
-        // generate `CREATE TABLE` statement
+        // generate CREATE TABLE statement
         String flinkDDL = generateFlinkDDL(tableIdentifier, flinkColumns);
-        log.info("generated flink ddl: {}", flinkDDL);
-        return new FlinkSqlConverterResult(catalog, databaseName, tableName, flinkDDL);
+        log.info("generated flink ddl: {}", flinkDDL.replaceAll("\\n", "").replaceAll("\\s{2,}", " ").trim());
+        return new FlinkSqlConverterResult(catalog, ddlDatabase, tableName, flinkDDL);
     }
 
     /**
@@ -129,7 +130,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
         for (String column : flinkColumns) {
             sb.append("    ").append(column).append(",\n");
         }
-        sb.deleteCharAt(sb.length() - 2).append(")");
+        sb.deleteCharAt(sb.length() - 2).append(");");
         return sb.toString();
     }
 }

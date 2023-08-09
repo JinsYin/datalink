@@ -4,17 +4,17 @@ public interface SqlConverterResult {
     /**
      * Get catalog name
      */
-    String getCatalogName();
+    String getCatalog();
 
     /**
      * Get database name
      */
-    String getDatabaseName();
+    String getDatabase();
 
     /**
      * Get table name
      */
-    String getTableName();
+    String getTable();
 
     /**
      * Get table identifier

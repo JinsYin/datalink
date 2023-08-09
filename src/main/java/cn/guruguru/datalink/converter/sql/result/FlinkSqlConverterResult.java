@@ -2,14 +2,12 @@ package cn.guruguru.datalink.converter.sql.result;
 
 import cn.guruguru.datalink.converter.SqlConverterResult;
 import com.google.common.base.Preconditions;
-import lombok.Data;
 
-@Data
 public class FlinkSqlConverterResult implements SqlConverterResult {
-    private String catalog;
-    private String database;
-    private String table;
-    private String ddl;
+    private final String catalog;
+    private final String database;
+    private final String table;
+    private final String ddl;
 
     public FlinkSqlConverterResult(String catalog, String database, String table, String ddl) {
         this.catalog = Preconditions.checkNotNull(catalog, "catalog is null");
@@ -19,17 +17,17 @@ public class FlinkSqlConverterResult implements SqlConverterResult {
     }
 
     @Override
-    public String getCatalogName() {
+    public String getCatalog() {
         return this.catalog;
     }
 
     @Override
-    public String getDatabaseName() {
+    public String getDatabase() {
         return this.database;
     }
 
     @Override
-    public String getTableName() {
+    public String getTable() {
         return this.table;
     }
 
