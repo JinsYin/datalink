@@ -4,6 +4,7 @@ import cn.guruguru.datalink.converter.SqlConverter;
 import cn.guruguru.datalink.converter.enums.DDLDialect;
 import cn.guruguru.datalink.converter.sql.result.FlinkSqlConverterResult;
 import cn.guruguru.datalink.converter.type.FlinkTypeConverter;
+import cn.guruguru.datalink.exception.SQLSyntaxException;
 import cn.guruguru.datalink.protocol.field.FieldFormat;
 import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
 import com.google.common.base.Preconditions;
@@ -57,7 +58,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
             }
         } catch (JSQLParserException e) {
             log.error("parse SQL error:{}", sqls);
-            throw new RuntimeException(e);
+            throw new SQLSyntaxException(e);
         }
         log.info("end parse {} SQL:{}", dialect, sqls);
         return results;
