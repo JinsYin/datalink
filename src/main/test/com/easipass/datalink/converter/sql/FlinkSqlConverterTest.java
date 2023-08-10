@@ -56,9 +56,9 @@ public class FlinkSqlConverterTest {
         String actualDDL = actualResults.get(0).getConverterResult();
         String expectedDDL =
                 "CREATE TABLE `P1_CATALOG1`.`API_OPER`.`EDG25_APP_MESSAGE` (\n"
-                        + "    `ID` STRING NOT NULL,\n"
-                        + "    `AID` STRING,\n"
-                        + "    `INFO` STRING\n"
+                        + "    `ID` STRING NOT NULL COMMENT '主键',\n"
+                        + "    `AID` STRING COMMENT 'appList主键',\n"
+                        + "    `INFO` STRING COMMENT '发送日期'\n"
                         + ");";
         System.out.println(actualDDL);
         Assert.assertEquals(expectedDDL, actualDDL);

@@ -13,6 +13,7 @@ import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.Statements;
+import net.sf.jsqlparser.statement.comment.Comment;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
 import org.apache.commons.lang3.StringUtils;
@@ -20,7 +21,9 @@ import org.apache.flink.table.types.logical.LogicalType;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,11 +51,18 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
             // remove some keywords and clauses for Oracle
             sqls = sqls.replaceAll("\\sENABLE", "")
                     .replaceAll("USING INDEX ", "");
+            Map<String, String> commentMap = new LinkedHashMap<>();
             Statements statements = CCJSqlParserUtil.parseStatements(sqls);
+            for (Statement statement : statements.getStatements()) {
+                if (statement instanceof Comment) {
+                    Comment comment = (Comment) statement;
+                    commentMap.put(comment.getColumn().getFullyQualifiedName(), comment.getComment().toString());
+                }
+            }
             for (Statement statement : statements.getStatements()) {
                 if (statement instanceof CreateTable) {
                     CreateTable createTable = (CreateTable) statement;
-                    FlinkSqlConverterResult result = parseCreateTable(dialect, catalog, database, createTable);
+                    FlinkSqlConverterResult result = parseCreateTable(dialect, catalog, database, createTable, commentMap);
                     results.add(result);
                 }
             }
@@ -65,11 +75,12 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
     }
 
     private FlinkSqlConverterResult parseCreateTable(
-            DDLDialect dialect, String catalog, String database, CreateTable createTable) {
+            DDLDialect dialect, String catalog, String database,
+            CreateTable createTable, @Nullable Map<String, String> commentMap) {
         FlinkSqlConverterResult result;
         switch (dialect.getNodeType()) {
             case OracleScanNode.TYPE:
-                result = convertOracleType(catalog, database, createTable);
+                result = convertOracleType(catalog, database, createTable, commentMap);
                 break;
             default:
                 throw new UnsupportedOperationException("Unsupported data source type:" + dialect);
@@ -77,7 +88,8 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
         return result;
     }
 
-    private FlinkSqlConverterResult convertOracleType(String catalog, @Nullable String database, CreateTable createTable) {
+    private FlinkSqlConverterResult convertOracleType(
+            String catalog, @Nullable String database, CreateTable createTable, Map<String, String> commentMap) {
         String tableName = createTable.getTable().getName().replaceAll("\"", "");
         String ddlDatabase = createTable.getTable().getSchemaName();
         Preconditions.checkState(database != null || ddlDatabase != null,"database is required");
@@ -91,6 +103,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
         for(ColumnDefinition col: createTable.getColumnDefinitions())
         {
             String columnName = col.getColumnName().replaceAll("\"", ""); // remove double quotes for oracle column
+            String columnFullName = String.format("\"%s\".\"%s\".\"%s\"", ddlDatabase, tableName, columnName); // for oracle comment
             String columnTypeName = col.getColDataType().getDataType();
             List<String> columnTypeArgs = col.getColDataType().getArgumentsStringList();
             // construct field type for data source
@@ -106,6 +119,9 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
                 // remove unnecessary keywords for Oracle
                 columnSpec = columnSpec.replaceAll("\\sDEFAULT\\s(\\S)+", ""); // remove DEFAULT keyword
                 engineColumn.append(" ").append(columnSpec);
+            }
+            if (commentMap != null && commentMap.get(columnFullName) != null) {
+                engineColumn.append(" COMMENT ").append(commentMap.get(columnFullName));
             }
             flinkColumns.add(engineColumn.toString());
         }
