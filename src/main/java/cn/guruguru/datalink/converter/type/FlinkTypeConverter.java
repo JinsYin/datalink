@@ -137,7 +137,13 @@ public class FlinkTypeConverter implements TypeConverter<LogicalType> {
             case "DOUBLE PRECISION":
             case "REAL":
             case "NUMBER": // NUMBER(p, s)
-                return new DecimalType(precision, scale);
+                if (precision != null && scale != null) {
+                    return new DecimalType(precision, scale);
+                } else if (precision != null) {
+                    return new DecimalType(precision);
+                } else {
+                    return new DecimalType();
+                }
             case "DATE":
                 return new DateType();
             case "TIMESTAMP": // TODO: TIMESTAMP [(p)] [WITHOUT TIMEZONE]
