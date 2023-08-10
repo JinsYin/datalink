@@ -12,24 +12,26 @@ import org.apache.calcite.sql.pretty.SqlPrettyWriter;
 import org.apache.calcite.sql.validate.SqlConformanceEnum;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.List;
 
 public class SparkSqlConverter implements SqlConverter<String> {
 
     @Override
-    public String toEngineDDL(DDLDialect dialect, String catalog, @Nullable String database, String ddl)
+    public List<String> toEngineDDL(DDLDialect dialect, String catalog, @Nullable String database, String sqls)
             throws RuntimeException  {
         SqlParser.Config sqlParserConfig = SqlParser.Config.DEFAULT
                 .withLex(Lex.ORACLE).withConformance(SqlConformanceEnum.ORACLE_12)
                 .withParserFactory(SqlDdlParserImpl.FACTORY);
 
-        SqlParser parser = SqlParser.create(ddl, sqlParserConfig);
+        SqlParser parser = SqlParser.create(sqls, sqlParserConfig);
         SqlNode sqlNode;
         try {
             sqlNode = parser.parseStmt();
         } catch (SqlParseException e) {
             throw new RuntimeException(e);
         }
-        return convertToSparkDDL(sqlNode);
+        return Arrays.asList(convertToSparkDDL(sqlNode));
     }
 
     private static String convertToSparkDDL(SqlNode sqlNode) {

@@ -10,6 +10,8 @@ import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.Statements;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
 import org.apache.commons.lang3.StringUtils;
@@ -31,29 +33,38 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
      *
      * @see <a href="https://techieshouts.com/home/parsing-sql-create-query-using-jsql-parser/">Parsing SQL CREATE query using JSQLParser</a>
      * @param dialect data source type
-     * @param ddl DDL SQL from Data Source
+     * @param sqls SQLs from Data Source, non CREATE-TABLE statements will be ignored
      */
     @Override
-    public FlinkSqlConverterResult toEngineDDL(DDLDialect dialect, String catalog, @Nullable String database, String ddl)
+    public List<FlinkSqlConverterResult> toEngineDDL(DDLDialect dialect, String catalog, @Nullable String database, String sqls)
             throws RuntimeException {
         Preconditions.checkNotNull(dialect,"dialect is required");
         Preconditions.checkNotNull(catalog,"catalog is required");
-        Preconditions.checkNotNull(ddl,"ddl is required");
-        if (!ddl.trim().toUpperCase().startsWith("CREATE TABLE")) {
-            log.info("Only support CREATE TABLE statement, submitted statement:" + ddl);
-            throw new UnsupportedOperationException("Only support CREATE TABLE statement, submitted statement:" + ddl);
-        }
-        log.info("start parse {} DDL:{}", dialect, ddl);
-        CreateTable createTable;
+        Preconditions.checkNotNull(sqls,"ddl is required");
+        log.info("start parse {} DDL:{}", dialect, sqls);
+        List<FlinkSqlConverterResult> results = new ArrayList<>();
         try {
             // remove some keywords and clauses for Oracle
-            ddl = ddl.replaceAll("\\sENABLE", "")
+            sqls = sqls.replaceAll("\\sENABLE", "")
                     .replaceAll("USING INDEX ", "");
-            createTable = (CreateTable) CCJSqlParserUtil.parse(ddl);
+            Statements statements = CCJSqlParserUtil.parseStatements(sqls);
+            for (Statement statement : statements.getStatements()) {
+                if (statement instanceof CreateTable) {
+                    CreateTable createTable = (CreateTable) statement;
+                    FlinkSqlConverterResult result = parseCreateTable(dialect, catalog, database, createTable);
+                    results.add(result);
+                }
+            }
         } catch (JSQLParserException e) {
-            log.error("parse CREATE TABLE SQL error:{}", ddl);
+            log.error("parse SQL error:{}", sqls);
             throw new RuntimeException(e);
         }
+        log.info("end parse {} SQL:{}", dialect, sqls);
+        return results;
+    }
+
+    private FlinkSqlConverterResult parseCreateTable(
+            DDLDialect dialect, String catalog, String database, CreateTable createTable) {
         FlinkSqlConverterResult result;
         switch (dialect.getNodeType()) {
             case OracleScanNode.TYPE:
@@ -62,7 +73,6 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
             default:
                 throw new UnsupportedOperationException("Unsupported data source type:" + dialect);
         }
-        log.info("end parse {} DDL:{}", dialect, ddl);
         return result;
     }
 

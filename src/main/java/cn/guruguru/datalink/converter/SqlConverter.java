@@ -6,6 +6,7 @@ import org.apache.calcite.sql.parser.SqlParseException;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
+import java.util.List;
 
 public interface SqlConverter<T> extends Serializable {
 
@@ -15,7 +16,7 @@ public interface SqlConverter<T> extends Serializable {
      * @param dialect data source type
      * @param catalog data catalog
      * @param database database
-     * @param ddl DDL SQL from Data Source
+     * @param sqls SQLs from Data Source, non CREATE-TABLE statements will be ignored
      */
-    T toEngineDDL(DDLDialect dialect, String catalog, @Nullable String database, String ddl) throws RuntimeException;
+    List<T> toEngineDDL(DDLDialect dialect, String catalog, @Nullable String database, String sqls) throws RuntimeException;
 }
