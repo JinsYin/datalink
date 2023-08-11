@@ -51,18 +51,26 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
             // remove some keywords and clauses for Oracle
             sqls = sqls.replaceAll("\\sENABLE", "")
                     .replaceAll("USING INDEX ", "");
-            Map<String, String> commentMap = new LinkedHashMap<>();
+            Map<String, String> tableCommentMap = new LinkedHashMap<>();
+            Map<String, String> columnCommentMap = new LinkedHashMap<>();
             Statements statements = CCJSqlParserUtil.parseStatements(sqls);
             for (Statement statement : statements.getStatements()) {
                 if (statement instanceof Comment) {
                     Comment comment = (Comment) statement;
-                    commentMap.put(comment.getColumn().getFullyQualifiedName(), comment.getComment().toString());
+                    if (comment.getTable() != null) { // table comment
+                        String tableIdentifier = String.format("`%s`.%s", catalog,
+                                comment.getTable().getFullyQualifiedName().replaceAll("\"", "`"));
+                        tableCommentMap.put(tableIdentifier, comment.getComment().toString());
+                    }
+                    if (comment.getColumn() != null) { // column comment
+                        columnCommentMap.put(comment.getColumn().getFullyQualifiedName(), comment.getComment().toString());
+                    }
                 }
             }
             for (Statement statement : statements.getStatements()) {
                 if (statement instanceof CreateTable) {
                     CreateTable createTable = (CreateTable) statement;
-                    FlinkSqlConverterResult result = parseCreateTable(dialect, catalog, database, createTable, commentMap);
+                    FlinkSqlConverterResult result = parseCreateTable(dialect, catalog, database, createTable, tableCommentMap, columnCommentMap);
                     results.add(result);
                 }
             }
@@ -75,12 +83,13 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
     }
 
     private FlinkSqlConverterResult parseCreateTable(
-            DDLDialect dialect, String catalog, String database,
-            CreateTable createTable, @Nullable Map<String, String> commentMap) {
+            DDLDialect dialect, String catalog, String database, CreateTable createTable,
+            @Nullable Map<String, String> tableCommentMap,
+            @Nullable Map<String, String> columnCommentMap) {
         FlinkSqlConverterResult result;
         switch (dialect.getNodeType()) {
             case OracleScanNode.TYPE:
-                result = convertOracleType(catalog, database, createTable, commentMap);
+                result = convertOracleType(catalog, database, createTable, tableCommentMap, columnCommentMap);
                 break;
             default:
                 throw new UnsupportedOperationException("Unsupported data source type:" + dialect);
@@ -89,7 +98,9 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
     }
 
     private FlinkSqlConverterResult convertOracleType(
-            String catalog, @Nullable String database, CreateTable createTable, Map<String, String> commentMap) {
+            String catalog, @Nullable String database, CreateTable createTable,
+            Map<String, String> tableCommentMap,
+            Map<String, String> columnCommentMap) {
         String tableName = createTable.getTable().getName().replaceAll("\"", "");
         String ddlDatabase = createTable.getTable().getSchemaName();
         Preconditions.checkState(database != null || ddlDatabase != null,"database is required");
@@ -120,13 +131,17 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
                 columnSpec = columnSpec.replaceAll("\\sDEFAULT\\s(\\S)+", ""); // remove DEFAULT keyword
                 engineColumn.append(" ").append(columnSpec);
             }
-            if (commentMap != null && commentMap.get(columnFullName) != null) {
-                engineColumn.append(" COMMENT ").append(commentMap.get(columnFullName));
+            if (columnCommentMap != null && columnCommentMap.get(columnFullName) != null) {
+                engineColumn.append(" COMMENT ").append(columnCommentMap.get(columnFullName));
             }
             flinkColumns.add(engineColumn.toString());
         }
+        String tableComment = null;
+        if (tableCommentMap != null && tableCommentMap.get(tableIdentifier) != null) {
+            tableComment = " COMMENT " + tableCommentMap.get(tableIdentifier);
+        }
         // generate CREATE TABLE statement
-        String flinkDDL = generateFlinkDDL(tableIdentifier, flinkColumns);
+        String flinkDDL = generateFlinkDDL(tableIdentifier, tableComment, flinkColumns);
         log.info("generated flink ddl: {}", flinkDDL.replaceAll("\\n", "").replaceAll("\\s{2,}", " ").trim());
         return new FlinkSqlConverterResult(catalog, ddlDatabase, tableName, flinkDDL);
     }
@@ -169,16 +184,20 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
      * Generate a CREATE TABLE statement for Flink
      *
      * @param tableIdentifier table name
+     * @param tableComment table comment
      * @param flinkColumns column list
      * @return DDL SQL
      */
-    private String generateFlinkDDL(String tableIdentifier, List<String> flinkColumns) {
+    private String generateFlinkDDL(String tableIdentifier, @Nullable String tableComment, List<String> flinkColumns) {
         StringBuilder sb = new StringBuilder("CREATE TABLE ");
         sb.append(tableIdentifier).append(" (\n");
         for (String column : flinkColumns) {
             sb.append("    ").append(column).append(",\n");
         }
-        sb.deleteCharAt(sb.length() - 2).append(");");
-        return sb.toString();
+        sb.deleteCharAt(sb.length() - 2).append(")");
+        if (tableComment != null) {
+            sb.append(tableComment);
+        }
+        return sb.append(";").toString();
     }
 }
