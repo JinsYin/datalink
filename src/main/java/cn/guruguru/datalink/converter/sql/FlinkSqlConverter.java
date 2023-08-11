@@ -3,6 +3,8 @@ package cn.guruguru.datalink.converter.sql;
 import cn.guruguru.datalink.converter.SqlConverter;
 import cn.guruguru.datalink.converter.enums.DDLDialect;
 import cn.guruguru.datalink.converter.sql.result.FlinkSqlConverterResult;
+import cn.guruguru.datalink.converter.table.TableColumn;
+import cn.guruguru.datalink.converter.table.TableSchema;
 import cn.guruguru.datalink.converter.type.FlinkTypeConverter;
 import cn.guruguru.datalink.exception.SQLSyntaxException;
 import cn.guruguru.datalink.protocol.field.FieldFormat;
@@ -42,10 +44,10 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
     @Override
     public List<FlinkSqlConverterResult> toEngineDDL(DDLDialect dialect, String catalog, @Nullable String database, String sqls)
             throws RuntimeException {
-        Preconditions.checkNotNull(dialect,"dialect is required");
-        Preconditions.checkNotNull(catalog,"catalog is required");
-        Preconditions.checkNotNull(sqls,"ddl is required");
-        log.info("start parse {} DDL:{}", dialect, sqls);
+        Preconditions.checkNotNull(dialect,"dialect is null");
+        Preconditions.checkNotNull(catalog,"catalog is null");
+        Preconditions.checkNotNull(sqls,"sql is null");
+        log.info("start parse {} SQL:{}", dialect, sqls);
         List<FlinkSqlConverterResult> results = new ArrayList<>();
         try {
             // remove some keywords and clauses for Oracle
@@ -79,6 +81,46 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
             throw new SQLSyntaxException(e);
         }
         log.info("end parse {} SQL:{}", dialect, sqls);
+        return results;
+    }
+
+    @Override
+    public List<FlinkSqlConverterResult> toEngineDDL(DDLDialect dialect, List<TableSchema> tableSchemas) throws RuntimeException {
+        Preconditions.checkNotNull(dialect,"dialect is null");
+        Preconditions.checkNotNull(tableSchemas,"table schema list is null");
+        Preconditions.checkState(!tableSchemas.isEmpty(),"table schema list is empty");
+        List<FlinkSqlConverterResult> results = new ArrayList<>(tableSchemas.size());
+        for (TableSchema tableSchema : tableSchemas) {
+            String tableIdentifier = tableSchema.getTableIdentifier();
+            String tableComment = tableSchema.getTableComment();
+            List<TableColumn> tableColumns = tableSchema.getColumns();
+            Preconditions.checkNotNull(tableIdentifier,"table identifier is null");
+            Preconditions.checkNotNull(tableColumns,"table columns is null");
+            Preconditions.checkState(!tableColumns.isEmpty(),"table columns is empty");
+            StringBuilder createTableDDL = new StringBuilder("CREATE TABLE ");
+            createTableDDL.append(tableIdentifier).append(" \n");
+            for (TableColumn tableColumn : tableColumns) {
+                String columnName = Preconditions.checkNotNull(tableColumn.getColumn(),"column name is null");
+                String columnType = Preconditions.checkNotNull(tableColumn.getType(),"column type is null");
+                String columnComment = tableColumn.getComment();
+                Integer precision = tableColumn.getPrecision();
+                Integer scale = tableColumn.getScale();
+                FieldFormat fieldFormat = new FieldFormat(columnType, precision, scale);
+                LogicalType engineFieldType = flinkTypeConverter.toEngineType(dialect.getNodeType(), fieldFormat);
+                createTableDDL.append("    `").append(columnName).append("` ").append(engineFieldType);
+                if (!StringUtils.isEmpty(columnComment)) {
+                    createTableDDL.append(" '").append(columnComment).append("'");
+                }
+                createTableDDL.append(",\n");
+            }
+            createTableDDL.deleteCharAt(createTableDDL.length() - 2).append(")");
+            if (!StringUtils.isEmpty(tableComment)) {
+                createTableDDL.append(" COMMENT '").append(tableComment).append("'");
+            }
+            createTableDDL.append(";\n");
+            FlinkSqlConverterResult result = new FlinkSqlConverterResult(tableIdentifier, createTableDDL.toString());
+            results.add(result);
+        }
         return results;
     }
 
@@ -143,7 +185,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
         // generate CREATE TABLE statement
         String flinkDDL = generateFlinkDDL(tableIdentifier, tableComment, flinkColumns);
         log.info("generated flink ddl: {}", flinkDDL.replaceAll("\\n", "").replaceAll("\\s{2,}", " ").trim());
-        return new FlinkSqlConverterResult(catalog, ddlDatabase, tableName, flinkDDL);
+        return new FlinkSqlConverterResult(tableIdentifier, flinkDDL);
     }
 
     /**

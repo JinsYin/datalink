@@ -22,8 +22,8 @@ public class FieldFormat {
 
     @JsonCreator
     public FieldFormat(@JsonProperty("type") String type,
-                       @JsonProperty("precision") Integer precision,
-                       @JsonProperty("scale") Integer scale) {
+                       @Nullable @JsonProperty("precision") Integer precision,
+                       @Nullable @JsonProperty("scale") Integer scale) {
         this.type = type;
         this.precision = precision;
         this.scale = scale;

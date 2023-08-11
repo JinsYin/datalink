@@ -2,10 +2,16 @@ package cn.guruguru.datalink.converter.sql;
 
 import cn.guruguru.datalink.converter.enums.DDLDialect;
 import cn.guruguru.datalink.converter.sql.result.FlinkSqlConverterResult;
+import cn.guruguru.datalink.converter.table.TableColumn;
+import cn.guruguru.datalink.converter.table.TableSchema;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FlinkSqlConverterTest {
 
@@ -60,6 +66,30 @@ public class FlinkSqlConverterTest {
                         + "    `AID` STRING COMMENT 'appList主键',\n"
                         + "    `INFO` STRING COMMENT '发送日期'\n"
                         + ");";
+        System.out.println(actualDDL);
+        Assert.assertEquals(expectedDDL, actualDDL);
+    }
+
+    @Test
+    public void testConvertTableSchema() {
+        TableColumn idColumn = new TableColumn("ID", "VARCHAR2", null, null, "主键");
+        TableColumn aidColumn = new TableColumn("AID", "VARCHAR2", null, null, null);
+        TableColumn infoColumn = new TableColumn("INFO", "VARCHAR2", null, null, "发送日期");
+        List<TableColumn> columns = Arrays.asList(idColumn, aidColumn, infoColumn);
+        TableSchema tableSchema = TableSchema.builder()
+                .tableIdentifier("`P1_CATALOG1`.`API_OPER`.`EDG25_APP_MESSAGE`")
+                .columns(columns)
+                .tableComment("Test Table")
+                .build();
+        List<TableSchema> tableSchemas = Collections.singletonList(tableSchema);
+        List<FlinkSqlConverterResult> results = flinkSqlConverter.toEngineDDL(DDLDialect.Oracle, tableSchemas);
+        String actualDDL = results.stream().map(FlinkSqlConverterResult::getConverterResult).collect(Collectors.joining());
+        String expectedDDL =
+            "CREATE TABLE `P1_CATALOG1`.`API_OPER`.`EDG25_APP_MESSAGE` \n"
+                + "    `ID` STRING '主键',\n"
+                + "    `AID` STRING,\n"
+                + "    `INFO` STRING '发送日期'\n"
+                + ") COMMENT 'Test Table';\n";
         System.out.println(actualDDL);
         Assert.assertEquals(expectedDDL, actualDDL);
     }
