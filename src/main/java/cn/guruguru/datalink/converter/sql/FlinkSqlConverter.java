@@ -3,7 +3,7 @@ package cn.guruguru.datalink.converter.sql;
 import cn.guruguru.datalink.converter.SqlConverter;
 import cn.guruguru.datalink.converter.enums.DDLDialect;
 import cn.guruguru.datalink.converter.sql.result.FlinkSqlConverterResult;
-import cn.guruguru.datalink.converter.table.TableColumn;
+import cn.guruguru.datalink.converter.table.TableField;
 import cn.guruguru.datalink.converter.table.TableSchema;
 import cn.guruguru.datalink.converter.type.FlinkTypeConverter;
 import cn.guruguru.datalink.exception.SQLSyntaxException;
@@ -93,18 +93,18 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
         for (TableSchema tableSchema : tableSchemas) {
             String tableIdentifier = tableSchema.getTableIdentifier();
             String tableComment = tableSchema.getTableComment();
-            List<TableColumn> tableColumns = tableSchema.getColumns();
+            List<TableField> tableFields = tableSchema.getColumns();
             Preconditions.checkNotNull(tableIdentifier,"table identifier is null");
-            Preconditions.checkNotNull(tableColumns,"table columns is null");
-            Preconditions.checkState(!tableColumns.isEmpty(),"table columns is empty");
+            Preconditions.checkNotNull(tableFields,"table columns is null");
+            Preconditions.checkState(!tableFields.isEmpty(),"table columns is empty");
             StringBuilder createTableDDL = new StringBuilder("CREATE TABLE ");
             createTableDDL.append(tableIdentifier).append(" \n");
-            for (TableColumn tableColumn : tableColumns) {
-                String columnName = Preconditions.checkNotNull(tableColumn.getColumn(),"column name is null");
-                String columnType = Preconditions.checkNotNull(tableColumn.getType(),"column type is null");
-                String columnComment = tableColumn.getComment();
-                Integer precision = tableColumn.getPrecision();
-                Integer scale = tableColumn.getScale();
+            for (TableField tableField : tableFields) {
+                String columnName = Preconditions.checkNotNull(tableField.getName(),"column name is null");
+                String columnType = Preconditions.checkNotNull(tableField.getType(),"column type is null");
+                String columnComment = tableField.getComment();
+                Integer precision = tableField.getPrecision();
+                Integer scale = tableField.getScale();
                 FieldFormat fieldFormat = new FieldFormat(columnType, precision, scale);
                 LogicalType engineFieldType = flinkTypeConverter.toEngineType(dialect.getNodeType(), fieldFormat);
                 createTableDDL.append("    `").append(columnName).append("` ").append(engineFieldType);

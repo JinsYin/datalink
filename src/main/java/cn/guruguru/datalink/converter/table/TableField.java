@@ -10,19 +10,21 @@ import javax.annotation.Nullable;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class TableColumn extends FieldFormat {
-    private String column;
+public class TableField extends FieldFormat {
+    @JsonProperty("name")
+    private String name;
+    @JsonProperty("comment")
     private String comment;
 
     @JsonCreator
-    public TableColumn(
-            @JsonProperty("column") String column,
+    public TableField(
+            @JsonProperty("name") String name,
             @JsonProperty("type") String type,
             @Nullable @JsonProperty("precision") Integer precision,
             @Nullable @JsonProperty("scale") Integer scale,
             @Nullable @JsonProperty("column") String comment) {
         super(type, precision, scale);
-        this.column = column;
+        this.name = name;
         this.comment = comment;
     }
 }
