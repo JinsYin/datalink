@@ -6,6 +6,7 @@ import cn.guruguru.datalink.converter.sql.result.FlinkSqlConverterResult;
 import cn.guruguru.datalink.converter.table.TableField;
 import cn.guruguru.datalink.converter.table.TableSchema;
 import cn.guruguru.datalink.converter.type.FlinkTypeConverter;
+import cn.guruguru.datalink.exception.IllegalDDLException;
 import cn.guruguru.datalink.exception.SQLSyntaxException;
 import cn.guruguru.datalink.protocol.field.FieldFormat;
 import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
@@ -22,12 +23,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.table.types.logical.LogicalType;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> {
@@ -56,25 +55,20 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
             Map<String, String> tableCommentMap = new LinkedHashMap<>();
             Map<String, String> columnCommentMap = new LinkedHashMap<>();
             Statements statements = CCJSqlParserUtil.parseStatements(sqls);
-            for (Statement statement : statements.getStatements()) {
-                if (statement instanceof Comment) {
-                    Comment comment = (Comment) statement;
-                    if (comment.getTable() != null) { // table comment
-                        String tableIdentifier = String.format("`%s`.%s", catalog,
-                                comment.getTable().getFullyQualifiedName().replaceAll("\"", "`"));
-                        tableCommentMap.put(tableIdentifier, comment.getComment().toString());
-                    }
-                    if (comment.getColumn() != null) { // column comment
-                        columnCommentMap.put(comment.getColumn().getFullyQualifiedName(), comment.getComment().toString());
-                    }
-                }
-            }
+            // parse table comment and column comment
+            parseCommentStatement(statements, catalog, tableCommentMap, columnCommentMap);
+            // parse create table statements
             for (Statement statement : statements.getStatements()) {
                 if (statement instanceof CreateTable) {
                     CreateTable createTable = (CreateTable) statement;
-                    FlinkSqlConverterResult result = parseCreateTable(dialect, catalog, database, createTable, tableCommentMap, columnCommentMap);
+                    FlinkSqlConverterResult result = parseCreateTable(
+                            dialect, catalog, database, createTable, tableCommentMap, columnCommentMap);
                     results.add(result);
                 }
+            }
+            if (results.isEmpty()) {
+                log.error("create table statements is empty, SQL: {}", sqls);
+                throw new IllegalDDLException("create table statements is empty");
             }
         } catch (JSQLParserException e) {
             log.error("parse SQL error:{}", sqls);
@@ -122,6 +116,33 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
             results.add(result);
         }
         return results;
+    }
+
+    /**
+     * Parse table comment and column comment
+     *
+     * @param statements SQL statements
+     * @param catalog catalog
+     * @param tableCommentMap a map for table comment
+     * @param columnCommentMap a map for column comment
+     */
+    private void parseCommentStatement(Statements statements,
+                                       String catalog,
+                                       Map<String, String> tableCommentMap,
+                                       Map<String, String> columnCommentMap) {
+        for (Statement statement : statements.getStatements()) {
+            if (statement instanceof Comment) {
+                Comment comment = (Comment) statement;
+                if (comment.getTable() != null) { // table comment
+                    String tableIdentifier = String.format("`%s`.%s", catalog,
+                            comment.getTable().getFullyQualifiedName().replaceAll("\"", "`"));
+                    tableCommentMap.put(tableIdentifier, comment.getComment().toString());
+                }
+                if (comment.getColumn() != null) { // column comment
+                    columnCommentMap.put(comment.getColumn().getFullyQualifiedName(), comment.getComment().toString());
+                }
+            }
+        }
     }
 
     private FlinkSqlConverterResult parseCreateTable(

@@ -21,11 +21,9 @@
         <calcite.version>1.27.0</calcite.version>
     </properties>
 
-    <!-- 下载仓库配置 -->
     <repositories>
     </repositories>
 
-    <!-- 发布仓库配置 -->
 
     <dependencies>
         <!-- Lombok -->
