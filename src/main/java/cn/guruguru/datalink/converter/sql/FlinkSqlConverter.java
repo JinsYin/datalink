@@ -93,7 +93,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
         for (TableSchema tableSchema : tableSchemas) {
             String tableIdentifier = tableSchema.getTableIdentifier();
             String tableComment = tableSchema.getTableComment();
-            List<TableField> tableFields = tableSchema.getColumns();
+            List<TableField> tableFields = tableSchema.getFields();
             Preconditions.checkNotNull(tableIdentifier,"table identifier is null");
             Preconditions.checkNotNull(tableFields,"table columns is null");
             Preconditions.checkState(!tableFields.isEmpty(),"table columns is empty");
