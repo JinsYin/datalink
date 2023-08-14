@@ -3,10 +3,13 @@ package cn.guruguru.datalink.protocol;
 
 import cn.guruguru.datalink.protocol.enums.RuntimeMode;
 import cn.guruguru.datalink.protocol.node.Node;
+import cn.guruguru.datalink.protocol.node.NodeDeserializer;
 import cn.guruguru.datalink.protocol.relation.Relation;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.base.Preconditions;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCreator;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.core.JsonProcessingException;
@@ -25,10 +28,8 @@ import java.util.Map;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class LinkInfo implements Serializable {
-    // 开发模式（FORM/JSON/SQL/CANVAS）
-    // private DevelopmentMode devMode;
-
     @JsonProperty("runtimeMode")
     private RuntimeMode runtimeMode;
 
@@ -43,6 +44,7 @@ public class LinkInfo implements Serializable {
     private String description;
 
     @JsonProperty("nodes")
+    @JsonDeserialize(contentUsing = NodeDeserializer.class) // 加在类或者属性上，非集合使用 using
     private List<Node> nodes;
 
     @JsonProperty("relation")
