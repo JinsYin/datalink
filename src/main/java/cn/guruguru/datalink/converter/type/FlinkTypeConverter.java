@@ -1,6 +1,8 @@
 package cn.guruguru.datalink.converter.type;
 
 import cn.guruguru.datalink.converter.TypeConverter;
+import cn.guruguru.datalink.exception.UnsupportedDataSourceException;
+import cn.guruguru.datalink.exception.UnsupportedDataTypeException;
 import cn.guruguru.datalink.protocol.field.FieldFormat;
 import cn.guruguru.datalink.protocol.node.extract.cdc.OracleCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
@@ -50,7 +52,7 @@ public class FlinkTypeConverter implements TypeConverter<LogicalType> {
             case LakehouseLoadNode.TYPE:
                 return convertArcticMixedIcebergType(fieldFormat);
             default:
-                throw new UnsupportedOperationException("Unsupported data source type:" + nodeType);
+                throw new UnsupportedDataSourceException("Unsupported data source type:" + nodeType);
         }
     }
 
@@ -111,7 +113,7 @@ public class FlinkTypeConverter implements TypeConverter<LogicalType> {
             case "BLOB":
                 return new VarBinaryType(VarBinaryType.MAX_LENGTH); // BYTES
             default:
-                throw new UnsupportedOperationException("Unsupported MySQL data type:" + fieldType);
+                throw new UnsupportedDataTypeException("Unsupported MySQL data type:" + fieldType);
         }
     }
 
@@ -157,7 +159,7 @@ public class FlinkTypeConverter implements TypeConverter<LogicalType> {
             case "BLOB":
                 return new VarBinaryType(VarBinaryType.MAX_LENGTH);
             default:
-                throw new UnsupportedOperationException("Unsupported Oracle data type:" + fieldType);
+                throw new UnsupportedDataTypeException("Unsupported Oracle data type:" + fieldType);
         }
     }
 
@@ -221,7 +223,7 @@ public class FlinkTypeConverter implements TypeConverter<LogicalType> {
             case "INTERVAL YEAR TO MONTH":
                 return new BigIntType();
             default:
-                throw new UnsupportedOperationException("Unsupported Oracle CDC data type:" + fieldType);
+                throw new UnsupportedDataTypeException("Unsupported Oracle CDC data type:" + fieldType);
         }
     }
 
@@ -271,7 +273,7 @@ public class FlinkTypeConverter implements TypeConverter<LogicalType> {
           case "STRUCT": // TODO
               return new RowType(Collections.emptyList());
           default:
-              throw new UnsupportedOperationException("Unsupported Lakehouse data type:" + fieldType);
+              throw new UnsupportedDataTypeException("Unsupported Lakehouse data type:" + fieldType);
         }
     }
 }

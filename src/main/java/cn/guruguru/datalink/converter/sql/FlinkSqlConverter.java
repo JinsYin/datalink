@@ -8,6 +8,7 @@ import cn.guruguru.datalink.converter.table.TableSchema;
 import cn.guruguru.datalink.converter.type.FlinkTypeConverter;
 import cn.guruguru.datalink.exception.IllegalDDLException;
 import cn.guruguru.datalink.exception.SQLSyntaxException;
+import cn.guruguru.datalink.exception.UnsupportedDataSourceException;
 import cn.guruguru.datalink.protocol.field.FieldFormat;
 import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
 import com.google.common.base.Preconditions;
@@ -26,7 +27,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> {
@@ -155,7 +155,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
                 result = convertOracleType(catalog, database, createTable, tableCommentMap, columnCommentMap);
                 break;
             default:
-                throw new UnsupportedOperationException("Unsupported data source type:" + dialect);
+                throw new UnsupportedDataSourceException("Unsupported data source type:" + dialect);
         }
         return result;
     }

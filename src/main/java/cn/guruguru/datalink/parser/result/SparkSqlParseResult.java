@@ -1,5 +1,6 @@
 package cn.guruguru.datalink.parser.result;
 
+import cn.guruguru.datalink.exception.UnsupportedEngineException;
 import cn.guruguru.datalink.parser.ParseResult;
 
 /**
@@ -8,6 +9,6 @@ import cn.guruguru.datalink.parser.ParseResult;
 public class SparkSqlParseResult implements ParseResult {
     @Override
     public String getSqlScript() {
-        throw new UnsupportedOperationException("Spark engine not supported");
+        throw new UnsupportedEngineException("Spark engine not supported");
     }
 }

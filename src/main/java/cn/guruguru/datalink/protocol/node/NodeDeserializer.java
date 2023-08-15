@@ -1,5 +1,6 @@
 package cn.guruguru.datalink.protocol.node;
 
+import cn.guruguru.datalink.exception.UnsupportedDataSourceException;
 import cn.guruguru.datalink.protocol.node.extract.cdc.KafkaCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.MysqlCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.JdbcScanNode;
@@ -36,7 +37,7 @@ public class NodeDeserializer extends JsonDeserializer<Node> {
             case LakehouseLoadNode.TYPE:
                 return objectMapper.readValue(node.toString(), LakehouseLoadNode.class);
             default:
-                throw new UnsupportedOperationException("Unsupported node type: " + type);
+                throw new UnsupportedDataSourceException("Unsupported node type: " + type);
         }
     }
 }

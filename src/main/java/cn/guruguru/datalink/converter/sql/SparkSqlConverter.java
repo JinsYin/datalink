@@ -3,6 +3,7 @@ package cn.guruguru.datalink.converter.sql;
 import cn.guruguru.datalink.converter.SqlConverter;
 import cn.guruguru.datalink.converter.enums.DDLDialect;
 import cn.guruguru.datalink.converter.table.TableSchema;
+import cn.guruguru.datalink.exception.UnsupportedEngineException;
 import org.apache.calcite.config.Lex;
 import org.apache.calcite.sql.SqlDialect;
 import org.apache.calcite.sql.SqlNode;
@@ -37,7 +38,7 @@ public class SparkSqlConverter implements SqlConverter<String> {
 
     @Override
     public List<String> toEngineDDL(DDLDialect dialect, List<TableSchema> tableSchemas) throws RuntimeException {
-        throw new UnsupportedOperationException("Spark engine not supported");
+        throw new UnsupportedEngineException("Spark engine not supported");
     }
 
     private static String convertToSparkDDL(SqlNode sqlNode) {
