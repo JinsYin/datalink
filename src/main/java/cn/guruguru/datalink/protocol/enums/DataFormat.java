@@ -3,7 +3,7 @@ package cn.guruguru.datalink.protocol.enums;
 /**
  * Table formats supported Flink
  *
- * @see https://nightlies.apache.org/flink/flink-docs-release-1.16/docs/connectors/table/formats/overview/
+ * @see <a href="Flink formats">https://nightlies.apache.org/flink/flink-docs-master/docs/connectors/table/formats/overview/</a>
  */
 public enum DataFormat {
     JSON("json"),

@@ -229,6 +229,7 @@ public class FlinkTypeConverter implements TypeConverter<LogicalType> {
    * Convert Arctic mixed iceberg type to Flink type
    *
    * @see <a href="https://arctic.netease.com/ch/flink/flink-ddl/#mixed-iceberg-data-types">Mixed Iceberg Data Types</a>
+   * @see <a href="https://github.com/DTStack/chunjun/blob/master/chunjun-connectors/chunjun-connector-arctic/src/main/java/com/dtstack/chunjun/connector/arctic/converter/ArcticRawTypeMapper.java">ArcticRawTypeMapper</a>
    * @param fieldFormat Arctic Mixed Iceberg Field Type
    * @return Flink SQL Field Type
    */

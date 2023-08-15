@@ -35,7 +35,8 @@ public class NodeDeserializer extends JsonDeserializer<Node> {
             // ----- 目标写入节点 -----
             case LakehouseLoadNode.TYPE:
                 return objectMapper.readValue(node.toString(), LakehouseLoadNode.class);
+            default:
+                throw new UnsupportedOperationException("Unsupported node type: " + type);
         }
-        throw new UnsupportedOperationException("Unsupported node type: " + type);
     }
 }

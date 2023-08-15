@@ -14,7 +14,6 @@ import cn.guruguru.datalink.protocol.node.LoadNode;
 import cn.guruguru.datalink.protocol.node.Node;
 import cn.guruguru.datalink.protocol.node.extract.CdcExtractNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.MongoCdcNode;
-import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
 import cn.guruguru.datalink.protocol.node.transform.TransformNode;
 import cn.guruguru.datalink.protocol.relation.FieldRelation;
 import cn.guruguru.datalink.protocol.relation.NodeRelation;
@@ -50,7 +49,7 @@ public class FlinkSqlParser implements Parser {
     private final List<String> loadTableSqls = new ArrayList<>();
     private final List<String> insertSqls = new ArrayList<>();
 
-    private static final FlinkTypeConverter typeMapper = new FlinkTypeConverter();
+    private static final FlinkTypeConverter typeConverter = new FlinkTypeConverter();
 
     public FlinkSqlParser(LinkInfo linkInfo) {
         this.linkInfo = linkInfo;
@@ -293,7 +292,7 @@ public class FlinkSqlParser implements Parser {
             FieldRelation fieldRelation = fieldRelationMap.get(field.getName());
             FieldFormat fieldFormat = field.getFieldFormat();
             if (fieldRelation == null) {
-                String targetType = typeMapper.toEngineType(nodeType, fieldFormat).asSummaryString();
+                String targetType = typeConverter.toEngineType(nodeType, fieldFormat).asSummaryString();
                 sb.append("\n    CAST(NULL as ").append(targetType).append(") AS ").append(field.format()).append(",");
                 continue;
             }
@@ -312,12 +311,12 @@ public class FlinkSqlParser implements Parser {
                 if (complexType || sameType || fieldFormat == null) {
                     sb.append("\n    ").append(inputField.format()).append(" AS ").append(field.format()).append(",");
                 } else {
-                    String targetType = typeMapper.toEngineType(nodeType, fieldFormat).asSummaryString();
+                    String targetType = typeConverter.toEngineType(nodeType, fieldFormat).asSummaryString();
                     sb.append("\n    CAST(").append(inputField.format()).append(" as ")
                             .append(targetType).append(") AS ").append(field.format()).append(",");
                 }
             } else {
-                String targetType = typeMapper.toEngineType(nodeType, field.getFieldFormat()).asSummaryString();
+                String targetType = typeConverter.toEngineType(nodeType, field.getFieldFormat()).asSummaryString();
                 sb.append("\n    CAST(").append(inputField.format()).append(" as ")
                         .append(targetType).append(") AS ").append(field.format()).append(",");
             }
@@ -473,7 +472,7 @@ public class FlinkSqlParser implements Parser {
                 }
                 sb.append(metadataNode.format(metaFieldInfo.getMetaKey()));
             } else {
-                sb.append(typeMapper.toEngineType(nodeType, field.getFieldFormat()).asSummaryString());
+                sb.append(typeConverter.toEngineType(nodeType, field.getFieldFormat()).asSummaryString());
             }
             sb.append(",\n");
         }
