@@ -1,5 +1,7 @@
 package cn.guruguru.datalink.protocol.node.extract.cdc;
 
+import cn.guruguru.datalink.interfaces.NodeDataSource;
+import cn.guruguru.datalink.enums.DataSourceType;
 import cn.guruguru.datalink.protocol.Metadata;
 import cn.guruguru.datalink.protocol.enums.MetaKey;
 import cn.guruguru.datalink.protocol.field.DataField;
@@ -21,8 +23,10 @@ import java.util.Set;
  */
 @EqualsAndHashCode(callSuper = true)
 @JsonTypeName(MysqlCdcNode.TYPE)
+@NodeDataSource(value = DataSourceType.MySQL)
 public class MysqlCdcNode extends CdcExtractNode implements Metadata, Serializable {
     public static final String TYPE = "MysqlCdc";
+
     public MysqlCdcNode(String id, String name, List<DataField> fields, @Nullable Map<String, String> properties, @Nullable WatermarkField watermarkField) {
         super(id, name, fields, properties, watermarkField);
     }

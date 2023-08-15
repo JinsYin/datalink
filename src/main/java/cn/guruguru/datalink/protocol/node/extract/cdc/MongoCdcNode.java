@@ -1,5 +1,7 @@
 package cn.guruguru.datalink.protocol.node.extract.cdc;
 
+import cn.guruguru.datalink.interfaces.NodeDataSource;
+import cn.guruguru.datalink.enums.DataSourceType;
 import cn.guruguru.datalink.protocol.field.FieldFormat;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.field.WatermarkField;
@@ -27,10 +29,11 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 @JsonTypeName(MongoCdcNode.TYPE)
 @Data
+@NodeDataSource(DataSourceType.MONGODB)
 public class MongoCdcNode extends CdcExtractNode implements Serializable {
-    public static final String TYPE = "MongoCdc";
-
     private static final long serialVersionUID = 1L;
+
+    public static final String TYPE = "MongoCdc";
 
     /**
      * the primary key must be "_id"

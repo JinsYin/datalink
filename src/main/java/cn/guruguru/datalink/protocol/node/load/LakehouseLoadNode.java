@@ -1,5 +1,7 @@
 package cn.guruguru.datalink.protocol.node.load;
 
+import cn.guruguru.datalink.interfaces.NodeDataSource;
+import cn.guruguru.datalink.enums.DataSourceType;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.LoadNode;
 import lombok.Data;
@@ -23,6 +25,7 @@ import java.util.Map;
 @NoArgsConstructor(force = true)
 @EqualsAndHashCode(callSuper = true)
 @JsonTypeName(LakehouseLoadNode.TYPE)
+@NodeDataSource(DataSourceType.ARCTIC)
 public class LakehouseLoadNode extends LoadNode {
 
     public static final String TYPE = "LakehouseLoad";

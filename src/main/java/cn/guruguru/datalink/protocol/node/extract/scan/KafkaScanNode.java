@@ -1,5 +1,7 @@
 package cn.guruguru.datalink.protocol.node.extract.scan;
 
+import cn.guruguru.datalink.interfaces.NodeDataSource;
+import cn.guruguru.datalink.enums.DataSourceType;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeName;
 import org.apache.inlong.sort.protocol.FieldInfo;
 import org.apache.inlong.sort.protocol.enums.KafkaScanStartupMode;
@@ -18,6 +20,7 @@ import java.util.Map;
  * @see https://nightlies.apache.org/flink/flink-docs-release-1.17/docs/connectors/table/kafka/#bounded-ending-position
  */
 @JsonTypeName(KafkaScanNode.TYPE)
+@NodeDataSource(DataSourceType.KAFKA_2X)
 public class KafkaScanNode extends KafkaExtractNode {
     public static final String TYPE = "KafkaScan";
 

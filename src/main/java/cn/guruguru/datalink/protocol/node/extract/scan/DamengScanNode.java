@@ -1,5 +1,7 @@
 package cn.guruguru.datalink.protocol.node.extract.scan;
 
+import cn.guruguru.datalink.interfaces.NodeDataSource;
+import cn.guruguru.datalink.enums.DataSourceType;
 import cn.guruguru.datalink.protocol.field.DataField;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -17,6 +19,7 @@ import java.util.Map;
 @JsonTypeName(DamengScanNode.TYPE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor
+@NodeDataSource(DataSourceType.DMDB_FOR_ORACLE)
 public class DamengScanNode extends JdbcScanNode {
     public static final String TYPE = "DamengScan";
 

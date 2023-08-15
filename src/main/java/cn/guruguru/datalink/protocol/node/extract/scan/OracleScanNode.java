@@ -1,5 +1,7 @@
 package cn.guruguru.datalink.protocol.node.extract.scan;
 
+import cn.guruguru.datalink.interfaces.NodeDataSource;
+import cn.guruguru.datalink.enums.DataSourceType;
 import cn.guruguru.datalink.protocol.field.DataField;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -13,10 +15,11 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
-@EqualsAndHashCode(callSuper = true)
 @JsonTypeName(OracleScanNode.TYPE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@NodeDataSource(DataSourceType.Oracle)
 public class OracleScanNode extends JdbcScanNode {
     public static final String TYPE = "OracleScan";
 

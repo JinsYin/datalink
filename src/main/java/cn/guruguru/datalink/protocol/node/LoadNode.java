@@ -1,5 +1,7 @@
 package cn.guruguru.datalink.protocol.node;
 
+import cn.guruguru.datalink.interfaces.NodeDataSource;
+import cn.guruguru.datalink.enums.DataSourceType;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.load.LakehouseLoadNode;
 import cn.guruguru.datalink.protocol.relation.FieldRelation;
@@ -65,5 +67,9 @@ public abstract class LoadNode implements Node, Serializable {
         Preconditions.checkState(!fieldRelations.isEmpty(), "fieldRelations is empty");
         this.filterClause = filterClause;
         this.properties = properties;
+    }
+
+    DataSourceType getDataSourceType() {
+        return this.getClass().getAnnotation(NodeDataSource.class).value();
     }
 }

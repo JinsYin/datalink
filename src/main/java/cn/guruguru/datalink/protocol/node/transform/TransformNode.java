@@ -1,5 +1,6 @@
 package cn.guruguru.datalink.protocol.node.transform;
 
+import cn.guruguru.datalink.enums.DataSourceType;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.Node;
 import cn.guruguru.datalink.protocol.relation.FieldRelation;
@@ -22,12 +23,12 @@ import java.util.Map;
  *
  * @see org.apache.inlong.sort.protocol.node.transform.TransformNode
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = TransformNode.class, name = TransformNode.TYPE), // InLong Sort: baseTransform
 })
 @Data
 @NoArgsConstructor
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 public class TransformNode implements Node, Serializable {
     public static final String TYPE = "Transform";
 

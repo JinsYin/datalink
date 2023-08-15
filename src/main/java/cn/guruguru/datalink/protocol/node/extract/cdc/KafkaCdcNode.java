@@ -1,5 +1,7 @@
 package cn.guruguru.datalink.protocol.node.extract.cdc;
 
+import cn.guruguru.datalink.interfaces.NodeDataSource;
+import cn.guruguru.datalink.enums.DataSourceType;
 import cn.guruguru.datalink.protocol.Metadata;
 import cn.guruguru.datalink.protocol.enums.MetaKey;
 import cn.guruguru.datalink.protocol.field.DataField;
@@ -26,9 +28,11 @@ import java.util.Set;
  */
 @EqualsAndHashCode(callSuper = true)
 @JsonTypeName(KafkaCdcNode.TYPE)
+@NodeDataSource(DataSourceType.KAFKA_2X)
 public class KafkaCdcNode extends CdcExtractNode implements Metadata, Serializable {
-    public static final String TYPE = "KafkaCdc";
     private static final long serialVersionUID = 1L;
+
+    public static final String TYPE = "KafkaCdc";
 
     @Nonnull
     @JsonProperty("topic")

@@ -1,5 +1,7 @@
 package cn.guruguru.datalink.protocol.node.extract.scan;
 
+import cn.guruguru.datalink.interfaces.NodeDataSource;
+import cn.guruguru.datalink.enums.DataSourceType;
 import cn.guruguru.datalink.protocol.field.DataField;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -23,9 +25,11 @@ import java.util.Map;
 @JsonTypeName(MySqlScanNode.TYPE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor
+@NodeDataSource(DataSourceType.MySQL)
 public class MySqlScanNode extends JdbcScanNode {
-    public static final String TYPE = "MysqlScan";
     private static final long serialVersionUID = -5521981462461235277L;
+
+    public static final String TYPE = "MysqlScan";
 
     @JsonCreator
     public MySqlScanNode(@JsonProperty("id") String id,
