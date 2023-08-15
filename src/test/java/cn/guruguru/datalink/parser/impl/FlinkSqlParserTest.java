@@ -2,6 +2,7 @@ package cn.guruguru.datalink.parser.impl;
 
 import cn.guruguru.datalink.parser.ParseResult;
 import cn.guruguru.datalink.protocol.LinkInfo;
+import cn.guruguru.datalink.utils.SqlUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,7 +17,7 @@ public class FlinkSqlParserTest {
         LinkInfo linkInfo = LinkInfo.serialize(json);
         FlinkSqlParser parser = FlinkSqlParser.getInstance(linkInfo);
         ParseResult parseResult = parser.parse();
-        String actual = parseResult.getSqlScript().replaceAll("\\n", "").replaceAll("\\(\\s*", "(").replaceAll("\\s{2,}", " ").trim();
+        String actual = SqlUtil.compress(parseResult.getSqlScript());
         String expected = "CREATE TABLE `lake_policy`(`id` INT) WITH ('a' = '1');CREATE TABLE `orders`(`id` STRING) WITH ('b' = '2');INSERT INTO `orders` SELECT CAST(`id` as STRING) AS `id` FROM `lake_policy`";
         Assert.assertEquals(expected, actual);
     }
