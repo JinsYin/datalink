@@ -1,18 +1,27 @@
 package cn.guruguru.datalink.converter.enums;
 
+import cn.guruguru.datalink.protocol.node.extract.scan.DamengScanNode;
+import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
 
 public enum DDLDialect {
-    Oracle(OracleScanNode.TYPE),
-    // MySQL(MySqlScanNode.TYPE),
+    Oracle(OracleScanNode.TYPE, true),
+    DMDB(DamengScanNode.TYPE, false),
+    MySQL(MySqlScanNode.TYPE, false),
     ;
 
     private final String nodeType;
+    private final boolean supported;
 
-    DDLDialect(String nodeType) {
+    DDLDialect(String nodeType, boolean supported) {
         this.nodeType = nodeType;
+        this.supported = supported;
     }
     public String getNodeType() {
         return nodeType;
+    }
+
+    public boolean isSupported() {
+        return supported;
     }
 }
