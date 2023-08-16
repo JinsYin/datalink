@@ -13,10 +13,10 @@ import java.io.Serializable;
 public class NodeLocation implements Serializable {
     public static final String TYPE = "NodeLocation";
 
-    @JsonProperty("节点 ID")
+    @JsonProperty("Node ID")
     private String id;
-    @JsonProperty("节点 X 轴")
+    @JsonProperty("X Axis")
     private String xAxis;
-    @JsonProperty("节点 Y 轴")
+    @JsonProperty("Y Axis")
     private String yAxis;
 }
