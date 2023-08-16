@@ -1,7 +1,7 @@
 package cn.guruguru.datalink.protocol.node;
 
-import cn.guruguru.datalink.interfaces.NodeDataSource;
-import cn.guruguru.datalink.enums.DataSourceType;
+import cn.guruguru.datalink.datasource.NodeDataSource;
+import cn.guruguru.datalink.datasource.DataSourceType;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.load.LakehouseLoadNode;
 import cn.guruguru.datalink.protocol.relation.FieldRelation;

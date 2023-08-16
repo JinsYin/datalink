@@ -1,7 +1,7 @@
 package cn.guruguru.datalink.protocol.node.extract.scan;
 
-import cn.guruguru.datalink.interfaces.NodeDataSource;
-import cn.guruguru.datalink.enums.DataSourceType;
+import cn.guruguru.datalink.datasource.NodeDataSource;
+import cn.guruguru.datalink.datasource.DataSourceType;
 import cn.guruguru.datalink.protocol.field.DataField;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

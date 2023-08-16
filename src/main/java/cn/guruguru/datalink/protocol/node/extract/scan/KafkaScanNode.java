@@ -1,7 +1,7 @@
 package cn.guruguru.datalink.protocol.node.extract.scan;
 
-import cn.guruguru.datalink.interfaces.NodeDataSource;
-import cn.guruguru.datalink.enums.DataSourceType;
+import cn.guruguru.datalink.datasource.NodeDataSource;
+import cn.guruguru.datalink.datasource.DataSourceType;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeName;
 import org.apache.inlong.sort.protocol.FieldInfo;
 import org.apache.inlong.sort.protocol.enums.KafkaScanStartupMode;

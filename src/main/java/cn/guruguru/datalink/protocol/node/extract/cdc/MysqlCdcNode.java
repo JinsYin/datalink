@@ -1,7 +1,7 @@
 package cn.guruguru.datalink.protocol.node.extract.cdc;
 
-import cn.guruguru.datalink.interfaces.NodeDataSource;
-import cn.guruguru.datalink.enums.DataSourceType;
+import cn.guruguru.datalink.datasource.NodeDataSource;
+import cn.guruguru.datalink.datasource.DataSourceType;
 import cn.guruguru.datalink.protocol.Metadata;
 import cn.guruguru.datalink.protocol.enums.MetaKey;
 import cn.guruguru.datalink.protocol.field.DataField;

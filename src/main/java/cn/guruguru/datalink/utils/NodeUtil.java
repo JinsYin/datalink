@@ -1,7 +1,7 @@
 package cn.guruguru.datalink.utils;
 
-import cn.guruguru.datalink.enums.DataSourceType;
-import cn.guruguru.datalink.interfaces.NodeDataSource;
+import cn.guruguru.datalink.datasource.DataSourceType;
+import cn.guruguru.datalink.datasource.NodeDataSource;
 import cn.guruguru.datalink.protocol.node.ExtractNode;
 import cn.guruguru.datalink.protocol.node.LoadNode;
 import cn.guruguru.datalink.protocol.node.Node;

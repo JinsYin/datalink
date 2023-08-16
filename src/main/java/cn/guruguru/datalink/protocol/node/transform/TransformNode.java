@@ -1,6 +1,5 @@
 package cn.guruguru.datalink.protocol.node.transform;
 
-import cn.guruguru.datalink.enums.DataSourceType;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.Node;
 import cn.guruguru.datalink.protocol.relation.FieldRelation;

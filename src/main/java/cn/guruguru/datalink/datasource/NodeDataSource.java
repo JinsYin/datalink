@@ -1,6 +1,6 @@
-package cn.guruguru.datalink.interfaces;
+package cn.guruguru.datalink.datasource;
 
-import cn.guruguru.datalink.enums.DataSourceType;
+import cn.guruguru.datalink.datasource.DataSourceType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
