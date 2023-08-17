@@ -24,7 +24,7 @@ public class MetaField extends DataField {
             @JsonProperty("name") String name,
             @JsonProperty("nodeId") String nodeId,
             @JsonProperty("metaKey") MetaKey metaKey) {
-        super(name, nodeId, null);
+        super(name, nodeId, null, null);
         this.metaKey = metaKey;
     }
 
