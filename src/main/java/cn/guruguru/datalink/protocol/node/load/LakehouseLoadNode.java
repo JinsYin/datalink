@@ -4,6 +4,7 @@ import cn.guruguru.datalink.datasource.NodeDataSource;
 import cn.guruguru.datalink.datasource.DataSourceType;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.LoadNode;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -43,6 +44,17 @@ public class LakehouseLoadNode extends LoadNode {
 
     @JsonProperty("table")
     private String table;
+
+    @JsonCreator
+    public LakehouseLoadNode(@Nonnull @JsonProperty("url") String url,
+                             @Nonnull @JsonProperty("catalog") String catalog,
+                             @JsonProperty("database") String database,
+                             @JsonProperty("table") String table) {
+        this.url = url;
+        this.catalog = catalog;
+        this.database = database;
+        this.table = table;
+    }
 
     @Override
     public Map<String, String> tableOptions() {
