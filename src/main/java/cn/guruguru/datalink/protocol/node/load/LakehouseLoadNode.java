@@ -25,7 +25,7 @@ import java.util.Map;
 @NoArgsConstructor(force = true)
 @EqualsAndHashCode(callSuper = true)
 @JsonTypeName(LakehouseLoadNode.TYPE)
-@NodeDataSource(DataSourceType.ARCTIC)
+@NodeDataSource(DataSourceType.Lakehouse)
 public class LakehouseLoadNode extends LoadNode {
 
     public static final String TYPE = "LakehouseLoad";

@@ -86,7 +86,7 @@ public enum DataSourceType {
     DMDB_FOR_ORACLE(67, "DMDB", "For Oracle"),
 
     /*** new data types **/
-    ARCTIC(100, "ARCTIC", null),
+    Lakehouse(100, "Lakehouse", null),
     ;
 
     public static List<Integer> hadoopDirtyDataSource =
