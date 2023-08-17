@@ -1,12 +1,12 @@
 package cn.guruguru.datalink.converter.enums;
 
-import cn.guruguru.datalink.protocol.node.extract.scan.DamengScanNode;
+import cn.guruguru.datalink.protocol.node.extract.scan.DmScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
 
 public enum DDLDialect {
     Oracle(OracleScanNode.TYPE, true),
-    DMDB(DamengScanNode.TYPE, false),
+    DMDB(DmScanNode.TYPE, false),
     MySQL(MySqlScanNode.TYPE, false),
     ;
 
