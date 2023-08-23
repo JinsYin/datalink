@@ -107,7 +107,7 @@ public class FlinkTypeConverter implements TypeConverter<LogicalType> {
             case "CHAR": // CHAR(n)
             case "VARCHAR": // VARCHAR(n)
             case "TEXT":
-                return VarCharType.STRING_TYPE; // STRING
+                return new VarCharType(VarCharType.MAX_LENGTH); // STRING
             case "BINARY":
             case "VARBINARY":
             case "BLOB":
@@ -154,7 +154,7 @@ public class FlinkTypeConverter implements TypeConverter<LogicalType> {
             case "VARCHAR": // VARCHAR(n)
             case "VARCHAR2": // it is not mentioned in the Flink document
             case "CLOB":
-                return VarCharType.STRING_TYPE;
+                return new VarCharType(VarCharType.MAX_LENGTH);
             case "RAW": // RAW(s)
             case "BLOB":
                 return new VarBinaryType(VarBinaryType.MAX_LENGTH);
@@ -215,7 +215,7 @@ public class FlinkTypeConverter implements TypeConverter<LogicalType> {
             case "NCLOB":
             case "XMLType":
             case "SYS.XMLTYPE":
-                return VarCharType.STRING_TYPE;
+                return new VarCharType(VarCharType.MAX_LENGTH);
             case "BLOB":
             case "ROWID":
                 return new VarBinaryType(VarBinaryType.MAX_LENGTH);
