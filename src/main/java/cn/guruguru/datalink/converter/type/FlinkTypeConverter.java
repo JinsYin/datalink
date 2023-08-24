@@ -103,6 +103,9 @@ public class FlinkTypeConverter implements TypeConverter<LogicalType> {
             case "TIME": // TIME [(p)]
                 return new TimeType(precision); // TIME [(p)] [WITHOUT TIMEZONE]
             case "DATETIME": // DATETIME [(p)]
+                if (precision == null) {
+                    return new TimestampType();
+                }
                 return new TimestampType(precision); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
             case "CHAR": // CHAR(n)
             case "VARCHAR": // VARCHAR(n)
@@ -241,7 +244,7 @@ public class FlinkTypeConverter implements TypeConverter<LogicalType> {
       Integer scale = fieldFormat.getScale();
       switch (fieldType) {
           case "STRING":
-              return VarCharType.STRING_TYPE;
+              return new VarCharType(VarCharType.MAX_LENGTH);
           case "BOOLEAN":
               return new BooleanType();
           case "INT":
