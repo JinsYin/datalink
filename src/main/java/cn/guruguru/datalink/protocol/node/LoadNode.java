@@ -40,16 +40,16 @@ public abstract class LoadNode implements Node, Serializable {
     private List<DataField> fields;
     @JsonProperty("fieldRelations")
     private List<FieldRelation> fieldRelations;
-    @Nullable
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("properties")
-    private Map<String, String> properties;
     /**
      * Filter clauses for Flink SQL, e.g. `WHERE age > 0 LIMIT 10`
      */
     @Nullable
     @JsonProperty("filterClause")
     private String filterClause;
+    @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("properties")
+    private Map<String, String> properties;
 
     @JsonCreator
     public LoadNode(@JsonProperty("id") String id,

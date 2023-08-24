@@ -3,7 +3,9 @@ package cn.guruguru.datalink.protocol.node.load;
 import cn.guruguru.datalink.datasource.NodeDataSource;
 import cn.guruguru.datalink.datasource.DataSourceType;
 import cn.guruguru.datalink.protocol.field.DataField;
+import cn.guruguru.datalink.protocol.field.WatermarkField;
 import cn.guruguru.datalink.protocol.node.LoadNode;
+import cn.guruguru.datalink.protocol.relation.FieldRelation;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,6 +14,7 @@ import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonPro
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeName;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -46,10 +49,17 @@ public class LakehouseLoadNode extends LoadNode {
     private String table;
 
     @JsonCreator
-    public LakehouseLoadNode(@Nonnull @JsonProperty("url") String url,
+    public LakehouseLoadNode(@JsonProperty("id") String id,
+                             @JsonProperty("name") String name,
+                             @JsonProperty("fields") List<DataField> fields,
+                             @JsonProperty("fieldRelations") List<FieldRelation> fieldRelations,
+                             @Nullable @JsonProperty("filterClause") String filterClause,
+                             @Nullable @JsonProperty("properties") Map<String, String> properties,
+                             @Nonnull @JsonProperty("url") String url,
                              @Nonnull @JsonProperty("catalog") String catalog,
                              @JsonProperty("database") String database,
                              @JsonProperty("table") String table) {
+        super(id, name, fields, fieldRelations, filterClause, properties);
         this.url = url;
         this.catalog = catalog;
         this.database = database;
