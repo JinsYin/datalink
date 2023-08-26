@@ -8,6 +8,7 @@ import cn.guruguru.datalink.protocol.node.extract.cdc.OracleCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
 import cn.guruguru.datalink.protocol.node.load.LakehouseLoadNode;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.table.types.logical.ArrayType;
 import org.apache.flink.table.types.logical.BigIntType;
@@ -31,6 +32,7 @@ import org.apache.flink.table.types.logical.ZonedTimestampType;
 
 import java.util.Collections;
 
+@Slf4j
 public class FlinkTypeConverter implements TypeConverter<LogicalType> {
 
     /**
@@ -95,18 +97,15 @@ public class FlinkTypeConverter implements TypeConverter<LogicalType> {
                 return new DoubleType();
             case "NUMERIC": // NUMERIC(p, s)
             case "DECIMAL": // DECIMAL(p, s)
-                return new DecimalType(precision, scale);
+                return formatDecimalType(precision, scale);
             case "BOOLEAN": // TINYINT(1)
                 return new BooleanType();
             case "DATE":
                 return new DateType();
             case "TIME": // TIME [(p)]
-                return new TimeType(precision); // TIME [(p)] [WITHOUT TIMEZONE]
+                return formatTimeType(precision); // TIME [(p)] [WITHOUT TIMEZONE]
             case "DATETIME": // DATETIME [(p)]
-                if (precision == null) {
-                    return new TimestampType();
-                }
-                return new TimestampType(precision); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
+                return formatTimestampType(precision); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
             case "CHAR": // CHAR(n)
             case "VARCHAR": // VARCHAR(n)
             case "TEXT":
@@ -116,6 +115,7 @@ public class FlinkTypeConverter implements TypeConverter<LogicalType> {
             case "BLOB":
                 return new VarBinaryType(VarBinaryType.MAX_LENGTH); // BYTES
             default:
+                log.error("Unsupported MySQL data type:" + fieldType);
                 throw new UnsupportedDataTypeException("Unsupported MySQL data type:" + fieldType);
         }
     }
@@ -142,26 +142,22 @@ public class FlinkTypeConverter implements TypeConverter<LogicalType> {
             case "DOUBLE PRECISION":
             case "REAL":
             case "NUMBER": // NUMBER(p, s)
-                if (precision != null && scale != null) {
-                    return new DecimalType(precision, scale);
-                } else if (precision != null) {
-                    return new DecimalType(precision);
-                } else {
-                    return new DecimalType();
-                }
+                return formatDecimalType(precision, scale);
             case "DATE":
                 return new DateType();
             case "TIMESTAMP": // TODO: TIMESTAMP [(p)] [WITHOUT TIMEZONE]
-                return new TimestampType(precision); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
+                return formatTimestampType(precision); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
             case "CHAR": // CHAR(n)
             case "VARCHAR": // VARCHAR(n)
             case "VARCHAR2": // it is not mentioned in the Flink document
+            case "NVARCHAR2": // it is not mentioned in the Flink document
             case "CLOB":
                 return new VarCharType(VarCharType.MAX_LENGTH);
             case "RAW": // RAW(s)
             case "BLOB":
                 return new VarBinaryType(VarBinaryType.MAX_LENGTH);
             default:
+                log.error("Unsupported Oracle data type:" + fieldType);
                 throw new UnsupportedDataTypeException("Unsupported Oracle data type:" + fieldType);
         }
     }
@@ -226,6 +222,7 @@ public class FlinkTypeConverter implements TypeConverter<LogicalType> {
             case "INTERVAL YEAR TO MONTH":
                 return new BigIntType();
             default:
+                log.error("Unsupported Oracle CDC data type:" + fieldType);
                 throw new UnsupportedDataTypeException("Unsupported Oracle CDC data type:" + fieldType);
         }
     }
@@ -276,7 +273,40 @@ public class FlinkTypeConverter implements TypeConverter<LogicalType> {
           case "STRUCT": // TODO
               return new RowType(Collections.emptyList());
           default:
+              log.error("Unsupported Lakehouse data type:" + fieldType);
               throw new UnsupportedDataTypeException("Unsupported Lakehouse data type:" + fieldType);
         }
+  }
+
+    // ~ format LogicalType -------------------------------
+
+    private DecimalType formatDecimalType(Integer precision, Integer scale) {
+        boolean precisionRange = precision != null &&
+                precision >= DecimalType.MIN_PRECISION && precision <= DecimalType.MAX_PRECISION;
+        if (precisionRange && scale != null) {
+            return new DecimalType(precision, scale);
+        } else if (precisionRange) {
+            return new DecimalType(precision);
+        } else {
+            return new DecimalType();
+        }
+    }
+
+    private TimestampType formatTimestampType(Integer precision) {
+        boolean precisionRange = precision != null
+                && precision >= TimestampType.MIN_PRECISION && precision >= TimestampType.MAX_PRECISION;
+        if (precisionRange) {
+            return new TimestampType(precision);
+        }
+        return new TimestampType();
+    }
+
+    private TimeType formatTimeType(Integer precision) {
+        boolean precisionRange = precision != null
+                && precision >= TimeType.MIN_PRECISION && precision >= TimeType.MAX_PRECISION;
+        if (precisionRange) {
+            return new TimeType(precision);
+        }
+        return new TimeType();
     }
 }

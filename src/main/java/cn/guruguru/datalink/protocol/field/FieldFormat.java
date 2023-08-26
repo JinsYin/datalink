@@ -30,13 +30,14 @@ public class FieldFormat {
         this.type = type;
         this.precision = precision;
         this.scale = scale;
-        if (precision != null && scale != null) {
-            this.displayType = String.format("%s(%s,%s)", type, precision, scale);
-        } else if (precision != null) {
-            this.displayType = String.format("%s(%s)", type, precision);
-        } else {
-            this.displayType = type;
-        }
+        this.displayType = type;
+        //if (!type.contains("(") && precision != null && scale != null) {
+        //    this.displayType = String.format("%s(%s,%s)", type, precision, scale);
+        //} else if (!type.contains("(") && precision != null) {
+        //    this.displayType = String.format("%s(%s)", type, precision);
+        //} else {
+        //    this.displayType = type;
+        //}
     }
 
     public String toString() {
