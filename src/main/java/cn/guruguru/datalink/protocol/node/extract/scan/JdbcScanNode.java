@@ -4,7 +4,6 @@ import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.extract.ScanExtractNode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCreator;
@@ -57,7 +56,13 @@ public abstract class JdbcScanNode extends ScanExtractNode implements Serializab
 
     @Override
     public Map<String, String> tableOptions() {
-        return super.tableOptions();
+        Map<String, String> options = super.tableOptions();
+        options.put("connector", "jdbc");
+        options.put("url", url);
+        options.put("username", username);
+        options.put("password", password);
+        options.put("table-name", String.format("%s", tableName));
+        return options;
     }
 
     @Override

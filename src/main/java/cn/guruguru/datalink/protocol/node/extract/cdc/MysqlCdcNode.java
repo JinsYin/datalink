@@ -12,6 +12,7 @@ import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTyp
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,11 +43,6 @@ public class MysqlCdcNode extends CdcExtractNode implements Metadata, Serializab
     }
 
     @Override
-    public Map<String, String> tableOptions() {
-        return super.tableOptions();
-    }
-
-    @Override
     public String genTableName() {
         return null;
     }
@@ -59,5 +55,11 @@ public class MysqlCdcNode extends CdcExtractNode implements Metadata, Serializab
     @Override
     public List<DataField> getPartitionFields() {
         return super.getPartitionFields();
+    }
+
+    @Override
+    public Map<String, String> tableOptions() {
+        // TODO
+        return new HashMap<>();
     }
 }
