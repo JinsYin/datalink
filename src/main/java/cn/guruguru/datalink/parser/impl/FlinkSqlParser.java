@@ -361,7 +361,7 @@ public class FlinkSqlParser implements Parser {
         if (node instanceof TransformNode) {
             return genCreateTransformSql(node);
         }
-        StringBuilder sb = new StringBuilder("CREATE TABLE `");
+        StringBuilder sb = new StringBuilder("CREATE TABLE IF NOT EXISTS `");
         sb.append(node.genTableName()).append("`(\n");
         String filterPrimaryKey = getFilterPrimaryKey(node);
         sb.append(genPrimaryKey(node.getPrimaryKey(), filterPrimaryKey));
@@ -372,9 +372,9 @@ public class FlinkSqlParser implements Parser {
                 sb.append(",\n     ").append(extractNode.getWatermarkField().format());
             }
         }
-        sb.append(")");
+        sb.append("\n)");
         if (node.getPartitionFields() != null && !node.getPartitionFields().isEmpty()) {
-            sb.append(String.format("\nPARTITIONED BY (%s)",
+            sb.append(String.format(" PARTITIONED BY (%s)",
                     StringUtils.join(formatFields(node.getPartitionFields()), ",")));
         }
         sb.append(parseOptions(node.tableOptions()));
@@ -414,7 +414,7 @@ public class FlinkSqlParser implements Parser {
     private String parseOptions(Map<String, String> options) {
         StringBuilder sb = new StringBuilder();
         if (options != null && !options.isEmpty()) {
-            sb.append("\n    WITH (");
+            sb.append(" WITH (");
             for (Map.Entry<String, String> kv : options.entrySet()) {
                 sb.append("\n    '").append(kv.getKey()).append("' = '").append(kv.getValue()).append("'").append(",");
             }

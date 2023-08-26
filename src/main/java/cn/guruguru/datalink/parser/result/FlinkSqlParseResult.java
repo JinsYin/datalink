@@ -37,6 +37,6 @@ public class FlinkSqlParseResult implements ParseResult, Serializable {
         List<String> sqls = new ArrayList<>(setSqls);
         sqls.addAll(createTableSqls);
         sqls.addAll(insertSqls);
-        return String.join(";\n", sqls);
+        return String.join(";\n", sqls) + ";";
     }
 }

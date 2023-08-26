@@ -76,5 +76,4 @@ public class DataField implements Field {
         }
         return formatName;
     }
-
 }
