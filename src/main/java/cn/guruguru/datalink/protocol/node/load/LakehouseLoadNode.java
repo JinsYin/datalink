@@ -48,6 +48,14 @@ public class LakehouseLoadNode extends LoadNode {
     @JsonProperty("table")
     private String table;
 
+//    @JsonProperty("primaryKey")
+//    @Nullable
+//    private String primaryKey;
+
+//    @JsonProperty("partitionKey")
+//    @Nullable
+//    private String partitionKey;
+
     @JsonCreator
     public LakehouseLoadNode(@JsonProperty("id") String id,
                              @JsonProperty("name") String name,
@@ -73,7 +81,8 @@ public class LakehouseLoadNode extends LoadNode {
 
     @Override
     public String genTableName() {
-        return table;
+        // TODO
+        return String.format("%s`.`%s`.`%s", catalog, database, table);
     }
 
     @Override
