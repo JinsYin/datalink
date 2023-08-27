@@ -474,6 +474,9 @@ public class FlinkSqlParser implements Parser {
             } else {
                 sb.append(typeConverter.toEngineType(nodeType, field.getFieldFormat()));
             }
+            if (StringUtils.isNotBlank(field.getComment())) {
+                sb.append(" COMMENT '").append(field.getComment()).append("'");
+            }
             sb.append(",\n");
         }
         if (sb.length() > 0) {
