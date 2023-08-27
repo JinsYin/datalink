@@ -273,7 +273,7 @@ public class FlinkSqlParser implements Parser {
      * @param sb Container for storing sql
      */
     private void parseFilterFields(String filterClause, StringBuilder sb) {
-        if (filterClause != null ) {
+        if (StringUtils.isNotBlank(filterClause)) {
             sb.append("\n ");
             sb.append(filterClause);
         }
