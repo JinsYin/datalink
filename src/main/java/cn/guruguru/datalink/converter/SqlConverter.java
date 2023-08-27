@@ -18,6 +18,7 @@ public interface SqlConverter<T> extends Serializable {
      * @param catalog data catalog
      * @param database database
      * @param sqls SQLs from Data Source, non CREATE-TABLE statements will be ignored
+     * @return DDL list
      */
     List<T> toEngineDDL(DDLDialect dialect, String catalog, @Nullable String database, String sqls) throws RuntimeException;
 
@@ -26,7 +27,7 @@ public interface SqlConverter<T> extends Serializable {
      *
      * @param dialect dialect
      * @param tableSchemas table schema list
-     * @return DDLs
+     * @return DDL List
      */
     List<T> toEngineDDL(DDLDialect dialect, List<TableSchema> tableSchemas) throws RuntimeException;
 }

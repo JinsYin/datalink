@@ -19,7 +19,7 @@ import java.util.Map;
  * MySQL Scan Node
  *
  * @see org.apache.inlong.sort.protocol.node.extract.MySqlExtractNode
- * @see https://nightlies.apache.org/flink/flink-docs-master/docs/connectors/table/jdbc/#connector-options
+ * @see <a href="https://nightlies.apache.org/flink/flink-docs-master/docs/connectors/table/jdbc/#connector-options">Connector Options</a>
  */
 @EqualsAndHashCode(callSuper = true)
 @JsonTypeName(MySqlScanNode.TYPE)

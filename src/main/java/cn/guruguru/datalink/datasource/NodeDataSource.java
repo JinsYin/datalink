@@ -1,7 +1,5 @@
 package cn.guruguru.datalink.datasource;
 
-import cn.guruguru.datalink.datasource.DataSourceType;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -12,6 +10,8 @@ import java.lang.annotation.Target;
 public @interface NodeDataSource {
     /**
      * Node data source type
+     *
+     * @return DataSourceType
      */
     DataSourceType value();
 }

@@ -41,7 +41,7 @@ public abstract class LoadNode implements Node, Serializable {
     @JsonProperty("fieldRelations")
     private List<FieldRelation> fieldRelations;
     /**
-     * Filter clauses for Flink SQL, e.g. `WHERE age > 0 LIMIT 10`
+     * Filter clauses for Flink SQL, e.g. <pre>{@code WHERE age > 0 LIMIT 10}</pre>
      */
     @Nullable
     @JsonProperty("filterClause")

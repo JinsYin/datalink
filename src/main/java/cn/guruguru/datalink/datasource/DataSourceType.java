@@ -122,9 +122,9 @@ public enum DataSourceType {
     /**
      * 根据数据源类型和版本获取数据源枚举信息
      *
-     * @param dataType
-     * @param dataVersion
-     * @return
+     * @param dataType data type
+     * @param dataVersion data source vertion
+     * @return DataSourceType
      */
     public static DataSourceType typeVersionOf(String dataType, String dataVersion) {
         if (StringUtils.isBlank(dataVersion)) {
@@ -142,8 +142,8 @@ public enum DataSourceType {
     /**
      * 根据数据源val获取数据源枚举信息
      *
-     * @param val
-     * @return
+     * @param val data source id
+     * @return DataSourceType
      */
     public static DataSourceType valOf(Integer val) {
         Objects.requireNonNull(val);

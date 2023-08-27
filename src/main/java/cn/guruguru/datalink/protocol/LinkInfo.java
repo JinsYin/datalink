@@ -58,8 +58,11 @@ public class LinkInfo implements Serializable {
      * LinkInfo Constructor
      *
      * @param id Uniquely identifies of LinkInfo
+     * @param name The node name
+     * @param description The node description
      * @param nodes The node list that LinkInfo contains
      * @param relation The relation that LinkInfo contains
+     * @param properties flink configuration properties
      */
     @JsonCreator
     public LinkInfo(@JsonProperty("id") String id,
@@ -83,6 +86,8 @@ public class LinkInfo implements Serializable {
      * Converts to LinkInfo from json string
      *
      * @param json json string
+     * @return LinkInfo
+     * @throws JsonProcessingException a JsonProcessingException
      */
     public static LinkInfo serialize(String json) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();

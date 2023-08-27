@@ -11,10 +11,12 @@ public class OracleUtil {
     /**
      * 从 Oracle JDBC URL 解析获取主机名
      *
-     * <p> SID 格式：jdbc:oracle:thin:@[HOST][:PORT]:SID
-     * <p> ServiceName 格式：jdbc:oracle:thin:@//[HOST][:PORT]/SERVICE
+     * <p> SID 格式：{@code jdbc:oracle:thin:@[HOST][:PORT]:SID}
+     * <p> ServiceName 格式：{@code jdbc:oracle:thin:@//[HOST][:PORT]/SERVICE}
      *
-     * @see https://stackoverflow.com/a/12734630
+     * @see <a href="https://stackoverflow.com/a/12734630">How to parse a JDBC url to get hostname,port etc</a>
+     * @param url Oracle JDBC URL
+     * @return URL host
      */
     public static String getHostFromUrl(String url) {
         Matcher matcher = ORACLE_URI_PATTERN.matcher(url);
@@ -26,6 +28,9 @@ public class OracleUtil {
 
     /**
      * 从 Oracle JDBC URL 解析获取端口号
+     *
+     * @param url Oracle JDBC URL
+     * @return URL port
      */
     public static int getPortFromUrl(String url) {
         Matcher matcher = ORACLE_URI_PATTERN.matcher(url);
@@ -37,6 +42,9 @@ public class OracleUtil {
 
     /**
      * 从 Oracle JDBC URL 解析获取数据库（SID 或 ServiceName）
+     *
+     * @param url Oracle JDBC URL
+     * @return  database name
      */
     public static String getDatabaseFromUrl(String url) {
         Matcher matcher = ORACLE_URI_PATTERN.matcher(url);

@@ -10,7 +10,6 @@ import cn.guruguru.datalink.protocol.node.extract.ScanExtractNode;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonSubTypes;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -18,6 +17,8 @@ public class NodeUtil {
 
     /**
      * Get all nodes and their data source type
+     *
+     * @return node map
      */
     public static Map<String, DataSourceType> getAllNodes() {
         return getAllNodes(Node.class);
@@ -25,6 +26,8 @@ public class NodeUtil {
 
     /**
      * Get all extract nodes and their data source types
+     *
+     * @return extract node map
      */
     public static Map<String, DataSourceType> getAllExtractNodes() {
         return getAllNodes(ExtractNode.class);
@@ -32,6 +35,8 @@ public class NodeUtil {
 
     /**
      * Get all scan extract nodes and their data source types
+     *
+     * @return scan extract node map
      */
     public static Map<String, DataSourceType> getAllScanExtractNodes() {
         return getAllNodes(ScanExtractNode.class);
@@ -39,6 +44,8 @@ public class NodeUtil {
 
     /**
      * Get all cdc extract nodes and their data source types
+     *
+     * @return cdc extract node map
      */
     public static Map<String, DataSourceType> getAllCdcExtractNodes() {
         return getAllNodes(CdcExtractNode.class);
@@ -46,6 +53,8 @@ public class NodeUtil {
 
     /**
      * Get all load nodes and their data source types
+     *
+     * @return load node map
      */
     public static Map<String, DataSourceType> getAllLoadNodes() {
         return getAllNodes(LoadNode.class);
@@ -54,7 +63,8 @@ public class NodeUtil {
     /**
      * Get some nodes and their data source type
      *
-     * @param etlNodeClass using `Node.class`, `ExtractNode.class` and so on
+     * @param etlNodeClass using {@code Node.class}, {@code ExtractNode.class} and so on
+     * @return node map
      */
     public static Map<String, DataSourceType> getAllNodes(Class<? extends Node> etlNodeClass) {
         Class<?> clazz;

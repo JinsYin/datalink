@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * Lakehouse Load Node
  *
- * @see https://arctic.netease.com/ch/flink/flink-ddl
+ * @see <a href="https://amoro.netease.com/docs/latest/flink-ddl/">Flink DDL</a>
  */
 @Data
 @NoArgsConstructor(force = true)

@@ -24,7 +24,7 @@ import java.util.Set;
  * Kafka Binlog
  *
  * @see org.apache.inlong.sort.protocol.node.extract.KafkaExtractNode
- * @see https://nightlies.apache.org/flink/flink-docs-release-1.17/docs/connectors/table/kafka/#cdc-changelog-source
+ * @see <a href="https://nightlies.apache.org/flink/flink-docs-master/docs/connectors/table/kafka/#cdc-changelog-source">CDC Changelog Source</a>
  */
 @EqualsAndHashCode(callSuper = true)
 @JsonTypeName(KafkaCdcNode.TYPE)

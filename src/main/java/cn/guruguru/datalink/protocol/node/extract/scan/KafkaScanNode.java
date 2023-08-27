@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Kafka Scan
  *
- * @see https://nightlies.apache.org/flink/flink-docs-release-1.17/docs/connectors/table/kafka/#bounded-ending-position
+ * @see <a href="https://nightlies.apache.org/flink/flink-docs-master/docs/connectors/table/kafka/#bounded-ending-position">Bounded Ending Position</a>
  */
 @JsonTypeName(KafkaScanNode.TYPE)
 @NodeDataSource(DataSourceType.KAFKA_2X)
