@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeName;
 
@@ -48,13 +49,17 @@ public class LakehouseLoadNode extends LoadNode {
     @JsonProperty("table")
     private String table;
 
-//    @JsonProperty("primaryKey")
-//    @Nullable
-//    private String primaryKey;
+    @JsonProperty("primaryKey")
+    @Nullable
+    private String primaryKey;
 
-//    @JsonProperty("partitionKey")
-//    @Nullable
-//    private String partitionKey;
+    //@JsonProperty("partitionKey")
+    //@Nullable
+    //private String partitionKey;
+
+    //@JsonProperty("autoCreateTable")
+    //@Nullable
+    //private boolean autoCreateTable;
 
     @JsonCreator
     public LakehouseLoadNode(@JsonProperty("id") String id,
@@ -66,12 +71,14 @@ public class LakehouseLoadNode extends LoadNode {
                              @Nonnull @JsonProperty("url") String url,
                              @Nonnull @JsonProperty("catalog") String catalog,
                              @JsonProperty("database") String database,
-                             @JsonProperty("table") String table) {
+                             @JsonProperty("table") String table,
+                             @Nullable @JsonProperty("primaryKey") String primaryKey) {
         super(id, name, fields, fieldRelations, filterClause, properties);
         this.url = url;
         this.catalog = catalog;
         this.database = database;
         this.table = table;
+        this.primaryKey = primaryKey;
     }
 
     @Override
@@ -87,7 +94,7 @@ public class LakehouseLoadNode extends LoadNode {
 
     @Override
     public String getPrimaryKey() {
-        return super.getPrimaryKey();
+        return primaryKey;
     }
 
     @Override
