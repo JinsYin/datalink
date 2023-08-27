@@ -33,7 +33,7 @@ import org.apache.flink.table.types.logical.ZonedTimestampType;
 import java.util.Collections;
 
 @Slf4j
-public class FlinkTypeConverter implements TypeConverter<LogicalType> {
+public class FlinkTypeConverter implements TypeConverter<String> {
 
     /**
      * Derive the engine type for the given datasource field type
@@ -43,16 +43,16 @@ public class FlinkTypeConverter implements TypeConverter<LogicalType> {
      * @param fieldFormat source field
      */
     @Override
-    public LogicalType toEngineType(String nodeType, FieldFormat fieldFormat) {
+    public String toEngineType(String nodeType, FieldFormat fieldFormat) {
         switch (nodeType) {
             case MySqlScanNode.TYPE:
-                return convertMysqlType(fieldFormat);
+                return convertMysqlType(fieldFormat).asSummaryString();
             case OracleScanNode.TYPE:
-                return convertOracleType(fieldFormat);
+                return convertOracleType(fieldFormat).asSummaryString();
             case OracleCdcNode.TYPE:
-                return convertOracleCdcType(fieldFormat);
+                return convertOracleCdcType(fieldFormat).asSummaryString();
             case LakehouseLoadNode.TYPE:
-                return convertArcticMixedIcebergType(fieldFormat);
+                return fieldFormat.getType(); // return convertLakehouseType(fieldFormat).asSummaryString();
             default:
                 throw new UnsupportedDataSourceException("Unsupported data source type:" + nodeType);
         }
@@ -235,7 +235,7 @@ public class FlinkTypeConverter implements TypeConverter<LogicalType> {
    * @param fieldFormat Arctic Mixed Iceberg Field Type
    * @return Flink SQL Field Type
    */
-  private LogicalType convertArcticMixedIcebergType(FieldFormat fieldFormat) {
+  private LogicalType convertLakehouseType(FieldFormat fieldFormat) {
       String fieldType = StringUtils.upperCase(fieldFormat.getType());
       Integer precision = fieldFormat.getPrecision();
       Integer scale = fieldFormat.getScale();
@@ -253,7 +253,7 @@ public class FlinkTypeConverter implements TypeConverter<LogicalType> {
           case "DOUBLE":
               return new DoubleType();
           case "DECIMAL": // DECIMAL(p, s)
-              return new DecimalType(precision, scale);
+              return formatDecimalType(precision, scale);
           case "DATE":
               return new DateType();
           case "TIMESTAMP":

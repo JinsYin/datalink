@@ -11,6 +11,7 @@ import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonSub
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class NodeUtil {
@@ -64,7 +65,7 @@ public class NodeUtil {
         }
         JsonSubTypes annotation = clazz.getAnnotation(JsonSubTypes.class);
         JsonSubTypes.Type[] types = annotation.value();
-        Map<String, DataSourceType> nodeTypeAndDataSource = new HashMap<>();
+        Map<String, DataSourceType> nodeTypeAndDataSource = new LinkedHashMap<>();
         Arrays.stream(types).forEach(type -> {
             String nodeType = type.name();
             Class<?> nodeClass = type.value();

@@ -5,10 +5,8 @@ import cn.guruguru.datalink.protocol.node.extract.ScanExtractNode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCreator;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeName;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -20,6 +18,9 @@ import java.util.Map;
 @Data
 @NoArgsConstructor(force = true)
 public abstract class JdbcScanNode extends ScanExtractNode implements Serializable {
+
+    //@JsonProperty
+    //private JdbcDialect dialect; // for converting data types
 
     @JsonProperty("url")
     @Nonnull

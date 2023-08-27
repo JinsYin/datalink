@@ -5,6 +5,7 @@ import cn.guruguru.datalink.protocol.node.extract.cdc.KafkaCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.MongoCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.MysqlCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.OracleCdcNode;
+import cn.guruguru.datalink.protocol.node.extract.scan.DmScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.KafkaScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
@@ -33,8 +34,9 @@ import java.util.TreeMap;
         @JsonSubTypes.Type(value = OracleCdcNode.class, name = OracleCdcNode.TYPE),
         @JsonSubTypes.Type(value = MongoCdcNode.class, name = MongoCdcNode.TYPE),
         // scan
-        @JsonSubTypes.Type(value = OracleScanNode.class, name = OracleScanNode.TYPE),
         @JsonSubTypes.Type(value = MySqlScanNode.class, name = MySqlScanNode.TYPE),
+        @JsonSubTypes.Type(value = OracleScanNode.class, name = OracleScanNode.TYPE),
+        @JsonSubTypes.Type(value = DmScanNode.class, name = DmScanNode.TYPE),
         @JsonSubTypes.Type(value = KafkaScanNode.class, name = KafkaScanNode.TYPE),
         // transform
         @JsonSubTypes.Type(value = TransformNode.class, name = TransformNode.TYPE),

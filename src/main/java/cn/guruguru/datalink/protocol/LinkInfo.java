@@ -66,13 +66,15 @@ public class LinkInfo implements Serializable {
                     @JsonProperty("name") String name,
                     @Nullable @JsonProperty("description") String description,
                     @JsonProperty("nodes") List<Node> nodes,
-                    @JsonProperty("relation") Relation relation) {
+                    @JsonProperty("relation") Relation relation,
+                    @Nullable @JsonProperty("properties") Map<String, String> properties) {
         this.id = Preconditions.checkNotNull(id, "id is null");
         this.name = Preconditions.checkNotNull(id, "name is null");
         this.description = description;
         this.nodes = Preconditions.checkNotNull(nodes, "nodes is null");
         Preconditions.checkState(!nodes.isEmpty(), "nodes is empty");
         this.relation = Preconditions.checkNotNull(relation, "relations is null");
+        this.properties = properties;
     }
 
     // ~ utilities --------------------------------------------------

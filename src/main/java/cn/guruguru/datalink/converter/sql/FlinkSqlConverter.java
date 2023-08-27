@@ -100,7 +100,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
                 Integer precision = tableField.getPrecision();
                 Integer scale = tableField.getScale();
                 FieldFormat fieldFormat = new FieldFormat(columnType, precision, scale);
-                LogicalType engineFieldType = flinkTypeConverter.toEngineType(dialect.getNodeType(), fieldFormat);
+                String engineFieldType = flinkTypeConverter.toEngineType(dialect.getNodeType(), fieldFormat);
                 createTableDDL.append("    `").append(columnName).append("` ").append(engineFieldType);
                 if (!StringUtils.isEmpty(columnComment)) {
                     createTableDDL.append(" '").append(columnComment).append("'");
@@ -183,7 +183,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
             // construct field type for data source
             FieldFormat fieldFormat = constructFieldFormat(columnTypeName, columnTypeArgs);
             // convert to flink type
-            LogicalType engineFieldType = flinkTypeConverter.toEngineType(OracleScanNode.TYPE, fieldFormat);
+            String engineFieldType = flinkTypeConverter.toEngineType(OracleScanNode.TYPE, fieldFormat);
             // construct to a flink column
             StringBuilder engineColumn = new StringBuilder();
             engineColumn.append("`").append(columnName).append("`");
