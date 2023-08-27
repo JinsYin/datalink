@@ -68,6 +68,7 @@ public abstract class LoadNode implements Node, Serializable {
         this.fieldRelations = Preconditions.checkNotNull(fieldRelations,
                 "fieldRelations is null");
         Preconditions.checkState(!fieldRelations.isEmpty(), "fieldRelations is empty");
+        // TODO: check syntax
         this.filterClause = filterClause;
         this.properties = properties;
     }
