@@ -87,6 +87,7 @@ public enum DataSourceType {
 
     /*** new data types **/
     Lakehouse(100, "Lakehouse", null),
+    DMDB(101, "DMDB", null),
     ;
 
     public static List<Integer> hadoopDirtyDataSource =
