@@ -5,6 +5,7 @@ import cn.guruguru.datalink.exception.UnsupportedDataSourceException;
 import cn.guruguru.datalink.exception.UnsupportedDataTypeException;
 import cn.guruguru.datalink.protocol.field.FieldFormat;
 import cn.guruguru.datalink.protocol.node.extract.cdc.OracleCdcNode;
+import cn.guruguru.datalink.protocol.node.extract.scan.DmScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
 import cn.guruguru.datalink.protocol.node.load.LakehouseLoadNode;
@@ -49,6 +50,8 @@ public class FlinkTypeConverter implements TypeConverter<String> {
                 return convertMysqlType(fieldFormat).asSummaryString();
             case OracleScanNode.TYPE:
                 return convertOracleType(fieldFormat).asSummaryString();
+            case DmScanNode.TYPE:
+                return convertDmdbForOracleType(fieldFormat).asSummaryString();
             case OracleCdcNode.TYPE:
                 return convertOracleCdcType(fieldFormat).asSummaryString();
             case LakehouseLoadNode.TYPE:
@@ -121,7 +124,113 @@ public class FlinkTypeConverter implements TypeConverter<String> {
     }
 
     /**
+     * Convert DMDB compatibles with Mysql type to Flink type
      *
+     * @see <a href="https://eco.dameng.com/document/dm/zh-cn/pm/dm_sql-introduction.html">DM_SQL 所支持的数据类型</a>
+     * @see <a href="https://eco.dameng.com/document/dm/zh-cn/pm/jdbc-rogramming-guide.html">数据类型扩展</a>
+     * @see <a href="https://nutz.cn/yvr/t/7piehdm6mmhubpmrsonva6a1fe">达梦数据库的集成（支持oracle、mysql兼容模式）</a>
+     * @param fieldFormat DMDB for MySQL field format
+     * @return Flink SQL Field Type
+     */
+    private LogicalType convertDmdbForMysqlType(FieldFormat fieldFormat) {
+        String fieldType = StringUtils.upperCase(fieldFormat.getType());
+        Integer precision = fieldFormat.getPrecision();
+        Integer scale = fieldFormat.getScale();
+        switch (fieldType) {
+            case "TINYINT":
+                if (precision == 1) { // TINYINT(1)
+                    return new BooleanType();
+                } else {
+                    return new TinyIntType();
+                }
+            case "SMALLINT":
+            case "TINYINT UNSIGNED":
+                return new SmallIntType();
+            case "INT":
+            case "INTEGER": // DMDB
+            case "MEDIUMINT":
+            case "SMALLINT UNSIGNED":
+                return new IntType();
+            case "BIGINT":
+            case "INT UNSIGNED": // TODO
+                return new BigIntType();
+            case "BIGINT UNSIGNED": // TODO
+                return new DecimalType(20, 0);
+            case "FLOAT":
+                return new FloatType();
+            case "DOUBLE":
+            case "DOUBLE PRECISION":
+                return new DoubleType();
+            case "NUMERIC": // NUMERIC(p, s)
+            case "DECIMAL": // DECIMAL(p, s)
+                return formatDecimalType(precision, scale);
+            case "BOOLEAN": // TINYINT(1)
+                return new BooleanType();
+            case "DATE":
+                return new DateType();
+            case "TIME": // TIME [(p)]
+                return formatTimeType(precision); // TIME [(p)] [WITHOUT TIMEZONE]
+            case "DATETIME": // DATETIME [(p)]
+                return formatTimestampType(precision); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
+            case "CHAR": // CHAR(n)
+            case "VARCHAR": // VARCHAR(n)
+            case "TEXT":
+                return new VarCharType(VarCharType.MAX_LENGTH); // STRING
+            case "BINARY":
+            case "VARBINARY":
+            case "BLOB":
+                return new VarBinaryType(VarBinaryType.MAX_LENGTH); // BYTES
+            default:
+                log.error("Unsupported DMDB for MySQL data type:" + fieldType);
+                throw new UnsupportedDataTypeException("Unsupported DMDB for MySQL data type:" + fieldType);
+        }
+    }
+
+    /**
+     * Convert DMDB compatibles with Oracle type to Flink type
+     *
+     * @param fieldFormat DMDB for Oracle Field Type
+     * @return Flink SQL Field Type
+     */
+    private LogicalType convertDmdbForOracleType(FieldFormat fieldFormat) {
+        String fieldType = StringUtils.upperCase(fieldFormat.getType());
+        Integer precision = fieldFormat.getPrecision();
+        Integer scale = fieldFormat.getScale();
+        switch (fieldType) {
+            case "BINARY_FLOAT":
+                return new FloatType();
+            case "BINARY_DOUBLE":
+                return new DoubleType();
+            case "SMALLINT":
+            case "FLOAT": // FLOAT(s)
+            case "DOUBLE PRECISION":
+            case "REAL":
+            case "NUMBER": // NUMBER(p, s)
+                return formatDecimalType(precision, scale);
+            case "INT": // DMDB
+            case "INTEGER": // DMDB
+                return new IntType();
+            case "DATE":
+                return new DateType();
+            case "TIMESTAMP": // TODO: TIMESTAMP [(p)] [WITHOUT TIMEZONE]
+                return formatTimestampType(precision); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
+            case "CHAR": // CHAR(n)
+            case "VARCHAR": // VARCHAR(n)
+            case "VARCHAR2": // it is not mentioned in the Flink document
+            case "NVARCHAR2": // it is not mentioned in the Flink document
+            case "CLOB":
+                return new VarCharType(VarCharType.MAX_LENGTH);
+            case "RAW": // RAW(s)
+            case "BLOB":
+            case "VARBINARY": // DMDB
+                return new VarBinaryType(VarBinaryType.MAX_LENGTH);
+            default:
+                log.error("Unsupported DMDB for Oracle data type:" + fieldType);
+                throw new UnsupportedDataTypeException("Unsupported DMDB for Oracle data type:" + fieldType);
+        }
+    }
+
+    /**
      * Convert Oracle type to Flink type
      *
      * @see <a href="https://nightlies.apache.org/flink/flink-docs-master/docs/connectors/table/jdbc/#data-type-mapping">Data Type Mapping</a>

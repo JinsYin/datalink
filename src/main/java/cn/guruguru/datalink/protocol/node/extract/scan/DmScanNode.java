@@ -15,6 +15,12 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * DMDB Scan Node
+ *
+ * @see <a href="https://nutz.cn/yvr/t/7piehdm6mmhubpmrsonva6a1fe">达梦数据库的集成（支持oracle、mysql兼容模式）</a>
+ * @see <a href="https://blog.csdn.net/weixin_43389023/article/details/105475686">达梦数据库开启其他数据库兼容模式</a>
+ */
 @EqualsAndHashCode(callSuper = true)
 @JsonTypeName(DmScanNode.TYPE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -24,6 +30,8 @@ public class DmScanNode extends JdbcScanNode {
     public static final String TYPE = "DmScan";
 
     private static final long serialVersionUID = -5521981462461235288L;
+
+    // private CompatibleMode compatibleMode;
 
     @JsonCreator
     public DmScanNode(@JsonProperty("id") String id,
@@ -35,6 +43,7 @@ public class DmScanNode extends JdbcScanNode {
                       @JsonProperty("password") String password,
                       @Nonnull @JsonProperty("tableName") String tableName,
                       @Nullable @JsonProperty("primaryKey") String primaryKey) {
+        // TODO: process the url
         super(id, name, fields, properties, url, username, password, tableName, primaryKey);
     }
 }
