@@ -215,6 +215,7 @@ public class FlinkTypeConverter implements TypeConverter<String> {
             case "DATE":
                 return new DateType();
             case "TIMESTAMP": // TODO: TIMESTAMP [(p)] [WITHOUT TIMEZONE]
+            case "DATETIME": // DMDB
                 return formatTimestampType(precision); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
             case "CHAR": // CHAR(n)
             case "VARCHAR": // VARCHAR(n)
