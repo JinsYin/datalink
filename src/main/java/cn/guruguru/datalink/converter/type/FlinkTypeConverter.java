@@ -219,6 +219,7 @@ public class FlinkTypeConverter implements TypeConverter<String> {
             case "VARCHAR2": // it is not mentioned in the Flink document
             case "NVARCHAR2": // it is not mentioned in the Flink document
             case "CLOB":
+            case "TEXT": // DMDB
                 return new VarCharType(VarCharType.MAX_LENGTH);
             case "RAW": // RAW(s)
             case "BLOB":
