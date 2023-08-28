@@ -8,9 +8,7 @@ import cn.guruguru.datalink.converter.table.TableSchema;
 import cn.guruguru.datalink.converter.type.FlinkTypeConverter;
 import cn.guruguru.datalink.exception.IllegalDDLException;
 import cn.guruguru.datalink.exception.SQLSyntaxException;
-import cn.guruguru.datalink.exception.UnsupportedDataSourceException;
 import cn.guruguru.datalink.protocol.field.FieldFormat;
-import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
@@ -99,7 +97,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
                 Integer scale = tableField.getScale();
                 FieldFormat fieldFormat = new FieldFormat(columnType, precision, scale);
                 String engineFieldType = flinkTypeConverter.toEngineType(dialect.getNodeType(), fieldFormat);
-                createTableDDL.append("    `").append(columnName).append("` ").append(engineFieldType);
+                createTableDDL.append("    ").append(formatColumn(columnName)).append(" ").append(engineFieldType);
                 if (!StringUtils.isEmpty(columnComment)) {
                     createTableDDL.append(" '").append(columnComment).append("'");
                 }
@@ -148,18 +146,16 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
             @Nullable Map<String, String> tableCommentMap,
             @Nullable Map<String, String> columnCommentMap) {
         FlinkSqlConverterResult result;
-        switch (dialect.getNodeType()) {
-            case OracleScanNode.TYPE:
-                result = convertOracleType(catalog, database, createTable, tableCommentMap, columnCommentMap);
-                break;
-            default:
-                throw new UnsupportedDataSourceException("Unsupported data source type:" + dialect);
-        }
+        result = convertEngineDDL(
+                dialect.getNodeType(), catalog, database, createTable, tableCommentMap, columnCommentMap);
         return result;
     }
 
-    private FlinkSqlConverterResult convertOracleType(
-            String catalog, @Nullable String database, CreateTable createTable,
+    private FlinkSqlConverterResult convertEngineDDL(
+            String nodeType,
+            String catalog,
+            @Nullable String database,
+            CreateTable createTable,
             Map<String, String> tableCommentMap,
             Map<String, String> columnCommentMap) {
         String tableName = createTable.getTable().getName().replaceAll("\"", "");
@@ -170,7 +166,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
         } else {
             ddlDatabase = database;
         }
-        String tableIdentifier = String.format("`%s`.`%s`.`%s`", catalog, ddlDatabase, tableName);
+        String tableIdentifier = formatTableIdentifier(catalog, ddlDatabase, tableName);
         List<String> flinkColumns = new ArrayList<>(createTable.getColumnDefinitions().size());
         for(ColumnDefinition col: createTable.getColumnDefinitions())
         {
@@ -181,15 +177,14 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
             // construct field type for data source
             FieldFormat fieldFormat = constructFieldFormat(columnTypeName, columnTypeArgs);
             // convert to flink type
-            String engineFieldType = flinkTypeConverter.toEngineType(OracleScanNode.TYPE, fieldFormat);
+            String engineFieldType = flinkTypeConverter.toEngineType(nodeType, fieldFormat);
             // construct to a flink column
             StringBuilder engineColumn = new StringBuilder();
-            engineColumn.append("`").append(columnName).append("`");
-            engineColumn.append(" ").append(engineFieldType);
+            engineColumn.append(formatColumn(columnName)).append(" ").append(engineFieldType);
             if (col.getColumnSpecs() != null) {
                 String columnSpec = String.join(" ", col.getColumnSpecs());
-                // remove unnecessary keywords for Oracle
-                columnSpec = columnSpec.replaceAll("\\sDEFAULT\\s(\\S)+", ""); // remove DEFAULT keyword
+                // remove unnecessary keywords
+                columnSpec = columnSpec.replaceAll("\\s?DEFAULT\\s(\\S)+", ""); // remove DEFAULT keyword
                 engineColumn.append(" ").append(columnSpec);
             }
             if (columnCommentMap != null && columnCommentMap.get(columnFullName) != null) {
@@ -270,5 +265,27 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
                 .replaceAll("\\sENABLE", "")
                 .replaceAll("USING INDEX ", "")
                 .replaceAll(",?\\s*\n?\\s*SUPPLEMENTAL LOG DATA.*COLUMNS", "");
+    }
+
+    // ~ utilities --------------------------------------------------
+
+    private String formatColumn(String column) {
+        if (!column.contains("`")) {
+            return String.format("`%s`", column.trim());
+        }
+        return column;
+    }
+
+    private String formatTableIdentifier(String catalog, String database, String table) {
+        if (!catalog.contains("`")) {
+            catalog = String.format("`%s`", catalog.trim());
+        }
+        if (!database.contains("`")) {
+            database = String.format("`%s`", database.trim());
+        }
+        if (!catalog.contains("`")) {
+            table = String.format("`%s`", table.trim());
+        }
+        return String.format("%s.%s.%s", catalog, database, table);
     }
 }

@@ -112,6 +112,7 @@ public class FlinkTypeConverter implements TypeConverter<String> {
             case "CHAR": // CHAR(n)
             case "VARCHAR": // VARCHAR(n)
             case "TEXT":
+            case "LONGTEXT": // it is not mentioned in the Flink document
                 return new VarCharType(VarCharType.MAX_LENGTH); // STRING
             case "BINARY":
             case "VARBINARY":

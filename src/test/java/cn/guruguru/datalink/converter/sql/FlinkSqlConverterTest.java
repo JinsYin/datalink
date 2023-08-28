@@ -17,6 +17,18 @@ public class FlinkSqlConverterTest {
     private static final FlinkSqlConverter flinkSqlConverter = new FlinkSqlConverter();
 
     @Test
+    public void testDmDDL() {
+        String ddl = "CREATE TABLE DATALAKE_TEST.CORP_INFO_INVESTOR (\n"
+                + " \"id\" NUMBER(15,5) NOT NULL,\n"
+                + " \"lastupdateddt\" TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL\n"
+                + ");";
+        List<FlinkSqlConverterResult> actualResults = flinkSqlConverter.toEngineDDL(
+                JdbcDialect.DMDB, "P1_CATALOG1", "DB1", ddl);
+        String actualDDL = actualResults.get(0).getConverterResult();
+        System.out.println(actualDDL);
+    }
+
+    @Test
     public void testConvertSingleStatementForOracle() {
         String createSQL =
             "CREATE TABLE \"ADM_BDPP\".\"PARAMSYS\" \n"

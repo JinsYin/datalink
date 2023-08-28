@@ -6,8 +6,8 @@ import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
 
 public enum JdbcDialect {
     Oracle(OracleScanNode.TYPE, true),
-    DMDB(DmScanNode.TYPE, false),
-    MySQL(MySqlScanNode.TYPE, false),
+    DMDB(DmScanNode.TYPE, true),
+    MySQL(MySqlScanNode.TYPE, true),
     ;
 
     private final String nodeType;
