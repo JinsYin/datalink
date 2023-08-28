@@ -283,7 +283,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
         if (!database.contains("`")) {
             database = String.format("`%s`", database.trim());
         }
-        if (!catalog.contains("`")) {
+        if (!table.contains("`")) {
             table = String.format("`%s`", table.trim());
         }
         return String.format("%s.%s.%s", catalog, database, table);
