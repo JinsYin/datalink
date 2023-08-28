@@ -43,7 +43,7 @@ public class DmScanNode extends JdbcScanNode {
                       @JsonProperty("password") String password,
                       @Nonnull @JsonProperty("tableName") String tableName,
                       @Nullable @JsonProperty("primaryKey") String primaryKey) {
-        // TODO: process the url
+        // TODO: process the url with compatibleMode property
         super(id, name, fields, properties, url, username, password, tableName, primaryKey);
     }
 }

@@ -21,7 +21,6 @@ import net.sf.jsqlparser.statement.comment.Comment;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.flink.table.types.logical.LogicalType;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -50,8 +49,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
         List<FlinkSqlConverterResult> results = new ArrayList<>();
         try {
             // remove some keywords and clauses for Oracle
-            sqls = sqls.replaceAll("\\sENABLE", "")
-                    .replaceAll("USING INDEX ", "");
+            sqls = preprocessOracleDDL(sqls);
             Map<String, String> tableCommentMap = new LinkedHashMap<>();
             Map<String, String> columnCommentMap = new LinkedHashMap<>();
             Statements statements = CCJSqlParserUtil.parseStatements(sqls);
@@ -262,5 +260,15 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
             sb.append(tableComment);
         }
         return sb.append(";").toString();
+    }
+
+    // ~ preprocess DDL ---------------------------------------------
+
+    private String preprocessOracleDDL(String sqls) {
+        // remove some keywords and clauses for Oracle
+        return sqls.toUpperCase()
+                .replaceAll("\\sENABLE", "")
+                .replaceAll("USING INDEX ", "")
+                .replaceAll(",?\\s*\n?\\s*SUPPLEMENTAL LOG DATA.*COLUMNS", "");
     }
 }
