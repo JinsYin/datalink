@@ -206,6 +206,7 @@ public class FlinkTypeConverter implements TypeConverter<String> {
             case "DOUBLE PRECISION":
             case "REAL":
             case "NUMBER": // NUMBER(p, s)
+            case "DECIMAL":
                 return formatDecimalType(precision, scale);
             case "INT": // DMDB
             case "INTEGER": // DMDB
