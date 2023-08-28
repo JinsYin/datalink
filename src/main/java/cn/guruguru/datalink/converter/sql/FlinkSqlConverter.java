@@ -1,7 +1,7 @@
 package cn.guruguru.datalink.converter.sql;
 
 import cn.guruguru.datalink.converter.SqlConverter;
-import cn.guruguru.datalink.converter.enums.DDLDialect;
+import cn.guruguru.datalink.converter.enums.JdbcDialect;
 import cn.guruguru.datalink.converter.sql.result.FlinkSqlConverterResult;
 import cn.guruguru.datalink.converter.table.TableField;
 import cn.guruguru.datalink.converter.table.TableSchema;
@@ -40,7 +40,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
      * @param sqls SQLs from Data Source, non CREATE-TABLE statements will be ignored
      */
     @Override
-    public List<FlinkSqlConverterResult> toEngineDDL(DDLDialect dialect, String catalog, @Nullable String database, String sqls)
+    public List<FlinkSqlConverterResult> toEngineDDL(JdbcDialect dialect, String catalog, @Nullable String database, String sqls)
             throws RuntimeException {
         Preconditions.checkNotNull(dialect,"dialect is null");
         Preconditions.checkNotNull(catalog,"catalog is null");
@@ -77,7 +77,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
     }
 
     @Override
-    public List<FlinkSqlConverterResult> toEngineDDL(DDLDialect dialect, List<TableSchema> tableSchemas) throws RuntimeException {
+    public List<FlinkSqlConverterResult> toEngineDDL(JdbcDialect dialect, List<TableSchema> tableSchemas) throws RuntimeException {
         Preconditions.checkNotNull(dialect,"dialect is null");
         Preconditions.checkNotNull(tableSchemas,"table schema list is null");
         Preconditions.checkState(!tableSchemas.isEmpty(),"table schema list is empty");
@@ -144,7 +144,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
     }
 
     private FlinkSqlConverterResult parseCreateTable(
-            DDLDialect dialect, String catalog, String database, CreateTable createTable,
+            JdbcDialect dialect, String catalog, String database, CreateTable createTable,
             @Nullable Map<String, String> tableCommentMap,
             @Nullable Map<String, String> columnCommentMap) {
         FlinkSqlConverterResult result;

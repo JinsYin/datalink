@@ -1,7 +1,7 @@
 package cn.guruguru.datalink.converter.sql;
 
 import cn.guruguru.datalink.converter.SqlConverter;
-import cn.guruguru.datalink.converter.enums.DDLDialect;
+import cn.guruguru.datalink.converter.enums.JdbcDialect;
 import cn.guruguru.datalink.converter.table.TableSchema;
 import cn.guruguru.datalink.exception.UnsupportedEngineException;
 import org.apache.calcite.config.Lex;
@@ -20,7 +20,7 @@ import java.util.List;
 public class SparkSqlConverter implements SqlConverter<String> {
 
     @Override
-    public List<String> toEngineDDL(DDLDialect dialect, String catalog, @Nullable String database, String sqls)
+    public List<String> toEngineDDL(JdbcDialect dialect, String catalog, @Nullable String database, String sqls)
             throws RuntimeException  {
         SqlParser.Config sqlParserConfig = SqlParser.Config.DEFAULT
                 .withLex(Lex.ORACLE).withConformance(SqlConformanceEnum.ORACLE_12)
@@ -37,7 +37,7 @@ public class SparkSqlConverter implements SqlConverter<String> {
     }
 
     @Override
-    public List<String> toEngineDDL(DDLDialect dialect, List<TableSchema> tableSchemas) throws RuntimeException {
+    public List<String> toEngineDDL(JdbcDialect dialect, List<TableSchema> tableSchemas) throws RuntimeException {
         throw new UnsupportedEngineException("Spark engine not supported");
     }
 

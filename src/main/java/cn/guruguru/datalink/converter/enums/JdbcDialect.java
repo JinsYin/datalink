@@ -4,7 +4,7 @@ import cn.guruguru.datalink.protocol.node.extract.scan.DmScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
 
-public enum DDLDialect {
+public enum JdbcDialect {
     Oracle(OracleScanNode.TYPE, true),
     DMDB(DmScanNode.TYPE, false),
     MySQL(MySqlScanNode.TYPE, false),
@@ -13,7 +13,7 @@ public enum DDLDialect {
     private final String nodeType;
     private final boolean supported;
 
-    DDLDialect(String nodeType, boolean supported) {
+    JdbcDialect(String nodeType, boolean supported) {
         this.nodeType = nodeType;
         this.supported = supported;
     }

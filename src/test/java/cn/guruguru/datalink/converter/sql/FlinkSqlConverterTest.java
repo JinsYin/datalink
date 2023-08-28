@@ -1,6 +1,6 @@
 package cn.guruguru.datalink.converter.sql;
 
-import cn.guruguru.datalink.converter.enums.DDLDialect;
+import cn.guruguru.datalink.converter.enums.JdbcDialect;
 import cn.guruguru.datalink.converter.sql.result.FlinkSqlConverterResult;
 import cn.guruguru.datalink.converter.table.TableField;
 import cn.guruguru.datalink.converter.table.TableSchema;
@@ -26,7 +26,7 @@ public class FlinkSqlConverterTest {
                 + "SUPPLEMENTAL LOG DATA (ALL) COLUMNS"
                 + "   )";
         List<FlinkSqlConverterResult> actualResults = flinkSqlConverter.toEngineDDL(
-                DDLDialect.Oracle, "P1_CATALOG1", "DB1", createSQL);
+                JdbcDialect.Oracle, "P1_CATALOG1", "DB1", createSQL);
         String actualDDL = actualResults.get(0).getConverterResult();
         String expectedDDL =
             "CREATE TABLE `P1_CATALOG1`.`ADM_BDPP`.`PARAMSYS` (\n"
@@ -58,7 +58,7 @@ public class FlinkSqlConverterTest {
                 "   COMMENT ON COLUMN \"API_OPER\".\"EDG25_APP_MESSAGE\".\"INFO\" IS '发送日期';";
 
         List<FlinkSqlConverterResult> actualResults = flinkSqlConverter.toEngineDDL(
-                DDLDialect.Oracle, "P1_CATALOG1", "DB1", sqls);
+                JdbcDialect.Oracle, "P1_CATALOG1", "DB1", sqls);
         String actualDDL = actualResults.get(0).getConverterResult();
         String expectedDDL =
                 "CREATE TABLE `P1_CATALOG1`.`API_OPER`.`EDG25_APP_MESSAGE` (\n"
@@ -82,7 +82,7 @@ public class FlinkSqlConverterTest {
                 .tableComment("Test Table")
                 .build();
         List<TableSchema> tableSchemas = Collections.singletonList(tableSchema);
-        List<FlinkSqlConverterResult> results = flinkSqlConverter.toEngineDDL(DDLDialect.Oracle, tableSchemas);
+        List<FlinkSqlConverterResult> results = flinkSqlConverter.toEngineDDL(JdbcDialect.Oracle, tableSchemas);
         String actualDDL = results.stream().map(FlinkSqlConverterResult::getConverterResult).collect(Collectors.joining());
         String expectedDDL =
             "CREATE TABLE `P1_CATALOG1`.`API_OPER`.`EDG25_APP_MESSAGE` \n"

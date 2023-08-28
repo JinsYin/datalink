@@ -1,9 +1,7 @@
 package cn.guruguru.datalink.converter;
 
-import cn.guruguru.datalink.converter.enums.DDLDialect;
+import cn.guruguru.datalink.converter.enums.JdbcDialect;
 import cn.guruguru.datalink.converter.table.TableSchema;
-import net.sf.jsqlparser.JSQLParserException;
-import org.apache.calcite.sql.parser.SqlParseException;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
@@ -20,7 +18,7 @@ public interface SqlConverter<T> extends Serializable {
      * @param sqls SQLs from Data Source, non CREATE-TABLE statements will be ignored
      * @return DDL list
      */
-    List<T> toEngineDDL(DDLDialect dialect, String catalog, @Nullable String database, String sqls) throws RuntimeException;
+    List<T> toEngineDDL(JdbcDialect dialect, String catalog, @Nullable String database, String sqls) throws RuntimeException;
 
     /**
      * Convert to engine SQL
@@ -29,5 +27,5 @@ public interface SqlConverter<T> extends Serializable {
      * @param tableSchemas table schema list
      * @return DDL List
      */
-    List<T> toEngineDDL(DDLDialect dialect, List<TableSchema> tableSchemas) throws RuntimeException;
+    List<T> toEngineDDL(JdbcDialect dialect, List<TableSchema> tableSchemas) throws RuntimeException;
 }
