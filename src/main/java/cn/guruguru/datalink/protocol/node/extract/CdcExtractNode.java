@@ -4,6 +4,7 @@ import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.ExtractNode;
 import cn.guruguru.datalink.protocol.field.WatermarkField;
 import cn.guruguru.datalink.protocol.node.extract.cdc.KafkaCdcNode;
+import cn.guruguru.datalink.protocol.node.extract.cdc.KafkaNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.MongoCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.MysqlCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.OracleCdcNode;
@@ -28,6 +29,7 @@ import java.util.Map;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
+        @JsonSubTypes.Type(value = KafkaNode.class, name = KafkaNode.TYPE),
         @JsonSubTypes.Type(value = KafkaCdcNode.class, name = KafkaCdcNode.TYPE),
         @JsonSubTypes.Type(value = MysqlCdcNode.class, name = MysqlCdcNode.TYPE),
         @JsonSubTypes.Type(value = OracleCdcNode.class, name = OracleCdcNode.TYPE),

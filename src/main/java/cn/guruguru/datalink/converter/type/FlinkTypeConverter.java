@@ -55,7 +55,8 @@ public class FlinkTypeConverter implements TypeConverter<String> {
             case OracleCdcNode.TYPE:
                 return convertOracleCdcType(fieldFormat).asSummaryString();
             case LakehouseLoadNode.TYPE:
-                return fieldFormat.getType(); // return convertLakehouseType(fieldFormat).asSummaryString();
+                // lakehouse table may be created by Spark, so it is necessary to convert the lakehouse type to the Flink type
+                return fieldFormat.getType(); // return convertLakehouseMixedIcebergType(fieldFormat).asSummaryString();
             default:
                 throw new UnsupportedDataSourceException("Unsupported data source type:" + nodeType);
         }
@@ -348,7 +349,7 @@ public class FlinkTypeConverter implements TypeConverter<String> {
    * @param fieldFormat Arctic Mixed Iceberg Field Type
    * @return Flink SQL Field Type
    */
-  private LogicalType convertLakehouseType(FieldFormat fieldFormat) {
+  private LogicalType convertLakehouseMixedIcebergType(FieldFormat fieldFormat) {
       String fieldType = StringUtils.upperCase(fieldFormat.getType());
       Integer precision = fieldFormat.getPrecision();
       Integer scale = fieldFormat.getScale();

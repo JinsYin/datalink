@@ -1,4 +1,4 @@
-package cn.guruguru.datalink.protocol.node.extract.scan;
+package cn.guruguru.datalink.protocol.node.extract.cdc;
 
 import cn.guruguru.datalink.datasource.NodeDataSource;
 import cn.guruguru.datalink.datasource.DataSourceType;
@@ -15,20 +15,20 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Kafka Scan
+ * Kafka Streaming Node
  *
  * @see <a href="https://nightlies.apache.org/flink/flink-docs-master/docs/connectors/table/kafka/#bounded-ending-position">Bounded Ending Position</a>
  */
-@JsonTypeName(KafkaScanNode.TYPE)
+@JsonTypeName(KafkaNode.TYPE)
 @NodeDataSource(DataSourceType.KAFKA_2X)
-public class KafkaScanNode extends KafkaExtractNode {
-    public static final String TYPE = "KafkaScan";
+public class KafkaNode extends KafkaExtractNode {
+    public static final String TYPE = "Kafka";
 
-    public KafkaScanNode(String id, String name, List<FieldInfo> fields, @Nullable WatermarkField watermarkField, Map<String, String> properties, @Nonnull String topic, @Nonnull String bootstrapServers, @Nonnull Format format, KafkaScanStartupMode kafkaScanStartupMode, String primaryKey, String groupId) {
+    public KafkaNode(String id, String name, List<FieldInfo> fields, @Nullable WatermarkField watermarkField, Map<String, String> properties, @Nonnull String topic, @Nonnull String bootstrapServers, @Nonnull Format format, KafkaScanStartupMode kafkaScanStartupMode, String primaryKey, String groupId) {
         super(id, name, fields, watermarkField, properties, topic, bootstrapServers, format, kafkaScanStartupMode, primaryKey, groupId);
     }
 
-    public KafkaScanNode(String id, String name, List<FieldInfo> fields, @Nullable WatermarkField watermarkField, Map<String, String> properties, @Nonnull String topic, @Nonnull String bootstrapServers, @Nonnull Format format, KafkaScanStartupMode kafkaScanStartupMode, String primaryKey, String groupId, String scanSpecificOffsets, String scanTimestampMillis) {
+    public KafkaNode(String id, String name, List<FieldInfo> fields, @Nullable WatermarkField watermarkField, Map<String, String> properties, @Nonnull String topic, @Nonnull String bootstrapServers, @Nonnull Format format, KafkaScanStartupMode kafkaScanStartupMode, String primaryKey, String groupId, String scanSpecificOffsets, String scanTimestampMillis) {
         super(id, name, fields, watermarkField, properties, topic, bootstrapServers, format, kafkaScanStartupMode, primaryKey, groupId, scanSpecificOffsets, scanTimestampMillis);
     }
 }

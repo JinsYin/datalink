@@ -8,7 +8,7 @@ import cn.guruguru.datalink.protocol.node.extract.cdc.MongoCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.MysqlCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.OracleCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.DmScanNode;
-import cn.guruguru.datalink.protocol.node.extract.scan.KafkaScanNode;
+import cn.guruguru.datalink.protocol.node.extract.cdc.KafkaNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
 import com.google.common.base.Preconditions;
@@ -34,6 +34,7 @@ import java.util.Map;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
         // cdc
+        @JsonSubTypes.Type(value = KafkaNode.class, name = KafkaNode.TYPE),
         @JsonSubTypes.Type(value = KafkaCdcNode.class, name = KafkaCdcNode.TYPE),
         @JsonSubTypes.Type(value = MysqlCdcNode.class, name = MysqlCdcNode.TYPE),
         @JsonSubTypes.Type(value = OracleCdcNode.class, name = OracleCdcNode.TYPE),
@@ -42,7 +43,6 @@ import java.util.Map;
         @JsonSubTypes.Type(value = MySqlScanNode.class, name = MySqlScanNode.TYPE),
         @JsonSubTypes.Type(value = OracleScanNode.class, name = OracleScanNode.TYPE),
         @JsonSubTypes.Type(value = DmScanNode.class, name = DmScanNode.TYPE),
-        @JsonSubTypes.Type(value = KafkaScanNode.class, name = KafkaScanNode.TYPE),
 })
 @Data
 @NoArgsConstructor
