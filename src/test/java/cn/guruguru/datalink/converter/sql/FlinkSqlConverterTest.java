@@ -24,7 +24,7 @@ public class FlinkSqlConverterTest {
                 + ");";
         List<FlinkSqlConverterResult> actualResults = flinkSqlConverter.toEngineDDL(
                 JdbcDialect.DMDB, "P1_CATALOG1", "DB1", ddl);
-        String actualDDL = actualResults.get(0).getConverterResult();
+        String actualDDL = actualResults.get(0).getCreateTableSql();
         System.out.println(actualDDL);
     }
 
@@ -39,7 +39,7 @@ public class FlinkSqlConverterTest {
                 + "   )";
         List<FlinkSqlConverterResult> actualResults = flinkSqlConverter.toEngineDDL(
                 JdbcDialect.Oracle, "P1_CATALOG1", "DB1", createSQL);
-        String actualDDL = actualResults.get(0).getConverterResult();
+        String actualDDL = actualResults.get(0).getCreateTableSql();
         String expectedDDL =
             "CREATE TABLE `P1_CATALOG1`.`ADM_BDPP`.`PARAMSYS` (\n"
                 + "    `PARAM_SEQUENCE` DECIMAL(15, 0) NOT NULL,\n"
@@ -71,7 +71,7 @@ public class FlinkSqlConverterTest {
 
         List<FlinkSqlConverterResult> actualResults = flinkSqlConverter.toEngineDDL(
                 JdbcDialect.Oracle, "P1_CATALOG1", "DB1", sqls);
-        String actualDDL = actualResults.get(0).getConverterResult();
+        String actualDDL = actualResults.get(0).getCreateTableSql();
         String expectedDDL =
                 "CREATE TABLE `P1_CATALOG1`.`API_OPER`.`EDG25_APP_MESSAGE` (\n"
                         + "    `ID` STRING NOT NULL COMMENT '主键',\n"
@@ -95,7 +95,7 @@ public class FlinkSqlConverterTest {
                 .build();
         List<TableSchema> tableSchemas = Collections.singletonList(tableSchema);
         List<FlinkSqlConverterResult> results = flinkSqlConverter.toEngineDDL(JdbcDialect.Oracle, tableSchemas);
-        String actualDDL = results.stream().map(FlinkSqlConverterResult::getConverterResult).collect(Collectors.joining());
+        String actualDDL = results.stream().map(FlinkSqlConverterResult::getCreateTableSql).collect(Collectors.joining());
         String expectedDDL =
             "CREATE TABLE `P1_CATALOG1`.`API_OPER`.`EDG25_APP_MESSAGE` \n"
                 + "    `ID` STRING '主键',\n"

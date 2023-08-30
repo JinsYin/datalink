@@ -56,6 +56,7 @@ public class FlinkTypeConverter implements TypeConverter<String> {
                 return convertOracleCdcType(fieldFormat).asSummaryString();
             case LakehouseLoadNode.TYPE:
                 // lakehouse table may be created by Spark, so it is necessary to convert the lakehouse type to the Flink type
+                // e.g. Spark `TIMESTAMP` -> Arctic `TIMESTAMPTZ` -> Flink `TIMESTAMP(6) WITH LOCAL TIME ZONE`
                 return fieldFormat.getType(); // return convertLakehouseMixedIcebergType(fieldFormat).asSummaryString();
             default:
                 throw new UnsupportedDataSourceException("Unsupported data source type:" + nodeType);
@@ -373,7 +374,7 @@ public class FlinkTypeConverter implements TypeConverter<String> {
           case "TIMESTAMP":
               return new TimestampType(TimestampType.DEFAULT_PRECISION); // TIMESTAMP(6)
           case "TIMESTAMPTZ":
-              return new LocalZonedTimestampType(TimestampType.DEFAULT_PRECISION); // TIMESTAMP(6) WITH LCOAL TIME ZONE
+              return new LocalZonedTimestampType(TimestampType.DEFAULT_PRECISION); // TIMESTAMP(6) WITH LOCAL TIME ZONE
           case "FIXED": // FIXED(p)
               return new VarBinaryType(precision); // BINARY(p)
           case "UUID":

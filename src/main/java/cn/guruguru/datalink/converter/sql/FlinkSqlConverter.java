@@ -87,7 +87,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
             Preconditions.checkNotNull(tableIdentifier,"table identifier is null");
             Preconditions.checkNotNull(tableFields,"table columns is null");
             Preconditions.checkState(!tableFields.isEmpty(),"table columns is empty");
-            StringBuilder createTableDDL = new StringBuilder("CREATE TABLE ");
+            StringBuilder createTableDDL = new StringBuilder("CREATE TABLE IF NOT EXISTS ");
             createTableDDL.append(tableIdentifier).append(" \n");
             for (TableField tableField : tableFields) {
                 String columnName = Preconditions.checkNotNull(tableField.getName(),"column name is null");
@@ -108,7 +108,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
                 createTableDDL.append(" COMMENT '").append(tableComment).append("'");
             }
             createTableDDL.append(";\n");
-            FlinkSqlConverterResult result = new FlinkSqlConverterResult(tableIdentifier, createTableDDL.toString());
+            FlinkSqlConverterResult result = new FlinkSqlConverterResult(dialect, tableIdentifier, createTableDDL.toString());
             results.add(result);
         }
         return results;
@@ -147,12 +147,12 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
             @Nullable Map<String, String> columnCommentMap) {
         FlinkSqlConverterResult result;
         result = convertEngineDDL(
-                dialect.getNodeType(), catalog, database, createTable, tableCommentMap, columnCommentMap);
+                dialect, catalog, database, createTable, tableCommentMap, columnCommentMap);
         return result;
     }
 
     private FlinkSqlConverterResult convertEngineDDL(
-            String nodeType,
+            JdbcDialect dialect,
             String catalog,
             @Nullable String database,
             CreateTable createTable,
@@ -177,7 +177,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
             // construct field type for data source
             FieldFormat fieldFormat = constructFieldFormat(columnTypeName, columnTypeArgs);
             // convert to flink type
-            String engineFieldType = flinkTypeConverter.toEngineType(nodeType, fieldFormat);
+            String engineFieldType = flinkTypeConverter.toEngineType(dialect.getNodeType(), fieldFormat);
             // construct to a flink column
             StringBuilder engineColumn = new StringBuilder();
             engineColumn.append(formatColumn(columnName)).append(" ").append(engineFieldType);
@@ -199,7 +199,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
         // generate CREATE TABLE statement
         String flinkDDL = generateFlinkDDL(tableIdentifier, tableComment, flinkColumns);
         log.info("generated flink ddl: {}", flinkDDL.replaceAll("\\n", "").replaceAll("\\s{2,}", " ").trim());
-        return new FlinkSqlConverterResult(tableIdentifier, flinkDDL);
+        return new FlinkSqlConverterResult(dialect, tableIdentifier, flinkDDL);
     }
 
     /**
@@ -245,7 +245,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
      * @return DDL SQL
      */
     private String generateFlinkDDL(String tableIdentifier, @Nullable String tableComment, List<String> flinkColumns) {
-        StringBuilder sb = new StringBuilder("CREATE TABLE ");
+        StringBuilder sb = new StringBuilder("CREATE TABLE IF NOT EXISTS ");
         sb.append(tableIdentifier).append(" (\n");
         for (String column : flinkColumns) {
             sb.append("    ").append(column).append(",\n");

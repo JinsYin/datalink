@@ -1,6 +1,16 @@
 package cn.guruguru.datalink.converter;
 
+import cn.guruguru.datalink.converter.enums.JdbcDialect;
+
 public interface SqlConverterResult {
+
+    /**
+     * Get JDBC dialect
+     *
+     * @return JDBC dialect
+     */
+    JdbcDialect getDialect();
+
     /**
      * Get catalog name
      *
@@ -23,6 +33,13 @@ public interface SqlConverterResult {
     String getTable();
 
     /**
+     * Get database identifier;
+     *
+     * @return database identifier
+     */
+    String getDatabaseIdentifier();
+
+    /**
      * Get table identifier
      *
      * @return table identifier
@@ -30,9 +47,27 @@ public interface SqlConverterResult {
     String getTableIdentifier();
 
     /**
-     * Get converter result
+     * Get CREATE-DATABASE statement
      *
-     * @return converter result
+     * @return a CREATE-DATABASE statement
      */
-    String getConverterResult();
+    default String getCreateDatabaseSql() {
+        return String.format("CREATE DATABASE IF NOT EXISTS %s;", getDatabaseIdentifier());
+    }
+
+    /**
+     * Get CREATE-TABLE statement
+     *
+     * @return a CREATE-TABLE statement
+     */
+    String getCreateTableSql();
+
+    /**
+     * Get DDL SQLs
+     *
+     * @return DDL SQLs
+     */
+    default String getSqls() {
+        return getCreateDatabaseSql() + "\n\n" + getCreateTableSql();
+    }
 }
