@@ -84,9 +84,9 @@ public class FlinkSqlConverterTest {
 
     @Test
     public void testConvertTableSchema() {
-        TableField idColumn = new TableField("ID", "VARCHAR2", null, null, "主键");
-        TableField aidColumn = new TableField("AID", "VARCHAR2", null, null, null);
-        TableField infoColumn = new TableField("INFO", "VARCHAR2", null, null, "发送日期");
+        TableField idColumn = new TableField("ID", "VARCHAR2", null, null, "主键", false, false, false);
+        TableField aidColumn = new TableField("AID", "VARCHAR2", null, null, null,false, false, false);
+        TableField infoColumn = new TableField("INFO", "VARCHAR2", null, null, "发送日期", false, false, false);
         List<TableField> fields = Arrays.asList(idColumn, aidColumn, infoColumn);
         TableSchema tableSchema = TableSchema.builder()
                 .tableIdentifier("`P1_CATALOG1`.`API_OPER`.`EDG25_APP_MESSAGE`")
