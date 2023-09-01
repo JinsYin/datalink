@@ -3,6 +3,9 @@ package cn.guruguru.datalink.converter.sql;
 import cn.guruguru.datalink.converter.SqlConverter;
 import cn.guruguru.datalink.converter.enums.JdbcDialect;
 import cn.guruguru.datalink.converter.sql.result.FlinkSqlConverterResult;
+import cn.guruguru.datalink.converter.table.CaseStrategy;
+import cn.guruguru.datalink.converter.table.DatabaseTableAffix;
+import cn.guruguru.datalink.converter.table.TableDuplicateStrategy;
 import cn.guruguru.datalink.converter.table.TableField;
 import cn.guruguru.datalink.converter.table.TableSchema;
 import cn.guruguru.datalink.converter.type.FlinkTypeConverter;
@@ -38,7 +41,10 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
      * @param sqls SQLs from Data Source, non CREATE-TABLE statements will be ignored
      */
     @Override
-    public List<FlinkSqlConverterResult> toEngineDDL(JdbcDialect dialect, String catalog, @Nullable String database, String sqls)
+    public List<FlinkSqlConverterResult> toEngineDDL(JdbcDialect dialect,
+                                                     String catalog,
+                                                     @Nullable String database,
+                                                     String sqls)
             throws RuntimeException {
         Preconditions.checkNotNull(dialect,"dialect is null");
         Preconditions.checkNotNull(catalog,"catalog is null");
@@ -75,7 +81,12 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
     }
 
     @Override
-    public List<FlinkSqlConverterResult> toEngineDDL(JdbcDialect dialect, List<TableSchema> tableSchemas) throws RuntimeException {
+    public List<FlinkSqlConverterResult> toEngineDDL(JdbcDialect dialect,
+                                                     List<TableSchema> tableSchemas,
+                                                     DatabaseTableAffix databaseAffix,
+                                                     DatabaseTableAffix tableAffix,
+                                                     TableDuplicateStrategy tableDuplicateStrategy,
+                                                     CaseStrategy caseStrategy) throws RuntimeException {
         Preconditions.checkNotNull(dialect,"dialect is null");
         Preconditions.checkNotNull(tableSchemas,"table schema list is null");
         Preconditions.checkState(!tableSchemas.isEmpty(),"table schema list is empty");
