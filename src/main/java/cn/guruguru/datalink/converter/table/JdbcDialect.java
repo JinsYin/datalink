@@ -1,4 +1,4 @@
-package cn.guruguru.datalink.converter.enums;
+package cn.guruguru.datalink.converter.table;
 
 import cn.guruguru.datalink.protocol.node.extract.scan.DmScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;

@@ -7,7 +7,7 @@ public enum CaseStrategy {
     // keep the same name
     SAME_NAME,
     // convert to uppercase
-    TO_UPPERCASE,
+    UPPERCASE,
     // convert to lowercase
-    TO_LOWERCASE,
+    LOWERCASE,
 }

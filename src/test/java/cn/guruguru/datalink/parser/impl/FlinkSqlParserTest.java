@@ -18,7 +18,14 @@ public class FlinkSqlParserTest {
         FlinkSqlParser parser = FlinkSqlParser.getInstance(linkInfo);
         ParseResult parseResult = parser.parse();
         String actual = SqlUtil.compress(parseResult.getSqlScript());
-        String expected = "CREATE TABLE `lake_policy`(`id` INT) WITH ('a' = '1');CREATE TABLE `orders`(`id` STRING) WITH ('b' = '2');INSERT INTO `orders` SELECT CAST(`id` as STRING) AS `id` FROM `lake_policy`";
+        String expected = "CREATE TABLE IF NOT EXISTS `lake_policy`(`id` INT) WITH (" +
+                "'a' = '1', 'connector' = 'jdbc', " +
+                "'url' = 'jdbc:mysql://localhost:3306/mydatabase', " +
+                "'username' = 'rqyin', " +
+                "'password' = 'easipass', " +
+                "'table-name' = 'lake_policy');"
+                + "CREATE TABLE IF NOT EXISTS `p1_catalog1`.`db`.`orders`(`id` STRING) WITH ('b' = '2');"
+                + "INSERT INTO `p1_catalog1`.`db`.`orders` SELECT CAST(`id` as STRING) AS `id` FROM `lake_policy`;";
         Assert.assertEquals(expected, actual);
     }
 }

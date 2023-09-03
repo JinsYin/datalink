@@ -1,43 +1,29 @@
 package cn.guruguru.datalink.converter.sql.result;
 
-import cn.guruguru.datalink.converter.SqlConverterResult;
-import cn.guruguru.datalink.converter.enums.JdbcDialect;
+import cn.guruguru.datalink.converter.result.SqlConverterResult;
+import cn.guruguru.datalink.converter.table.JdbcDialect;
+import cn.guruguru.datalink.converter.statement.CreateDatabaseStatement;
+import cn.guruguru.datalink.converter.statement.CreateTableStatement;
 import com.google.common.base.Preconditions;
+import lombok.Data;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
 
+@Data
 public class FlinkSqlConverterResult implements SqlConverterResult {
     private JdbcDialect dialect;
+    private List<CreateDatabaseStatement> createDatabaseStatements;
+    private List<CreateTableStatement> createTableStatements;
 
-    private final String catalog;
-    private final String database;
-    private final String table;
-    private final String ddl;
-
-    public FlinkSqlConverterResult(JdbcDialect dialect, String catalog, String database, String table, String ddl) {
+    public FlinkSqlConverterResult(JdbcDialect dialect,
+                                   List<CreateDatabaseStatement> createDatabaseStatements,
+                                   List<CreateTableStatement> createTableStatements) {
         this.dialect = Preconditions.checkNotNull(dialect, "dialect is null");
-        this.catalog = Preconditions.checkNotNull(catalog, "catalog is null");
-        this.database = Preconditions.checkNotNull(database, "database is null");
-        this.table = Preconditions.checkNotNull(table, "table is null");
-        this.ddl = Preconditions.checkNotNull(ddl, "ddl is null");
-    }
-
-    public FlinkSqlConverterResult(JdbcDialect dialect, String tableIdentifier, String ddl) {
-        Preconditions.checkNotNull(dialect, "dialect is null");
-        Preconditions.checkNotNull(tableIdentifier, "tableIdentifier is null");
-        Matcher matcher = Pattern.compile("`(.*)`.`(.*)`.`(.*)`").matcher(tableIdentifier);
-        if (matcher.matches()) {
-            String catalog = matcher.group(1);
-            String database = matcher.group(2);
-            String table = matcher.group(3);
-            this.catalog = catalog;
-            this.database = database;
-            this.table = table;
-        } else {
-            throw new IllegalArgumentException("table identifier format is incorrect");
-        }
-        this.ddl = Preconditions.checkNotNull(ddl, "ddl is null");
+        this.createDatabaseStatements = Preconditions.checkNotNull(createDatabaseStatements,
+                "createDatabaseStatements is null");
+        Preconditions.checkState(!createDatabaseStatements.isEmpty(), "createDatabaseStatements is empty");
+        this.createTableStatements = Preconditions.checkNotNull(createTableStatements, "createTableStatements is null");
+        Preconditions.checkState(!createTableStatements.isEmpty(), "createTableStatements is empty");
     }
 
     @Override
@@ -46,32 +32,12 @@ public class FlinkSqlConverterResult implements SqlConverterResult {
     }
 
     @Override
-    public String getCatalog() {
-        return this.catalog;
+    public List<CreateDatabaseStatement> getCreateDatabaseStmts() {
+        return this.createDatabaseStatements;
     }
 
     @Override
-    public String getDatabase() {
-        return this.database;
-    }
-
-    @Override
-    public String getTable() {
-        return this.table;
-    }
-
-    @Override
-    public String getDatabaseIdentifier() {
-        return String.format("`%s`.`%s`", catalog, database);
-    }
-
-    @Override
-    public String getTableIdentifier() {
-        return String.format("`%s`.`%s`.`%s`", catalog, database, table);
-    }
-
-    @Override
-    public String getCreateTableSql() {
-        return this.ddl;
+    public List<CreateTableStatement> getCreateTableStmts() {
+        return this.createTableStatements;
     }
 }

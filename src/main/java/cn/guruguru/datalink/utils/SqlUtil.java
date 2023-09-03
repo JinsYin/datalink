@@ -13,7 +13,9 @@ public class SqlUtil {
         Preconditions.checkNotNull(sql,"SQL is null");
         return sql.replaceAll("\\n", "")
                 .replaceAll("\\(\\s*", "(")
+                .replaceAll("\\s*\\)", ")")
                 .replaceAll("\\s{2,}", " ")
+                .replaceAll("\\s*;", ";")
                 .trim();
     }
 }

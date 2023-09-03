@@ -12,6 +12,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class TableSchema {
+    @JsonProperty("databaseIdentifier")
+    private String databaseIdentifier;
+
     @JsonProperty("tableIdentifier")
     private String tableIdentifier;
 

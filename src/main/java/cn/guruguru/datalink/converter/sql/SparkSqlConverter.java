@@ -1,7 +1,7 @@
 package cn.guruguru.datalink.converter.sql;
 
 import cn.guruguru.datalink.converter.SqlConverter;
-import cn.guruguru.datalink.converter.enums.JdbcDialect;
+import cn.guruguru.datalink.converter.table.JdbcDialect;
 import cn.guruguru.datalink.converter.table.CaseStrategy;
 import cn.guruguru.datalink.converter.table.DatabaseTableAffix;
 import cn.guruguru.datalink.converter.table.TableDuplicateStrategy;
@@ -20,16 +20,34 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public class SparkSqlConverter implements SqlConverter<String> {
+public class SparkSqlConverter implements SqlConverter<List<String>> {
+
+    // ~ converter for table schemas --------------------------------------
 
     @Override
-    public List<String> toEngineDDL(JdbcDialect dialect, String catalog, @Nullable String database, String sqls)
+    public List<String> convertSchemas(JdbcDialect dialect,
+                                       List<TableSchema> tableSchemas,
+                                       DatabaseTableAffix databaseAffix,
+                                       DatabaseTableAffix tableAffix,
+                                       TableDuplicateStrategy tableDuplicateStrategy,
+                                       CaseStrategy caseStrategy) throws RuntimeException {
+        throw new UnsupportedEngineException("Spark engine not supported");
+    }
+
+    // ~ converter for sql ------------------------------------------------
+
+    @Override
+    public List<String> convertSql(JdbcDialect dialect,
+                                   String catalog,
+                                   @Nullable String database,
+                                   String sql,
+                                   CaseStrategy caseStrategy)
             throws RuntimeException  {
         SqlParser.Config sqlParserConfig = SqlParser.Config.DEFAULT
                 .withLex(Lex.ORACLE).withConformance(SqlConformanceEnum.ORACLE_12)
                 .withParserFactory(SqlDdlParserImpl.FACTORY);
 
-        SqlParser parser = SqlParser.create(sqls, sqlParserConfig);
+        SqlParser parser = SqlParser.create(sql, sqlParserConfig);
         SqlNode sqlNode;
         try {
             sqlNode = parser.parseStmt();
@@ -37,16 +55,6 @@ public class SparkSqlConverter implements SqlConverter<String> {
             throw new RuntimeException(e);
         }
         return Arrays.asList(convertToSparkDDL(sqlNode));
-    }
-
-    @Override
-    public List<String> toEngineDDL(JdbcDialect dialect,
-                                    List<TableSchema> tableSchemas,
-                                    DatabaseTableAffix databaseAffix,
-                                    DatabaseTableAffix tableAffix,
-                                    TableDuplicateStrategy tableDuplicateStrategy,
-                                    CaseStrategy caseStrategy) throws RuntimeException {
-        throw new UnsupportedEngineException("Spark engine not supported");
     }
 
     private static String convertToSparkDDL(SqlNode sqlNode) {
