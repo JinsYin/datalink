@@ -3,13 +3,13 @@ package cn.guruguru.datalink.ddl.converter;
 import cn.guruguru.datalink.ddl.statement.CreateDatabaseStatement;
 import cn.guruguru.datalink.ddl.statement.CreateTableStatement;
 import cn.guruguru.datalink.ddl.table.JdbcDialect;
-import cn.guruguru.datalink.ddl.result.FlinkSqlConverterResult;
+import cn.guruguru.datalink.ddl.result.FlinkDdlConverterResult;
 import cn.guruguru.datalink.ddl.table.CaseStrategy;
 import cn.guruguru.datalink.ddl.table.DatabaseTableAffix;
 import cn.guruguru.datalink.ddl.table.TableDuplicateStrategy;
 import cn.guruguru.datalink.ddl.table.TableField;
 import cn.guruguru.datalink.ddl.table.TableSchema;
-import cn.guruguru.datalink.ddl.type.FlinkTypeConverter;
+import cn.guruguru.datalink.ddl.type.FlinkDataTypeConverter;
 import cn.guruguru.datalink.exception.IllegalDDLException;
 import cn.guruguru.datalink.exception.SQLSyntaxException;
 import cn.guruguru.datalink.protocol.field.FieldFormat;
@@ -31,14 +31,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Slf4j
-public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> {
+public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> {
 
-    private static final FlinkTypeConverter flinkTypeConverter = new FlinkTypeConverter();
+    private static final FlinkDataTypeConverter flinkTypeConverter = new FlinkDataTypeConverter();
 
     // ~ converter for table schemas --------------------------------------
 
     @Override
-    public FlinkSqlConverterResult convertSchemas(JdbcDialect dialect,
+    public FlinkDdlConverterResult convertSchemas(JdbcDialect dialect,
                                                   List<TableSchema> tableSchemas,
                                                   DatabaseTableAffix databaseAffix,
                                                   DatabaseTableAffix tableAffix,
@@ -112,16 +112,16 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
      * @param dialect JDBC dialect
      * @param createDatabaseSqlMap map for create database sql
      * @param createTableSqlMap map for create table sql
-     * @return {@link FlinkSqlConverterResult}
+     * @return {@link FlinkDdlConverterResult}
      */
-    private FlinkSqlConverterResult getFlinkSqlConverterResult(JdbcDialect dialect,
+    private FlinkDdlConverterResult getFlinkSqlConverterResult(JdbcDialect dialect,
                                                                Map<String, String> createDatabaseSqlMap,
                                                                Map<String, String> createTableSqlMap) {
         List<CreateDatabaseStatement> createDatabaseStatements = new ArrayList<>();
         List<CreateTableStatement> createTableStatements = new ArrayList<>();
         createDatabaseSqlMap.forEach((k, v) -> createDatabaseStatements.add(new CreateDatabaseStatement(k, v)));
         createTableSqlMap.forEach((k, v) -> createTableStatements.add(new CreateTableStatement(k, v)));
-        return new FlinkSqlConverterResult(dialect, createDatabaseStatements, createTableStatements);
+        return new FlinkDdlConverterResult(dialect, createDatabaseStatements, createTableStatements);
     }
 
     // ~ converter for sql ------------------------------------------------
@@ -138,7 +138,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
      * @param sql one or more SQL statements from Data Source, non-CREATE-TABLE statements will be ignored
      */
     @Override
-    public FlinkSqlConverterResult convertSql(JdbcDialect dialect,
+    public FlinkDdlConverterResult convertSql(JdbcDialect dialect,
                                               String targetCatalog,
                                               @Nullable String defaultDatabase,
                                               String sql,
@@ -148,7 +148,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
         Preconditions.checkNotNull(sql,"sql is null");
         log.info("start parse {} SQL:{}", dialect, SqlUtil.compress(sql));
 
-        FlinkSqlConverterResult result;
+        FlinkDdlConverterResult result;
         try {
             // preprocess sql
             sql = preprocessSql(dialect, sql);
@@ -218,7 +218,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
      * @param caseStrategy case strategy
      * @return FlinkSqlConverterResult
      */
-    private FlinkSqlConverterResult parseCreateTableStatements(
+    private FlinkDdlConverterResult parseCreateTableStatements(
             JdbcDialect dialect,
             Statements statements,
             String targetCatalog,
@@ -255,7 +255,7 @@ public class FlinkSqlConverter implements SqlConverter<FlinkSqlConverterResult> 
      * @param caseStrategy case strategy
      * @return FlinkSqlConverterResult
      */
-    private FlinkSqlConverterResult convertCreateTableStatements(
+    private FlinkDdlConverterResult convertCreateTableStatements(
             JdbcDialect dialect,
             String targetCatalog,
             @Nullable String defaultDatabase,

@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * Type converter interface
  */
-public interface TypeConverter<T> extends Serializable {
+public interface DataTypeConverter<T> extends Serializable {
     /**
      * Converts field type
      *

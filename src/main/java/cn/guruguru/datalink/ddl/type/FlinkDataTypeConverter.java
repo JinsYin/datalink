@@ -33,7 +33,7 @@ import org.apache.flink.table.types.logical.ZonedTimestampType;
 import java.util.Collections;
 
 @Slf4j
-public class FlinkTypeConverter implements TypeConverter<String> {
+public class FlinkDataTypeConverter implements DataTypeConverter<String> {
 
     /**
      * Derive the engine type for the given datasource field type

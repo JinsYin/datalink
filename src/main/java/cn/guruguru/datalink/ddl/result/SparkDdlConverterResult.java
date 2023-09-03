@@ -8,7 +8,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class SparkSqlConverterResult implements SqlConverterResult {
+public class SparkDdlConverterResult implements DdlConverterResult {
     @Override
     public JdbcDialect getDialect() {
         return null;

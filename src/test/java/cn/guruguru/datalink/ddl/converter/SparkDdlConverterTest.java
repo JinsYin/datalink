@@ -1,10 +1,9 @@
-package cn.guruguru.datalink.ddl.sql;
+package cn.guruguru.datalink.ddl.converter;
 
-import cn.guruguru.datalink.ddl.converter.SparkSqlConverter;
 import cn.guruguru.datalink.ddl.table.JdbcDialect;
 import org.junit.Test;
 
-public class SparkSqlConverterTest {
+public class SparkDdlConverterTest {
 
     @Test
     public void testConvertToEngineDDL() {
@@ -17,7 +16,7 @@ public class SparkSqlConverterTest {
                 + "APP_FUNC VARCHAR2(6),"
                 + "LASTUPDATEDDT TIMESTAMP(6)"
                 + ")";
-        SparkSqlConverter sparkSqlConverter = new SparkSqlConverter();
+        SparkDdlConverter sparkSqlConverter = new SparkDdlConverter();
         sparkSqlConverter.convertSql(JdbcDialect.Oracle, "p1_catalog1", null, createSQL);
     }
 }

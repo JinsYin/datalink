@@ -1,6 +1,5 @@
 package cn.guruguru.datalink.ddl.converter;
 
-import cn.guruguru.datalink.ddl.converter.SqlConverter;
 import cn.guruguru.datalink.ddl.table.JdbcDialect;
 import cn.guruguru.datalink.ddl.table.CaseStrategy;
 import cn.guruguru.datalink.ddl.table.DatabaseTableAffix;
@@ -20,7 +19,7 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public class SparkSqlConverter implements SqlConverter<List<String>> {
+public class SparkDdlConverter implements DdlConverter<List<String>> {
 
     // ~ converter for table schemas --------------------------------------
 

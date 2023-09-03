@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.List;
 
-public interface SqlConverter<T> extends Serializable {
+public interface DdlConverter<T> extends Serializable {
 
     /**
      * Convert to engine SQL

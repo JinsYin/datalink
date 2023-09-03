@@ -9,12 +9,12 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class FlinkSqlConverterResult implements SqlConverterResult {
+public class FlinkDdlConverterResult implements DdlConverterResult {
     private JdbcDialect dialect;
     private List<CreateDatabaseStatement> createDatabaseStatements;
     private List<CreateTableStatement> createTableStatements;
 
-    public FlinkSqlConverterResult(JdbcDialect dialect,
+    public FlinkDdlConverterResult(JdbcDialect dialect,
                                    List<CreateDatabaseStatement> createDatabaseStatements,
                                    List<CreateTableStatement> createTableStatements) {
         this.dialect = Preconditions.checkNotNull(dialect, "dialect is null");

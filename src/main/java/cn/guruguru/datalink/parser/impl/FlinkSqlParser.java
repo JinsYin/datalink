@@ -17,7 +17,7 @@ import cn.guruguru.datalink.protocol.node.extract.cdc.MongoCdcNode;
 import cn.guruguru.datalink.protocol.node.transform.TransformNode;
 import cn.guruguru.datalink.protocol.relation.FieldRelation;
 import cn.guruguru.datalink.protocol.relation.NodeRelation;
-import cn.guruguru.datalink.ddl.type.FlinkTypeConverter;
+import cn.guruguru.datalink.ddl.type.FlinkDataTypeConverter;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -49,7 +49,7 @@ public class FlinkSqlParser implements Parser {
     private final List<String> loadTableSqls = new ArrayList<>();
     private final List<String> insertSqls = new ArrayList<>();
 
-    private static final FlinkTypeConverter typeConverter = new FlinkTypeConverter();
+    private static final FlinkDataTypeConverter typeConverter = new FlinkDataTypeConverter();
 
     public FlinkSqlParser(LinkInfo linkInfo) {
         this.linkInfo = linkInfo;

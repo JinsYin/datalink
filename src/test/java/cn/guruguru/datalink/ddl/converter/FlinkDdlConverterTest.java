@@ -1,9 +1,8 @@
-package cn.guruguru.datalink.ddl.sql;
+package cn.guruguru.datalink.ddl.converter;
 
-import cn.guruguru.datalink.ddl.converter.FlinkSqlConverter;
 import cn.guruguru.datalink.ddl.table.CaseStrategy;
 import cn.guruguru.datalink.ddl.table.JdbcDialect;
-import cn.guruguru.datalink.ddl.result.FlinkSqlConverterResult;
+import cn.guruguru.datalink.ddl.result.FlinkDdlConverterResult;
 import cn.guruguru.datalink.ddl.table.TableField;
 import cn.guruguru.datalink.ddl.table.TableSchema;
 import cn.guruguru.datalink.utils.SqlUtil;
@@ -14,9 +13,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class FlinkSqlConverterTest {
+public class FlinkDdlConverterTest {
 
-    private static final FlinkSqlConverter flinkSqlConverter = new FlinkSqlConverter();
+    private static final FlinkDdlConverter flinkSqlConverter = new FlinkDdlConverter();
 
     @Test
     public void testDmDDL() {
@@ -24,7 +23,7 @@ public class FlinkSqlConverterTest {
                 + " \"id\" NUMBER(15,5) NOT NULL,\n"
                 + " \"lastupdateddt\" TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL\n"
                 + ");";
-        FlinkSqlConverterResult actualResult = flinkSqlConverter.convertSql(
+        FlinkDdlConverterResult actualResult = flinkSqlConverter.convertSql(
                 JdbcDialect.DMDB, "P1_CATALOG1", "DB1", ddl, CaseStrategy.UPPERCASE);
         String actualDDL = SqlUtil.compress(actualResult.getSql());
         String expectedDDL = "CREATE DATABASE IF NOT EXISTS `P1_CATALOG1`.`DATALAKE_TEST`;" +
@@ -45,7 +44,7 @@ public class FlinkSqlConverterTest {
                 + "\t\"TASKINTERVAL\" VARCHAR2(10 CHAR) NOT NULL DEFAULT 0, \n"
                 + "SUPPLEMENTAL LOG DATA (ALL) COLUMNS"
                 + "   )";
-        FlinkSqlConverterResult actualResult = flinkSqlConverter.convertSql(
+        FlinkDdlConverterResult actualResult = flinkSqlConverter.convertSql(
                 JdbcDialect.Oracle, "P1_CATALOG1", "DB1", createSQL);
         String actualDDL = SqlUtil.compress(actualResult.getSql());
         String expectedDDL = "CREATE DATABASE IF NOT EXISTS `P1_CATALOG1`.`ADM_BDPP`;"
@@ -77,7 +76,7 @@ public class FlinkSqlConverterTest {
                 "   COMMENT ON COLUMN \"API_OPER\".\"EDG25_APP_MESSAGE\".\"AID\" IS 'appList主键';\n" +
                 "   COMMENT ON COLUMN \"API_OPER\".\"EDG25_APP_MESSAGE\".\"INFO\" IS '发送日期';";
 
-        FlinkSqlConverterResult actualResult = flinkSqlConverter.convertSql(
+        FlinkDdlConverterResult actualResult = flinkSqlConverter.convertSql(
                 JdbcDialect.Oracle, "P1_CATALOG1", "DB1", sqls);
         String actualDDL = SqlUtil.compress(actualResult.getSql());
         String expectedDDL =
@@ -104,7 +103,7 @@ public class FlinkSqlConverterTest {
                 .fields(fields)
                 .build();
         List<TableSchema> tableSchemas = Collections.singletonList(tableSchema);
-        FlinkSqlConverterResult result = flinkSqlConverter.convertSchemas(JdbcDialect.Oracle, tableSchemas);
+        FlinkDdlConverterResult result = flinkSqlConverter.convertSchemas(JdbcDialect.Oracle, tableSchemas);
         String actualDDL = SqlUtil.compress(result.getSql());
         String expectedDDL = "CREATE DATABASE IF NOT EXISTS `P1_CATALOG1`.`API_OPER`;"
                 + "CREATE TABLE IF NOT EXISTS `P1_CATALOG1`.`API_OPER`.`EDG25_APP_MESSAGE` ("
