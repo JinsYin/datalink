@@ -1,16 +1,15 @@
-package cn.guruguru.datalink.converter.sql;
+package cn.guruguru.datalink.ddl.converter;
 
-import cn.guruguru.datalink.converter.SqlConverter;
-import cn.guruguru.datalink.converter.statement.CreateDatabaseStatement;
-import cn.guruguru.datalink.converter.statement.CreateTableStatement;
-import cn.guruguru.datalink.converter.table.JdbcDialect;
-import cn.guruguru.datalink.converter.sql.result.FlinkSqlConverterResult;
-import cn.guruguru.datalink.converter.table.CaseStrategy;
-import cn.guruguru.datalink.converter.table.DatabaseTableAffix;
-import cn.guruguru.datalink.converter.table.TableDuplicateStrategy;
-import cn.guruguru.datalink.converter.table.TableField;
-import cn.guruguru.datalink.converter.table.TableSchema;
-import cn.guruguru.datalink.converter.type.FlinkTypeConverter;
+import cn.guruguru.datalink.ddl.statement.CreateDatabaseStatement;
+import cn.guruguru.datalink.ddl.statement.CreateTableStatement;
+import cn.guruguru.datalink.ddl.table.JdbcDialect;
+import cn.guruguru.datalink.ddl.result.FlinkSqlConverterResult;
+import cn.guruguru.datalink.ddl.table.CaseStrategy;
+import cn.guruguru.datalink.ddl.table.DatabaseTableAffix;
+import cn.guruguru.datalink.ddl.table.TableDuplicateStrategy;
+import cn.guruguru.datalink.ddl.table.TableField;
+import cn.guruguru.datalink.ddl.table.TableSchema;
+import cn.guruguru.datalink.ddl.type.FlinkTypeConverter;
 import cn.guruguru.datalink.exception.IllegalDDLException;
 import cn.guruguru.datalink.exception.SQLSyntaxException;
 import cn.guruguru.datalink.protocol.field.FieldFormat;

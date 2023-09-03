@@ -1,10 +1,10 @@
-package cn.guruguru.datalink.converter;
+package cn.guruguru.datalink.ddl.converter;
 
-import cn.guruguru.datalink.converter.table.JdbcDialect;
-import cn.guruguru.datalink.converter.table.CaseStrategy;
-import cn.guruguru.datalink.converter.table.DatabaseTableAffix;
-import cn.guruguru.datalink.converter.table.TableDuplicateStrategy;
-import cn.guruguru.datalink.converter.table.TableSchema;
+import cn.guruguru.datalink.ddl.table.JdbcDialect;
+import cn.guruguru.datalink.ddl.table.CaseStrategy;
+import cn.guruguru.datalink.ddl.table.DatabaseTableAffix;
+import cn.guruguru.datalink.ddl.table.TableDuplicateStrategy;
+import cn.guruguru.datalink.ddl.table.TableSchema;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;

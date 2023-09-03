@@ -1,4 +1,4 @@
-package cn.guruguru.datalink.converter.table;
+package cn.guruguru.datalink.ddl.table;
 
 import cn.guruguru.datalink.protocol.node.extract.scan.DmScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;

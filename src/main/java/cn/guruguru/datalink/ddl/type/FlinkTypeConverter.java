@@ -1,6 +1,5 @@
-package cn.guruguru.datalink.converter.type;
+package cn.guruguru.datalink.ddl.type;
 
-import cn.guruguru.datalink.converter.TypeConverter;
 import cn.guruguru.datalink.exception.UnsupportedDataSourceException;
 import cn.guruguru.datalink.exception.UnsupportedDataTypeException;
 import cn.guruguru.datalink.protocol.field.FieldFormat;

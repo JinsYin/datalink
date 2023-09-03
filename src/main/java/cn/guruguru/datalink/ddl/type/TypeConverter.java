@@ -1,4 +1,4 @@
-package cn.guruguru.datalink.converter;
+package cn.guruguru.datalink.ddl.type;
 
 import cn.guruguru.datalink.protocol.field.FieldFormat;
 
@@ -11,7 +11,7 @@ public interface TypeConverter<T> extends Serializable {
     /**
      * Converts field type
      *
-     * @see org.apache.inlong.sort.formats.base.TableFormatUtils#deriveLogicalType(FormatInfo)
+     * {@code org.apache.inlong.sort.formats.base.TableFormatUtils#deriveLogicalType(FormatInfo)}
      * @param nodeType node type
      * @param fieldFormat source field
      * @return engine field

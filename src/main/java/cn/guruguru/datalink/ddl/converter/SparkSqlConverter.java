@@ -1,11 +1,11 @@
-package cn.guruguru.datalink.converter.sql;
+package cn.guruguru.datalink.ddl.converter;
 
-import cn.guruguru.datalink.converter.SqlConverter;
-import cn.guruguru.datalink.converter.table.JdbcDialect;
-import cn.guruguru.datalink.converter.table.CaseStrategy;
-import cn.guruguru.datalink.converter.table.DatabaseTableAffix;
-import cn.guruguru.datalink.converter.table.TableDuplicateStrategy;
-import cn.guruguru.datalink.converter.table.TableSchema;
+import cn.guruguru.datalink.ddl.converter.SqlConverter;
+import cn.guruguru.datalink.ddl.table.JdbcDialect;
+import cn.guruguru.datalink.ddl.table.CaseStrategy;
+import cn.guruguru.datalink.ddl.table.DatabaseTableAffix;
+import cn.guruguru.datalink.ddl.table.TableDuplicateStrategy;
+import cn.guruguru.datalink.ddl.table.TableSchema;
 import cn.guruguru.datalink.exception.UnsupportedEngineException;
 import org.apache.calcite.config.Lex;
 import org.apache.calcite.sql.SqlDialect;

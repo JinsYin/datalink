@@ -1,4 +1,4 @@
-package cn.guruguru.datalink.converter.table;
+package cn.guruguru.datalink.ddl.table;
 
 /**
  * Duplicate name strategy for table

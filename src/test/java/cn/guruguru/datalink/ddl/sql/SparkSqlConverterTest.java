@@ -1,6 +1,7 @@
-package cn.guruguru.datalink.converter.sql;
+package cn.guruguru.datalink.ddl.sql;
 
-import cn.guruguru.datalink.converter.table.JdbcDialect;
+import cn.guruguru.datalink.ddl.converter.SparkSqlConverter;
+import cn.guruguru.datalink.ddl.table.JdbcDialect;
 import org.junit.Test;
 
 public class SparkSqlConverterTest {

@@ -1,4 +1,4 @@
-package cn.guruguru.datalink.converter.table;
+package cn.guruguru.datalink.ddl.table;
 
 /**
  * Case strategy for catalog name, database name, table name, column name and keyword

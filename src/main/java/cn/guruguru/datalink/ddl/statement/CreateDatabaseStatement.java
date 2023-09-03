@@ -1,4 +1,4 @@
-package cn.guruguru.datalink.converter.statement;
+package cn.guruguru.datalink.ddl.statement;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,10 +1,11 @@
-package cn.guruguru.datalink.converter.sql;
+package cn.guruguru.datalink.ddl.sql;
 
-import cn.guruguru.datalink.converter.table.CaseStrategy;
-import cn.guruguru.datalink.converter.table.JdbcDialect;
-import cn.guruguru.datalink.converter.sql.result.FlinkSqlConverterResult;
-import cn.guruguru.datalink.converter.table.TableField;
-import cn.guruguru.datalink.converter.table.TableSchema;
+import cn.guruguru.datalink.ddl.converter.FlinkSqlConverter;
+import cn.guruguru.datalink.ddl.table.CaseStrategy;
+import cn.guruguru.datalink.ddl.table.JdbcDialect;
+import cn.guruguru.datalink.ddl.result.FlinkSqlConverterResult;
+import cn.guruguru.datalink.ddl.table.TableField;
+import cn.guruguru.datalink.ddl.table.TableSchema;
 import cn.guruguru.datalink.utils.SqlUtil;
 import org.junit.Assert;
 import org.junit.Test;

@@ -1,8 +1,8 @@
-package cn.guruguru.datalink.converter.result;
+package cn.guruguru.datalink.ddl.result;
 
-import cn.guruguru.datalink.converter.table.JdbcDialect;
-import cn.guruguru.datalink.converter.statement.CreateDatabaseStatement;
-import cn.guruguru.datalink.converter.statement.CreateTableStatement;
+import cn.guruguru.datalink.ddl.table.JdbcDialect;
+import cn.guruguru.datalink.ddl.statement.CreateDatabaseStatement;
+import cn.guruguru.datalink.ddl.statement.CreateTableStatement;
 import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;

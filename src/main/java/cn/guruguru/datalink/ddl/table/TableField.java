@@ -1,4 +1,4 @@
-package cn.guruguru.datalink.converter.table;
+package cn.guruguru.datalink.ddl.table;
 
 import cn.guruguru.datalink.protocol.field.FieldFormat;
 import lombok.Data;
