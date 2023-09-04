@@ -98,13 +98,13 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
             FieldFormat fieldFormat = new FieldFormat(columnType, precision, scale);
             String engineFieldType = flinkTypeConverter.toEngineType(dialect.getNodeType(), fieldFormat);
             createTableSql.append("    ").append(formatColumn(columnName, caseStrategy)).append(" ").append(engineFieldType);
-            if (!StringUtils.isEmpty(columnComment)) {
-                createTableSql.append(" '").append(columnComment).append("'");
+            if (!StringUtils.isBlank(columnComment)) {
+                createTableSql.append(" COMMENT '").append(columnComment).append("'");
             }
             createTableSql.append(",\n");
         }
         createTableSql.deleteCharAt(createTableSql.length() - 2).append(")");
-        if (!StringUtils.isEmpty(tableComment)) {
+        if (!StringUtils.isBlank(tableComment)) {
             createTableSql.append(" COMMENT '").append(tableComment).append("'");
         }
         return createTableSql.toString();
