@@ -114,6 +114,7 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
             case "VARCHAR": // VARCHAR(n)
             case "TEXT":
             case "LONGTEXT": // it is not mentioned in the Flink document
+            case "MEDIUMTEXT": // it is not mentioned in the Flink document
                 return new VarCharType(VarCharType.MAX_LENGTH); // STRING
             case "BINARY":
             case "VARBINARY":
