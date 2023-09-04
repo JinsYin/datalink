@@ -2,7 +2,7 @@ package cn.guruguru.datalink.ddl.converter;
 
 import cn.guruguru.datalink.ddl.table.JdbcDialect;
 import cn.guruguru.datalink.ddl.table.CaseStrategy;
-import cn.guruguru.datalink.ddl.table.DatabaseTableAffix;
+import cn.guruguru.datalink.ddl.table.Affix;
 import cn.guruguru.datalink.ddl.table.TableDuplicateStrategy;
 import cn.guruguru.datalink.ddl.table.TableSchema;
 import cn.guruguru.datalink.exception.UnsupportedEngineException;
@@ -26,8 +26,8 @@ public class SparkDdlConverter implements DdlConverter<List<String>> {
     @Override
     public List<String> convertSchemas(JdbcDialect dialect,
                                        List<TableSchema> tableSchemas,
-                                       DatabaseTableAffix databaseAffix,
-                                       DatabaseTableAffix tableAffix,
+                                       Affix databaseAffix,
+                                       Affix tableAffix,
                                        TableDuplicateStrategy tableDuplicateStrategy,
                                        CaseStrategy caseStrategy) throws RuntimeException {
         throw new UnsupportedEngineException("Spark engine not supported");

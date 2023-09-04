@@ -21,7 +21,8 @@ public class FlinkDdlConverterResult implements DdlConverterResult {
         this.createDatabaseStatements = Preconditions.checkNotNull(createDatabaseStatements,
                 "createDatabaseStatements is null");
         Preconditions.checkState(!createDatabaseStatements.isEmpty(), "createDatabaseStatements is empty");
-        this.createTableStatements = Preconditions.checkNotNull(createTableStatements, "createTableStatements is null");
+        this.createTableStatements = Preconditions.checkNotNull(createTableStatements,
+                "createTableStatements is null");
         Preconditions.checkState(!createTableStatements.isEmpty(), "createTableStatements is empty");
     }
 

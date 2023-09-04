@@ -5,7 +5,7 @@ import cn.guruguru.datalink.ddl.statement.CreateTableStatement;
 import cn.guruguru.datalink.ddl.table.JdbcDialect;
 import cn.guruguru.datalink.ddl.result.FlinkDdlConverterResult;
 import cn.guruguru.datalink.ddl.table.CaseStrategy;
-import cn.guruguru.datalink.ddl.table.DatabaseTableAffix;
+import cn.guruguru.datalink.ddl.table.Affix;
 import cn.guruguru.datalink.ddl.table.TableDuplicateStrategy;
 import cn.guruguru.datalink.ddl.table.TableField;
 import cn.guruguru.datalink.ddl.table.TableSchema;
@@ -40,8 +40,8 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
     @Override
     public FlinkDdlConverterResult convertSchemas(JdbcDialect dialect,
                                                   List<TableSchema> tableSchemas,
-                                                  DatabaseTableAffix databaseAffix,
-                                                  DatabaseTableAffix tableAffix,
+                                                  Affix databaseAffix,
+                                                  Affix tableAffix,
                                                   TableDuplicateStrategy tableDuplicateStrategy,
                                                   CaseStrategy caseStrategy) throws RuntimeException {
         Preconditions.checkNotNull(dialect,"dialect is null");
