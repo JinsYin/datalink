@@ -42,6 +42,6 @@ public interface DdlConverterResult {
         getCreateDatabaseStmts().forEach(stmt -> sqlList.add(stmt.getDdl()));
         getCreateTableStmts().forEach(stmt -> sqlList.add(stmt.getDdl()));
         Preconditions.checkState(!sqlList.isEmpty(), "No CREATE-TABLE statements");
-        return String.join(";\n", sqlList);
+        return String.join(";\n", sqlList) + ";";
     }
 }

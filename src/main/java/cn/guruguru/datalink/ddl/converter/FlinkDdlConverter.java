@@ -107,7 +107,7 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
         if (!StringUtils.isEmpty(tableComment)) {
             createTableSql.append(" COMMENT '").append(tableComment).append("'");
         }
-        return createTableSql.append(";\n").toString();
+        return createTableSql.toString();
     }
 
     /**
@@ -399,7 +399,7 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
         if (tableComment != null) {
             sb.append(" COMMENT ").append(tableComment);
         }
-        return sb.append(";").toString();
+        return sb.toString();
     }
 
     // ~ preprocessor -----------------------------------------------
