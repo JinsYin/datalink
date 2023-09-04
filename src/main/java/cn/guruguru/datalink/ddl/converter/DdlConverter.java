@@ -13,7 +13,7 @@ import java.util.List;
 public interface DdlConverter<T> extends Serializable {
 
     /**
-     * Convert to engine SQL
+     * Convert to engine SQL from table schemas
      *
      * @param dialect dialect
      * @param tableSchemas table schema list
@@ -23,12 +23,12 @@ public interface DdlConverter<T> extends Serializable {
      * @param caseStrategy case strategy for database name, table name and field name
      * @return SQL DDL
      */
-    T convertSchemas(JdbcDialect dialect,
-                     List<TableSchema> tableSchemas,
-                     Affix databaseAffix,
-                     Affix tableAffix,
-                     TableDuplicateStrategy tableDuplicateStrategy,
-                     CaseStrategy caseStrategy) throws RuntimeException;
+    T convertSchema(JdbcDialect dialect,
+                    List<TableSchema> tableSchemas,
+                    Affix databaseAffix,
+                    Affix tableAffix,
+                    TableDuplicateStrategy tableDuplicateStrategy,
+                    CaseStrategy caseStrategy) throws RuntimeException;
 
     /**
      * Convert to engine SQL from table schemas
@@ -37,8 +37,8 @@ public interface DdlConverter<T> extends Serializable {
      * @param tableSchemas table schema list
      * @return SQL DDL
      */
-    default T convertSchemas(JdbcDialect dialect, List<TableSchema> tableSchemas) throws RuntimeException {
-        return this.convertSchemas(
+    default T convertSchema(JdbcDialect dialect, List<TableSchema> tableSchemas) throws RuntimeException {
+        return this.convertSchema(
                 dialect,
                 tableSchemas,
                 null,

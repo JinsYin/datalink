@@ -107,7 +107,7 @@ public class FlinkDdlConverterTest {
                 .fields(fields)
                 .build();
         List<TableSchema> tableSchemas = Collections.singletonList(tableSchema);
-        FlinkDdlConverterResult result = flinkSqlConverter.convertSchemas(
+        FlinkDdlConverterResult result = flinkSqlConverter.convertSchema(
                 JdbcDialect.Oracle,
                 tableSchemas,
                 new Affix(AffixStrategy.SUFFIX, "_fIx"),

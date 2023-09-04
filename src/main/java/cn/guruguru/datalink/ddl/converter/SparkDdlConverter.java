@@ -24,12 +24,12 @@ public class SparkDdlConverter implements DdlConverter<List<String>> {
     // ~ converter for table schemas --------------------------------------
 
     @Override
-    public List<String> convertSchemas(JdbcDialect dialect,
-                                       List<TableSchema> tableSchemas,
-                                       Affix databaseAffix,
-                                       Affix tableAffix,
-                                       TableDuplicateStrategy tableDuplicateStrategy,
-                                       CaseStrategy caseStrategy) throws RuntimeException {
+    public List<String> convertSchema(JdbcDialect dialect,
+                                      List<TableSchema> tableSchemas,
+                                      Affix databaseAffix,
+                                      Affix tableAffix,
+                                      TableDuplicateStrategy tableDuplicateStrategy,
+                                      CaseStrategy caseStrategy) throws RuntimeException {
         throw new UnsupportedEngineException("Spark engine not supported");
     }
 

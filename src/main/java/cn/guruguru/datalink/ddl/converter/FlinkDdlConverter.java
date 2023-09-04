@@ -38,12 +38,12 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
     // ~ converter for table schemas --------------------------------------
 
     @Override
-    public FlinkDdlConverterResult convertSchemas(JdbcDialect dialect,
-                                                  List<TableSchema> tableSchemas,
-                                                  Affix databaseAffix,
-                                                  Affix tableAffix,
-                                                  TableDuplicateStrategy tableDuplicateStrategy,
-                                                  CaseStrategy caseStrategy) throws RuntimeException {
+    public FlinkDdlConverterResult convertSchema(JdbcDialect dialect,
+                                                 List<TableSchema> tableSchemas,
+                                                 Affix databaseAffix,
+                                                 Affix tableAffix,
+                                                 TableDuplicateStrategy tableDuplicateStrategy,
+                                                 CaseStrategy caseStrategy) throws RuntimeException {
         Preconditions.checkNotNull(dialect,"dialect is null");
         Preconditions.checkNotNull(tableSchemas,"table schema list is null");
         Preconditions.checkState(!tableSchemas.isEmpty(),"table schema list is empty");
