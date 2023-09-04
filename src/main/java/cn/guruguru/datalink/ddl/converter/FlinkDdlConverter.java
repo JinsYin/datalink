@@ -54,14 +54,15 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
         Map<String, String> createTableSqlMap = new LinkedHashMap<>();
         for (TableSchema tableSchema : tableSchemas) {
             // generate CREATE-DATABASE sql
-            String databaseIdentifier = Preconditions.checkNotNull(tableSchema.getDatabaseIdentifier(),
-                    "databaseIdentifier is null");
+            String catalog = Preconditions.checkNotNull(tableSchema.getCatalog(), "catalog is null");
+            String database = Preconditions.checkNotNull(tableSchema.getDatabase(), "database is null");
+            String databaseIdentifier = formatDatabaseIdentifier(catalog, database, caseStrategy);
             String createDatabaseSql = String.format("CREATE DATABASE IF NOT EXISTS %s", databaseIdentifier);
             createDatabaseSqlMap.put(databaseIdentifier, createDatabaseSql);
             // generate CREATE-TABLE sql
-            String tableIdentifier = Preconditions.checkNotNull(tableSchema.getTableIdentifier(),
-                    "tableIdentifier is null");
-            String createTableSql = genCreateTableSqlForSchema(dialect, tableSchema, caseStrategy);
+            String tableName = Preconditions.checkNotNull(tableSchema.getTableName(), "tableName is null");
+            String tableIdentifier = formatTableIdentifier(catalog, database, tableName, caseStrategy);
+            String createTableSql = genCreateTableSqlForSchema(dialect, tableIdentifier, tableSchema, caseStrategy);
             createTableSqlMap.put(tableIdentifier, createTableSql);
         }
         log.info("end parse {} table schemas", dialect);
@@ -72,15 +73,17 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
      * Generate a CREATE-TABLE sql for a table schema
      *
      * @param dialect JDBC dialect
+     * @param tableIdentifier table identifier
      * @param tableSchema table schema
      * @param caseStrategy case strategy
      * @return a CREATE-TABLE sql
      */
-    private String genCreateTableSqlForSchema(JdbcDialect dialect, TableSchema tableSchema, CaseStrategy caseStrategy) {
-        String tableIdentifier = tableSchema.getTableIdentifier();
+    private String genCreateTableSqlForSchema(JdbcDialect dialect,
+                                              String tableIdentifier,
+                                              TableSchema tableSchema,
+                                              CaseStrategy caseStrategy) {
         String tableComment = tableSchema.getTableComment();
         List<TableField> tableFields = tableSchema.getFields();
-        Preconditions.checkNotNull(tableIdentifier,"table identifier is null");
         Preconditions.checkNotNull(tableFields,"table columns is null");
         Preconditions.checkState(!tableFields.isEmpty(),"table columns is empty");
         StringBuilder createTableSql = new StringBuilder("CREATE TABLE IF NOT EXISTS ");

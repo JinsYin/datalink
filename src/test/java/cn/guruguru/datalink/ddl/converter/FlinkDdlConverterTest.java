@@ -97,8 +97,9 @@ public class FlinkDdlConverterTest {
         TableField infoColumn = new TableField("INFO", "VARCHAR2", null, null, "发送日期", false, false, false);
         List<TableField> fields = Arrays.asList(idColumn, aidColumn, infoColumn);
         TableSchema tableSchema = TableSchema.builder()
-                .databaseIdentifier("`P1_CATALOG1`.`API_OPER`")
-                .tableIdentifier("`P1_CATALOG1`.`API_OPER`.`EDG25_APP_MESSAGE`")
+                .catalog("P1_CATALOG1")
+                .database("API_OPER")
+                .tableName("EDG25_APP_MESSAGE")
                 .tableComment("Test Table")
                 .fields(fields)
                 .build();

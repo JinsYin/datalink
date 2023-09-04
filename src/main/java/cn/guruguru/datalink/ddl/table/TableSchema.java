@@ -12,11 +12,14 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class TableSchema {
-    @JsonProperty("databaseIdentifier")
-    private String databaseIdentifier;
+    @JsonProperty("catalog")
+    private String catalog;
 
-    @JsonProperty("tableIdentifier")
-    private String tableIdentifier;
+    @JsonProperty("database")
+    private String database;
+
+    @JsonProperty("tableName")
+    private String tableName;
 
     @JsonProperty("tableComment")
     @Nullable
