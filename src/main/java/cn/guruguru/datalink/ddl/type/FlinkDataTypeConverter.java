@@ -3,6 +3,7 @@ package cn.guruguru.datalink.ddl.type;
 import cn.guruguru.datalink.exception.UnsupportedDataSourceException;
 import cn.guruguru.datalink.exception.UnsupportedDataTypeException;
 import cn.guruguru.datalink.protocol.field.FieldFormat;
+import cn.guruguru.datalink.protocol.node.extract.cdc.MysqlCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.OracleCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.DmScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
@@ -45,24 +46,32 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
     @Override
     public String toEngineType(String nodeType, FieldFormat fieldFormat) {
         switch (nodeType) {
+            // Format -------------------
+            case "JSON":
+            case "CSV":
+                return fieldFormat.getType();
+            // Scan -------------------
             case MySqlScanNode.TYPE:
                 return convertMysqlType(fieldFormat).asSummaryString();
             case OracleScanNode.TYPE:
                 return convertOracleType(fieldFormat).asSummaryString();
             case DmScanNode.TYPE:
                 return convertDmdbForOracleType(fieldFormat).asSummaryString();
-            case OracleCdcNode.TYPE:
-                return convertOracleCdcType(fieldFormat).asSummaryString();
             case LakehouseLoadNode.TYPE:
                 // Lakehouse table may be created by Spark, so it is necessary to convert the lakehouse type to the Flink type
                 // e.g. Spark `TIMESTAMP` -> Arctic `TIMESTAMPTZ` -> Flink `TIMESTAMP(6) WITH LOCAL TIME ZONE`
                 return convertLakehouseMixedIcebergType(fieldFormat);
+            // CDC --------------------
+            case MysqlCdcNode.TYPE:
+                return convertMysqlCdcType(fieldFormat).asSummaryString();
+            case OracleCdcNode.TYPE:
+                return convertOracleCdcType(fieldFormat).asSummaryString();
             default:
                 throw new UnsupportedDataSourceException("Unsupported data source type:" + nodeType);
         }
     }
 
-    // ~ type converter --------------------------------------------------
+    // ~ scan type converter ------------------------------
 
     /**
      * Convert Mysql type to Flink type
@@ -279,6 +288,120 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
         }
     }
 
+  /**
+   * Convert Arctic mixed iceberg type to Flink type
+   *
+   * @see <a href="https://arctic.netease.com/ch/flink/flink-ddl/#mixed-iceberg-data-types">Mixed Iceberg Data Types</a>
+   * @see <a href="https://github.com/DTStack/chunjun/blob/master/chunjun-connectors/chunjun-connector-arctic/src/main/java/com/dtstack/chunjun/connector/arctic/converter/ArcticRawTypeMapper.java">ArcticRawTypeMapper</a>
+   * @param fieldFormat Arctic Mixed Iceberg Field Type
+   * @return Flink SQL Field Type
+   */
+  private String convertLakehouseMixedIcebergType(FieldFormat fieldFormat) {
+      String fieldType = StringUtils.upperCase(fieldFormat.getType());
+      Integer precision = fieldFormat.getPrecision();
+      Integer scale = fieldFormat.getScale();
+      switch (fieldType) {
+          case "STRING":
+              return new VarCharType(VarCharType.MAX_LENGTH).asSummaryString();
+          case "BOOLEAN":
+              return new BooleanType().asSummaryString();
+          case "INT":
+              return new IntType().asSummaryString();
+          case "LONG":
+              return new BigIntType().asSummaryString();
+          case "FLOAT":
+              return new FloatType().asSummaryString();
+          case "DOUBLE":
+              return new DoubleType().asSummaryString();
+          case "DECIMAL": // DECIMAL(p, s)
+              return formatDecimalType(precision, scale).asSummaryString();
+          case "DATE":
+              return new DateType().asSummaryString();
+          case "TIMESTAMP":
+              return new TimestampType(TimestampType.DEFAULT_PRECISION).asSummaryString(); // TIMESTAMP(6)
+          case "TIMESTAMPTZ":
+              return new LocalZonedTimestampType(TimestampType.DEFAULT_PRECISION).asSummaryString(); // TIMESTAMP(6) WITH LOCAL TIME ZONE
+          case "FIXED": // FIXED(p)
+              return new VarBinaryType(precision).asSummaryString(); // BINARY(p)
+          case "UUID":
+              return new VarBinaryType(16).asSummaryString(); // BINARY(16)
+          case "BINARY": // TODO ?
+              return new VarBinaryType(precision).asSummaryString();
+          case "ARRAY":
+          case "MAP":
+          case "STRUCT":
+              log.info("Combined Lakehouse data type:" + fieldType);
+              return fieldType;
+          default:
+              log.info("Unconsidered Lakehouse data type:" + fieldType);
+              return fieldType;
+        }
+  }
+
+    // ~ cdc type converter -------------------------------
+
+    /**
+     * Convert Mysql CDC type to Flink type
+     *
+     * @see <a href="https://ververica.github.io/flink-cdc-connectors/master/content/connectors/mysql-cdc.html#data-type-mappingg">Data Type Mapping</a>
+     * @param fieldFormat mysql field format
+     * @return Flink SQL Field Type
+     */
+    private LogicalType convertMysqlCdcType(FieldFormat fieldFormat) {
+        String fieldType = StringUtils.upperCase(fieldFormat.getType());
+        Integer precision = fieldFormat.getPrecision();
+        Integer scale = fieldFormat.getScale();
+        switch (fieldType) {
+            case "TINYINT":
+                if (precision == 1) { // TINYINT(1)
+                    return new BooleanType();
+                } else {
+                    return new TinyIntType();
+                }
+            case "SMALLINT":
+            case "TINYINT UNSIGNED":
+                return new SmallIntType();
+            case "INT":
+            case "MEDIUMINT":
+            case "SMALLINT UNSIGNED":
+                return new IntType();
+            case "BIGINT":
+            case "INT UNSIGNED": // TODO
+                return new BigIntType();
+            case "BIGINT UNSIGNED": // TODO
+                return new DecimalType(20, 0);
+            case "FLOAT":
+                return new FloatType();
+            case "DOUBLE":
+            case "DOUBLE PRECISION":
+                return new DoubleType();
+            case "NUMERIC": // NUMERIC(p, s)
+            case "DECIMAL": // DECIMAL(p, s)
+                return formatDecimalType(precision, scale);
+            case "BOOLEAN": // TINYINT(1)
+                return new BooleanType();
+            case "DATE":
+                return new DateType();
+            case "TIME": // TIME [(p)]
+                return formatTimeType(precision); // TIME [(p)] [WITHOUT TIMEZONE]
+            case "DATETIME": // DATETIME [(p)]
+                return formatTimestampType(precision); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
+            case "CHAR": // CHAR(n)
+            case "VARCHAR": // VARCHAR(n)
+            case "TEXT":
+            case "LONGTEXT": // it is not mentioned in the Flink document
+            case "MEDIUMTEXT": // it is not mentioned in the Flink document
+                return new VarCharType(VarCharType.MAX_LENGTH); // STRING
+            case "BINARY":
+            case "VARBINARY":
+            case "BLOB":
+                return new VarBinaryType(VarBinaryType.MAX_LENGTH); // BYTES
+            default:
+                log.error("Unsupported MySQL CDC data type:" + fieldType);
+                throw new UnsupportedDataTypeException("Unsupported MySQL CDC data type:" + fieldType);
+        }
+    }
+
     /**
      * Convert Oracle CDC type to Flink type
      *
@@ -344,55 +467,6 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
         }
     }
 
-  /**
-   * Convert Arctic mixed iceberg type to Flink type
-   *
-   * @see <a href="https://arctic.netease.com/ch/flink/flink-ddl/#mixed-iceberg-data-types">Mixed Iceberg Data Types</a>
-   * @see <a href="https://github.com/DTStack/chunjun/blob/master/chunjun-connectors/chunjun-connector-arctic/src/main/java/com/dtstack/chunjun/connector/arctic/converter/ArcticRawTypeMapper.java">ArcticRawTypeMapper</a>
-   * @param fieldFormat Arctic Mixed Iceberg Field Type
-   * @return Flink SQL Field Type
-   */
-  private String convertLakehouseMixedIcebergType(FieldFormat fieldFormat) {
-      String fieldType = StringUtils.upperCase(fieldFormat.getType());
-      Integer precision = fieldFormat.getPrecision();
-      Integer scale = fieldFormat.getScale();
-      switch (fieldType) {
-          case "STRING":
-              return new VarCharType(VarCharType.MAX_LENGTH).asSummaryString();
-          case "BOOLEAN":
-              return new BooleanType().asSummaryString();
-          case "INT":
-              return new IntType().asSummaryString();
-          case "LONG":
-              return new BigIntType().asSummaryString();
-          case "FLOAT":
-              return new FloatType().asSummaryString();
-          case "DOUBLE":
-              return new DoubleType().asSummaryString();
-          case "DECIMAL": // DECIMAL(p, s)
-              return formatDecimalType(precision, scale).asSummaryString();
-          case "DATE":
-              return new DateType().asSummaryString();
-          case "TIMESTAMP":
-              return new TimestampType(TimestampType.DEFAULT_PRECISION).asSummaryString(); // TIMESTAMP(6)
-          case "TIMESTAMPTZ":
-              return new LocalZonedTimestampType(TimestampType.DEFAULT_PRECISION).asSummaryString(); // TIMESTAMP(6) WITH LOCAL TIME ZONE
-          case "FIXED": // FIXED(p)
-              return new VarBinaryType(precision).asSummaryString(); // BINARY(p)
-          case "UUID":
-              return new VarBinaryType(16).asSummaryString(); // BINARY(16)
-          case "BINARY": // TODO ?
-              return new VarBinaryType(precision).asSummaryString();
-          case "ARRAY":
-          case "MAP":
-          case "STRUCT":
-              log.info("Combined Lakehouse data type:" + fieldType);
-              return fieldType;
-          default:
-              log.info("Unconsidered Lakehouse data type:" + fieldType);
-              return fieldType;
-        }
-  }
 
     // ~ format LogicalType -------------------------------
 
