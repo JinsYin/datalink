@@ -54,9 +54,9 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
             case OracleCdcNode.TYPE:
                 return convertOracleCdcType(fieldFormat).asSummaryString();
             case LakehouseLoadNode.TYPE:
-                // lakehouse table may be created by Spark, so it is necessary to convert the lakehouse type to the Flink type
+                // Lakehouse table may be created by Spark, so it is necessary to convert the lakehouse type to the Flink type
                 // e.g. Spark `TIMESTAMP` -> Arctic `TIMESTAMPTZ` -> Flink `TIMESTAMP(6) WITH LOCAL TIME ZONE`
-                return fieldFormat.getType(); // return convertLakehouseMixedIcebergType(fieldFormat).asSummaryString();
+                return convertLakehouseMixedIcebergType(fieldFormat);
             default:
                 throw new UnsupportedDataSourceException("Unsupported data source type:" + nodeType);
         }
@@ -350,46 +350,45 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
    * @param fieldFormat Arctic Mixed Iceberg Field Type
    * @return Flink SQL Field Type
    */
-  private LogicalType convertLakehouseMixedIcebergType(FieldFormat fieldFormat) {
+  private String convertLakehouseMixedIcebergType(FieldFormat fieldFormat) {
       String fieldType = StringUtils.upperCase(fieldFormat.getType());
       Integer precision = fieldFormat.getPrecision();
       Integer scale = fieldFormat.getScale();
       switch (fieldType) {
           case "STRING":
-              return new VarCharType(VarCharType.MAX_LENGTH);
+              return new VarCharType(VarCharType.MAX_LENGTH).asSummaryString();
           case "BOOLEAN":
-              return new BooleanType();
+              return new BooleanType().asSummaryString();
           case "INT":
-              return new IntType();
+              return new IntType().asSummaryString();
           case "LONG":
-              return new BigIntType();
+              return new BigIntType().asSummaryString();
           case "FLOAT":
-              return new FloatType();
+              return new FloatType().asSummaryString();
           case "DOUBLE":
-              return new DoubleType();
+              return new DoubleType().asSummaryString();
           case "DECIMAL": // DECIMAL(p, s)
-              return formatDecimalType(precision, scale);
+              return formatDecimalType(precision, scale).asSummaryString();
           case "DATE":
-              return new DateType();
+              return new DateType().asSummaryString();
           case "TIMESTAMP":
-              return new TimestampType(TimestampType.DEFAULT_PRECISION); // TIMESTAMP(6)
+              return new TimestampType(TimestampType.DEFAULT_PRECISION).asSummaryString(); // TIMESTAMP(6)
           case "TIMESTAMPTZ":
-              return new LocalZonedTimestampType(TimestampType.DEFAULT_PRECISION); // TIMESTAMP(6) WITH LOCAL TIME ZONE
+              return new LocalZonedTimestampType(TimestampType.DEFAULT_PRECISION).asSummaryString(); // TIMESTAMP(6) WITH LOCAL TIME ZONE
           case "FIXED": // FIXED(p)
-              return new VarBinaryType(precision); // BINARY(p)
+              return new VarBinaryType(precision).asSummaryString(); // BINARY(p)
           case "UUID":
-              return new VarBinaryType(16); // BINARY(16)
+              return new VarBinaryType(16).asSummaryString(); // BINARY(16)
           case "BINARY": // TODO ?
-              return new VarBinaryType(precision);
-          case "ARRAY": // TODO
-              return new ArrayType(VarCharType.STRING_TYPE);
-          case "MAP": // TODO
-              return new MapType(VarCharType.STRING_TYPE, VarCharType.STRING_TYPE); // or: MULTISET
-          case "STRUCT": // TODO
-              return new RowType(Collections.emptyList());
+              return new VarBinaryType(precision).asSummaryString();
+          case "ARRAY":
+          case "MAP":
+          case "STRUCT":
+              log.info("Combined Lakehouse data type:" + fieldType);
+              return fieldType;
           default:
-              log.error("Unsupported Lakehouse data type:" + fieldType);
-              throw new UnsupportedDataTypeException("Unsupported Lakehouse data type:" + fieldType);
+              log.info("Unconsidered Lakehouse data type:" + fieldType);
+              return fieldType;
         }
   }
 
