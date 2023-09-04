@@ -336,7 +336,9 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
             if (col.getColumnSpecs() != null) {
                 String columnSpec = String.join(" ", col.getColumnSpecs());
                 // remove unnecessary keywords
-                columnSpec = columnSpec.replaceAll("\\s?DEFAULT\\s(\\S)+", ""); // remove DEFAULT keyword
+                columnSpec = columnSpec.replaceAll("\\s?DEFAULT\\s(\\S)+\\s?", ""); // remove `DEFAULT` keyword
+                columnSpec = columnSpec.replaceAll("\\s?AUTO_INCREMENT\\s?", ""); // remove `AUTO_INCREMENT` keyword for MySQL
+                columnSpec = columnSpec.replaceAll("\\s?COLLATE\\s(\\S)+\\s?", ""); // remove `COLLATE utf8mb4_unicode_ci` for MySQL
                 engineColumn.append(" ").append(columnSpec);
             }
             if (columnCommentMap != null && columnCommentMap.get(columnFullName) != null) {
