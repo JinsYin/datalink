@@ -214,6 +214,8 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
             case "INT": // DMDB
             case "INTEGER": // DMDB
                 return new IntType();
+            case "BIGINT": // DMDB
+                return new BigIntType();
             case "DATE":
                 return new DateType();
             case "TIMESTAMP": // TODO: TIMESTAMP [(p)] [WITHOUT TIMEZONE]
