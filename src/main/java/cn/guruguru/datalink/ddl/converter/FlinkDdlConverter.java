@@ -56,12 +56,13 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
             // generate CREATE-DATABASE sql
             String catalog = Preconditions.checkNotNull(tableSchema.getCatalog(), "catalog is null");
             String database = Preconditions.checkNotNull(tableSchema.getDatabase(), "database is null");
-            String databaseIdentifier = formatDatabaseIdentifier(catalog, database, caseStrategy);
+            String databaseIdentifier = formatDatabaseIdentifier(catalog, database, databaseAffix, caseStrategy);
             String createDatabaseSql = String.format("CREATE DATABASE IF NOT EXISTS %s", databaseIdentifier);
             createDatabaseSqlMap.put(databaseIdentifier, createDatabaseSql);
             // generate CREATE-TABLE sql
             String tableName = Preconditions.checkNotNull(tableSchema.getTableName(), "tableName is null");
-            String tableIdentifier = formatTableIdentifier(catalog, database, tableName, caseStrategy);
+            String tableIdentifier = formatTableIdentifier(
+                    catalog, database, tableName, databaseAffix, tableAffix, caseStrategy);
             String createTableSql = genCreateTableSqlForSchema(dialect, tableIdentifier, tableSchema, caseStrategy);
             createTableSqlMap.put(tableIdentifier, createTableSql);
         }
@@ -278,7 +279,7 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
             } else {
                 targetDatabase = defaultDatabase;
             }
-            String databaseIdentifier = formatDatabaseIdentifier(targetCatalog, targetDatabase, caseStrategy);
+            String databaseIdentifier = formatDatabaseIdentifier(targetCatalog, targetDatabase, null, caseStrategy);
             String createDatabaseSql = String.format("CREATE DATABASE IF NOT EXISTS %s", databaseIdentifier);
             createDatabaseSqlMap.put(databaseIdentifier, createDatabaseSql);
             log.info("generated CREATE-DATABASE sql: {}", SqlUtil.compress(createDatabaseSql));
@@ -288,7 +289,8 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
                     createTable.getColumnDefinitions(), columnCommentMap, caseStrategy);
             // set table comment for Oracle and DMDB
             String tableComment = null;
-            String tableIdentifier = formatTableIdentifier(targetCatalog, targetDatabase, targetTable, caseStrategy);
+            String tableIdentifier = formatTableIdentifier(
+                    targetCatalog, targetDatabase, targetTable, null, null, caseStrategy);
             if (tableCommentMap != null && tableCommentMap.get(tableIdentifier) != null) {
                 tableComment = tableCommentMap.get(tableIdentifier);
             }
@@ -456,12 +458,16 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
      *
      * @param catalog catalog name
      * @param database database name
+     * @param databaseAffix database prefix or suffix
      * @param caseStrategy case strategy
      * @return a database identifier, like {@code `my_catalog`.`my_db`}
      */
-    private String formatDatabaseIdentifier(String catalog, String database, CaseStrategy caseStrategy) {
-        catalog = formatQualifier(catalog, caseStrategy);
-        database = formatQualifier(database, caseStrategy);
+    private String formatDatabaseIdentifier(String catalog,
+                                            String database,
+                                            Affix databaseAffix,
+                                            CaseStrategy caseStrategy) {
+        catalog = formatQualifier(catalog, null, caseStrategy);
+        database = formatQualifier(database, databaseAffix, caseStrategy);
         return String.format("%s.%s", catalog, database);
     }
 
@@ -474,10 +480,15 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
      * @param caseStrategy case strategy
      * @return a table identifier, like {@code `my_catalog`.`my_db`.`my_table`}
      */
-    private String formatTableIdentifier(String catalog, String database, String table, CaseStrategy caseStrategy) {
-        catalog = formatQualifier(catalog, caseStrategy);
-        database = formatQualifier(database, caseStrategy);
-        table = formatQualifier(table, caseStrategy);
+    private String formatTableIdentifier(String catalog,
+                                         String database,
+                                         String table,
+                                         Affix databaseAffix,
+                                         Affix tableAffix,
+                                         CaseStrategy caseStrategy) {
+        catalog = formatQualifier(catalog, null, caseStrategy);
+        database = formatQualifier(database, databaseAffix, caseStrategy);
+        table = formatQualifier(table, tableAffix, caseStrategy);
         return String.format("%s.%s.%s", catalog, database, table);
     }
 
@@ -489,19 +500,62 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
      * @return formatted column name, like {@code `my_column`}
      */
     private String formatColumn(String column, CaseStrategy caseStrategy) {
-        return formatQualifier(column, caseStrategy);
+        return formatQualifier(column, null, caseStrategy);
     }
 
     /**
      * Format and standard a qualifier from sql
      *
      * @param qualifier a qualifier, It may be a database name, a table name and so on
+     * @param affix prefix or suffix
+     * @param caseStrategy case strategy
      * @return formatted qualifier, like {@code `my_table`}
      */
-    private String formatQualifier(String qualifier, CaseStrategy caseStrategy) {
+    private String formatQualifier(String qualifier, Affix affix, CaseStrategy caseStrategy) {
         if (!qualifier.contains("`")) {
-            qualifier = String.format("`%s`", qualifier.trim());
+            // process affix of the qualifier
+            qualifier = processQualifierAffix(qualifier, affix);
+            // process case of the qualifier
+            qualifier = processQualifierCase(qualifier, caseStrategy);
+            // format
+            return String.format("`%s`", qualifier.trim());
         }
+        return qualifier; // To be optimized
+    }
+
+    /**
+     * Process prefix or suffix of a qualifier
+     *
+     * @param qualifier a qualifier
+     * @param affix prefix of suffix
+     * @return formatted qualifier
+     */
+    private String processQualifierAffix(String qualifier, Affix affix) {
+        if (affix != null) {
+            switch (affix.getAffixStrategy()) {
+                case PREFIX:
+                    String prefix = affix.getAffixContent();
+                    Preconditions.checkNotNull(prefix, "prefix is null");
+                    qualifier = String.format("%s%s", prefix, qualifier);
+                    break;
+                case SUFFIX:
+                    String suffix = affix.getAffixContent();
+                    Preconditions.checkNotNull(suffix, "suffix is null");
+                    qualifier = String.format("%s%s", qualifier, suffix);
+                    break;
+            }
+        }
+        return qualifier;
+    }
+
+    /**
+     * Process case of a qualifier
+     *
+     * @param qualifier a qualifier
+     * @param caseStrategy uppercase or lowercase
+     * @return formatted qualifier
+     */
+    private String processQualifierCase(String qualifier, CaseStrategy caseStrategy) {
         switch (caseStrategy) {
             case LOWERCASE:
                 return StringUtils.lowerCase(qualifier);

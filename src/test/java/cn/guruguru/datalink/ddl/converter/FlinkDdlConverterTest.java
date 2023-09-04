@@ -1,8 +1,11 @@
 package cn.guruguru.datalink.ddl.converter;
 
+import cn.guruguru.datalink.ddl.table.Affix;
+import cn.guruguru.datalink.ddl.table.AffixStrategy;
 import cn.guruguru.datalink.ddl.table.CaseStrategy;
 import cn.guruguru.datalink.ddl.table.JdbcDialect;
 import cn.guruguru.datalink.ddl.result.FlinkDdlConverterResult;
+import cn.guruguru.datalink.ddl.table.TableDuplicateStrategy;
 import cn.guruguru.datalink.ddl.table.TableField;
 import cn.guruguru.datalink.ddl.table.TableSchema;
 import cn.guruguru.datalink.utils.SqlUtil;
@@ -104,13 +107,19 @@ public class FlinkDdlConverterTest {
                 .fields(fields)
                 .build();
         List<TableSchema> tableSchemas = Collections.singletonList(tableSchema);
-        FlinkDdlConverterResult result = flinkSqlConverter.convertSchemas(JdbcDialect.Oracle, tableSchemas);
+        FlinkDdlConverterResult result = flinkSqlConverter.convertSchemas(
+                JdbcDialect.Oracle,
+                tableSchemas,
+                new Affix(AffixStrategy.SUFFIX, "_fIx"),
+                new Affix(AffixStrategy.PREFIX, "pRe_"),
+                TableDuplicateStrategy.IGNORE,
+                CaseStrategy.LOWERCASE);
         String actualDDL = SqlUtil.compress(result.getSql());
-        String expectedDDL = "CREATE DATABASE IF NOT EXISTS `P1_CATALOG1`.`API_OPER`;"
-                + "CREATE TABLE IF NOT EXISTS `P1_CATALOG1`.`API_OPER`.`EDG25_APP_MESSAGE` ("
-                + "`ID` STRING '主键', "
-                + "`AID` STRING, "
-                + "`INFO` STRING '发送日期'"
+        String expectedDDL = "CREATE DATABASE IF NOT EXISTS `p1_catalog1`.`api_oper_fix`;"
+                + "CREATE TABLE IF NOT EXISTS `p1_catalog1`.`api_oper_fix`.`pre_edg25_app_message` ("
+                + "`id` STRING '主键', "
+                + "`aid` STRING, "
+                + "`info` STRING '发送日期'"
                 + ") COMMENT 'Test Table';";
         System.out.println(actualDDL);
         Assert.assertEquals(expectedDDL, actualDDL);
