@@ -468,7 +468,8 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
                                             String database,
                                             Affix databaseAffix,
                                             CaseStrategy caseStrategy) {
-        catalog = formatQualifier(catalog, null, caseStrategy);
+        // You cannot create a catalog yourself, so you should not convert it to uppercase or lowercase
+        catalog = formatQualifier(catalog, null, CaseStrategy.SAME_NAME);
         database = formatQualifier(database, databaseAffix, caseStrategy);
         return String.format("%s.%s", catalog, database);
     }
@@ -488,7 +489,8 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
                                          Affix databaseAffix,
                                          Affix tableAffix,
                                          CaseStrategy caseStrategy) {
-        catalog = formatQualifier(catalog, null, caseStrategy);
+        // You cannot create a catalog yourself, so you should not convert it to uppercase or lowercase
+        catalog = formatQualifier(catalog, null, CaseStrategy.SAME_NAME);
         database = formatQualifier(database, databaseAffix, caseStrategy);
         table = formatQualifier(table, tableAffix, caseStrategy);
         return String.format("%s.%s.%s", catalog, database, table);
@@ -563,6 +565,7 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
                 return StringUtils.lowerCase(qualifier);
             case UPPERCASE:
                 return StringUtils.upperCase(qualifier);
+            case SAME_NAME:
             default:
                 return qualifier;
         }
