@@ -5,29 +5,22 @@ import cn.guruguru.datalink.datasource.DataSourceType;
 import cn.guruguru.datalink.protocol.Metadata;
 import cn.guruguru.datalink.protocol.enums.MetaKey;
 import cn.guruguru.datalink.protocol.field.DataField;
-import cn.guruguru.datalink.protocol.node.extract.CdcExtractNode;
 import cn.guruguru.datalink.protocol.field.WatermarkField;
 import com.google.common.base.Preconditions;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCreator;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeName;
-import org.apache.inlong.common.enums.MetaField;
-import org.apache.inlong.common.enums.RowKindEnum;
-import org.apache.inlong.sort.protocol.enums.ExtractMode;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * MySQL CDC Node
@@ -47,6 +40,8 @@ public class MysqlCdcNode extends AbstractCdcNode implements Metadata, Serializa
     private Integer serverId;
     @JsonProperty("serverTimeZone")
     private String serverTimeZone;
+    @JsonProperty("incSnapshotChunkKeyColumn")
+    private String incSnapshotChunkKeyColumn;
 
     @JsonCreator
     public MysqlCdcNode(@JsonProperty("id") String id,
@@ -62,11 +57,13 @@ public class MysqlCdcNode extends AbstractCdcNode implements Metadata, Serializa
                         @Nonnull @JsonProperty("table-name") String tableName,
                         @Nullable @JsonProperty("primaryKey") String primaryKey,
                         @Nullable @JsonProperty("serverId") Integer serverId,
-                        @Nullable @JsonProperty("serverTimeZone") String serverTimeZone) {
+                        @Nullable @JsonProperty("serverTimeZone") String serverTimeZone,
+                        @Nullable @JsonProperty("incSnapshotChunkKeyColumn") String incSnapshotChunkKeyColumn) {
         super(id, name, fields, properties, watermarkField,
                 hostname, port, username, password, databaseName, tableName, primaryKey);
         this.serverId = serverId;
         this.serverTimeZone = serverTimeZone;
+        this.incSnapshotChunkKeyColumn = incSnapshotChunkKeyColumn;
     }
 
     @Override
@@ -102,19 +99,27 @@ public class MysqlCdcNode extends AbstractCdcNode implements Metadata, Serializa
     public Map<String, String> tableOptions() {
         Map<String, String> options = super.tableOptions();
         options.put("connector", "mysql-cdc");
-        options.put("hostname", super.getHostname());
+        options.put("hostname", getHostname());
         if (super.getPort() != null) {
-            options.put("port", super.getPort().toString());
+            options.put("port", getPort().toString());
         }
-        options.put("username", super.getUsername());
-        options.put("password", super.getPassword());
-        options.put("database-name", super.getDatabaseName());
-        options.put("table-name", super.getTableName());
+        options.put("username", getUsername());
+        options.put("password", getPassword());
+        options.put("database-name", getDatabaseName());
+        options.put("table-name", getTableName());
         if (serverId != null) {
             options.put("server-id", serverId.toString());
         }
         if (serverTimeZone != null) {
             options.put("server-time-zone", serverTimeZone);
+        }
+        // During the incremental snapshot reading, the MySQL CDC Source firstly splits snapshot chunks (splits) by primary
+        // key of table. So primary key is necessary when enable 'scan.incremental.snapshot.enabled' (default: true)
+        if (getPrimaryKey() == null) {
+            options.put("scan.incremental.snapshot.enabled", Boolean.FALSE.toString());
+            Preconditions.checkNotNull(incSnapshotChunkKeyColumn,
+                    "Primary key and snapshot chunk key column cannot both be empty");
+            options.put("scan.incremental.snapshot.chunk.key-column", incSnapshotChunkKeyColumn);
         }
         return options;
     }

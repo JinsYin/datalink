@@ -6,6 +6,7 @@ import cn.guruguru.datalink.protocol.Metadata;
 import cn.guruguru.datalink.protocol.enums.MetaKey;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.field.WatermarkField;
+import com.google.common.base.Preconditions;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -36,6 +37,8 @@ public class OracleCdcNode extends AbstractCdcNode implements Metadata, Serializ
 
     public static final String TYPE = "OracleCdc";
 
+    @JsonProperty("schemaName")
+    private String schemaName;
     @JsonProperty("url")
     private String url; // `jdbc:oracle:thin:@{hostname}:{port}:{database-name}` for default
 
@@ -50,11 +53,13 @@ public class OracleCdcNode extends AbstractCdcNode implements Metadata, Serializ
                          @Nonnull @JsonProperty("username") String username,
                          @Nonnull @JsonProperty("password") String password,
                          @Nonnull @JsonProperty("databaseName") String databaseName,
+                         @Nonnull @JsonProperty("schemaName") String schemaName,
                          @Nonnull @JsonProperty("tableName") String tableName,
                          @Nullable @JsonProperty("primaryKey") String primaryKey,
                          @Nullable @JsonProperty("url") String url) {
         super(id, name, fields, properties, watermarkField,
                 hostname, port, username, password, databaseName, tableName, primaryKey);
+        this.schemaName = Preconditions.checkNotNull(schemaName, "schemaName is null");
         this.url = url;
     }
 
@@ -75,14 +80,15 @@ public class OracleCdcNode extends AbstractCdcNode implements Metadata, Serializ
     public Map<String, String> tableOptions() {
         Map<String, String> options = super.tableOptions();
         options.put("connector", "oracle-cdc");
-        options.put("hostname", super.getHostname());
+        options.put("hostname", getHostname());
         if (super.getPort() != null) {
-            options.put("port", super.getPort().toString());
+            options.put("port", getPort().toString());
         }
-        options.put("username", super.getUsername());
-        options.put("password", super.getPassword());
-        options.put("database-name", String.format("%s", super.getDatabaseName()));
-        options.put("table-name", String.format("%s", super.getTableName()));
+        options.put("username", getUsername());
+        options.put("password", getPassword());
+        options.put("database-name", String.format("%s", getDatabaseName()));
+        options.put("schema-name", String.format("%s", getSchemaName()));
+        options.put("table-name", String.format("%s", getTableName()));
         return options;
     }
 
