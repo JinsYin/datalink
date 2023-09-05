@@ -14,6 +14,11 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * JDBC Scan Extract Node
+ *
+ * @see <a href="https://nightlies.apache.org/flink/flink-docs-master/docs/connectors/table/jdbc/">JDBC SQL Connector</a>
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor(force = true)
@@ -33,7 +38,7 @@ public abstract class JdbcScanNode extends ScanExtractNode implements Serializab
     @Nonnull
     private String tableName;
     @JsonProperty("primaryKey")
-    private String primaryKey;
+    private String primaryKey; // if there are multiple, separate them with commas
     // @JsonProperty("filterClause")
     // private String filterClause;
 
