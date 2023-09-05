@@ -385,6 +385,7 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
             case "TIME": // TIME [(p)]
                 return formatTimeType(precision); // TIME [(p)] [WITHOUT TIMEZONE]
             case "DATETIME": // DATETIME [(p)]
+            case "TIMESTAMP": // MySQL CDC
                 return formatTimestampType(precision); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
             case "CHAR": // CHAR(n)
             case "VARCHAR": // VARCHAR(n)
@@ -415,6 +416,9 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
         Integer scale = fieldFormat.getScale();
         switch (fieldType) {
             case "NUMBER":
+                if (precision == null) {
+                    return new DecimalType();
+                }
                 if (precision == 1) { // NUMBER(1)
                     return new BooleanType();
                 } else if (scale <= 0 && precision - scale < 3) { // NUMBER(p, s <= 0), p - s < 3
@@ -426,11 +430,11 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
                 } else if (scale <= 0 && precision - scale < 19) { // NUMBER(p, s <= 0), p - s < 19
                     return new BigIntType();
                 } else if (scale > 0 && precision - scale >= 19 && precision - scale <= 38) { // NUMBER(p, s <= 0), 19 <= p - s <= 38
-                    return new DecimalType(precision - scale, 0);
+                    return formatDecimalType(precision - scale, 0);
                 } else if (scale <= 0 && precision - scale > 38) { // NUMBER(p, s <= 0), p - s > 38
                     return new VarCharType(VarCharType.MAX_LENGTH);
                 } else if (scale > 0) { // NUMBER(p, s > 0)
-                    return new DecimalType(precision, scale);
+                    return formatDecimalType(precision, scale);
                 }
             case "FLOAT":
             case "BINARY_FLOAT":
@@ -440,11 +444,11 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
                 return new DecimalType();
             case "DATE":
             case "TIMESTAMP": // TIMESTAMP [(p)]
-                return new TimestampType(precision); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
+                return formatTimestampType(precision); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
             case "TIMESTAMP [(p)] WITH TIME ZONE": // TODO
-                return new ZonedTimestampType(precision); // TIMESTAMP [(p)] WITH TIME ZONE
+                return formatZonedTimestampType(precision); // TIMESTAMP [(p)] WITH TIME ZONE
             case "TIMESTAMP [(p)] WITH LOCAL TIME ZONE": // TODO
-                return new LocalZonedTimestampType(precision); // TIMESTAMP_LTZ [(p)]
+                return formatLocalZonedTimestampType(precision); // TIMESTAMP_LTZ [(p)]
             case "CHAR": // CHAR(n)
             case "NCHAR": // NCHAR(n)
             case "NVARCHAR2": // NVARCHAR2(n)
@@ -471,8 +475,9 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
     // ~ format LogicalType -------------------------------
 
     private DecimalType formatDecimalType(Integer precision, Integer scale) {
-        boolean precisionRange = precision != null &&
-                precision >= DecimalType.MIN_PRECISION && precision <= DecimalType.MAX_PRECISION;
+        boolean precisionRange = precision != null
+                && precision >= DecimalType.MIN_PRECISION
+                && precision <= DecimalType.MAX_PRECISION;
         if (precisionRange && scale != null) {
             return new DecimalType(precision, scale);
         } else if (precisionRange) {
@@ -484,16 +489,38 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
 
     private TimestampType formatTimestampType(Integer precision) {
         boolean precisionRange = precision != null
-                && precision >= TimestampType.MIN_PRECISION && precision >= TimestampType.MAX_PRECISION;
+                && precision >= TimestampType.MIN_PRECISION
+                && precision >= TimestampType.MAX_PRECISION;
         if (precisionRange) {
             return new TimestampType(precision);
         }
         return new TimestampType();
     }
 
+    private ZonedTimestampType formatZonedTimestampType(Integer precision) {
+        boolean precisionRange = precision != null
+                && precision >= ZonedTimestampType.MIN_PRECISION
+                && precision >= ZonedTimestampType.MAX_PRECISION;
+        if (precisionRange) {
+            return new ZonedTimestampType(precision);
+        }
+        return new ZonedTimestampType();
+    }
+
+    private LocalZonedTimestampType formatLocalZonedTimestampType(Integer precision) {
+        boolean precisionRange = precision != null
+                && precision >= LocalZonedTimestampType.MIN_PRECISION
+                && precision >= LocalZonedTimestampType.MAX_PRECISION;
+        if (precisionRange) {
+            return new LocalZonedTimestampType(precision);
+        }
+        return new LocalZonedTimestampType();
+    }
+
     private TimeType formatTimeType(Integer precision) {
         boolean precisionRange = precision != null
-                && precision >= TimeType.MIN_PRECISION && precision >= TimeType.MAX_PRECISION;
+                && precision >= TimeType.MIN_PRECISION
+                && precision >= TimeType.MAX_PRECISION;
         if (precisionRange) {
             return new TimeType(precision);
         }
