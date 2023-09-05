@@ -364,8 +364,8 @@ public class FlinkSqlParser implements Parser {
         StringBuilder sb = new StringBuilder("CREATE TABLE IF NOT EXISTS `");
         sb.append(node.genTableName()).append("`(\n");
         String filterPrimaryKey = getFilterPrimaryKey(node);
-        sb.append(genPrimaryKey(node.getPrimaryKey(), filterPrimaryKey));
         sb.append(parseFields(node.getFields(), node, filterPrimaryKey));
+        sb.append(genPrimaryKey(node.getPrimaryKey(), filterPrimaryKey));
         if (node instanceof CdcExtractNode) {
             CdcExtractNode extractNode = (CdcExtractNode) node;
             if (extractNode.getWatermarkField() != null) {
@@ -496,7 +496,7 @@ public class FlinkSqlParser implements Parser {
         boolean checkPrimaryKeyFlag = StringUtils.isNotBlank(primaryKey)
                 && (StringUtils.isBlank(filterPrimaryKey) || !primaryKey.equals(filterPrimaryKey));
         if (checkPrimaryKeyFlag) {
-            primaryKey = String.format("    PRIMARY KEY (%s) NOT ENFORCED,\n",
+            primaryKey = String.format(",\n    PRIMARY KEY (%s) NOT ENFORCED",
                     StringUtils.join(formatFields(primaryKey.split(",")), ","));
         } else {
             primaryKey = "";
