@@ -7,6 +7,13 @@ import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonPro
 
 import javax.annotation.Nullable;
 
+/**
+ * Field type format
+ *
+ * @see org.apache.flink.table.api.DataTypes
+ * @see org.apache.inlong.sort.formats.common.FormatInfo
+ * @see org.apache.inlong.sort.formats.common.TypeInfo
+ */
 @Data
 @NoArgsConstructor
 public class FieldFormat {
@@ -38,6 +45,10 @@ public class FieldFormat {
         //} else {
         //    this.displayType = type;
         //}
+    }
+
+    public FieldFormat(@JsonProperty("type") String type) {
+        this.type = type;
     }
 
     public String toString() {
