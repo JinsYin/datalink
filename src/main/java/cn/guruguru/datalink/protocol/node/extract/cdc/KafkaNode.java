@@ -3,6 +3,7 @@ package cn.guruguru.datalink.protocol.node.extract.cdc;
 import cn.guruguru.datalink.datasource.NodeDataSource;
 import cn.guruguru.datalink.datasource.DataSourceType;
 import cn.guruguru.datalink.protocol.Metadata;
+import cn.guruguru.datalink.protocol.enums.KafkaScanStartupMode;
 import cn.guruguru.datalink.protocol.enums.MetaKey;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.field.WatermarkField;
@@ -10,12 +11,12 @@ import cn.guruguru.datalink.protocol.node.extract.CdcExtractNode;
 import com.google.common.base.Preconditions;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCreator;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeName;
-import org.apache.inlong.sort.protocol.enums.KafkaScanStartupMode;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,6 +38,7 @@ import java.util.Set;
 @JsonTypeName(KafkaNode.TYPE)
 @NodeDataSource(DataSourceType.KAFKA_2X)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@NoArgsConstructor
 @Data
 public class KafkaNode extends CdcExtractNode implements Metadata, Serializable {
     public static final String TYPE = "Kafka";

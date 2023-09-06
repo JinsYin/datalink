@@ -3,15 +3,17 @@ package cn.guruguru.datalink.protocol.node.extract.cdc;
 import cn.guruguru.datalink.datasource.NodeDataSource;
 import cn.guruguru.datalink.datasource.DataSourceType;
 import cn.guruguru.datalink.protocol.Metadata;
+import cn.guruguru.datalink.protocol.enums.KafkaScanStartupMode;
 import cn.guruguru.datalink.protocol.enums.MetaKey;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.enums.DataFormat;
 import cn.guruguru.datalink.protocol.node.extract.CdcExtractNode;
 import cn.guruguru.datalink.protocol.field.WatermarkField;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeName;
-import org.apache.inlong.sort.protocol.enums.KafkaScanStartupMode;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,6 +31,8 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 @JsonTypeName(KafkaCdcNode.TYPE)
 @NodeDataSource(DataSourceType.KAFKA_2X)
+@NoArgsConstructor(force = true)
+@Data
 public class KafkaCdcNode extends CdcExtractNode implements Metadata, Serializable {
     private static final long serialVersionUID = 1L;
 
