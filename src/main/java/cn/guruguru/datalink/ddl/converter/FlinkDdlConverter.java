@@ -12,7 +12,7 @@ import cn.guruguru.datalink.ddl.table.TableSchema;
 import cn.guruguru.datalink.type.converter.FlinkDataTypeConverter;
 import cn.guruguru.datalink.exception.IllegalDDLException;
 import cn.guruguru.datalink.exception.SQLSyntaxException;
-import cn.guruguru.datalink.protocol.field.FieldFormat;
+import cn.guruguru.datalink.protocol.field.DataType;
 import cn.guruguru.datalink.utils.SqlUtil;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
@@ -95,8 +95,8 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
             String columnComment = tableField.getComment();
             Integer precision = tableField.getPrecision();
             Integer scale = tableField.getScale();
-            FieldFormat fieldFormat = new FieldFormat(columnType, precision, scale);
-            String engineFieldType = flinkTypeConverter.toEngineType(dialect.getNodeType(), fieldFormat);
+            DataType dataType = new DataType(columnType, precision, scale);
+            String engineFieldType = flinkTypeConverter.toEngineType(dialect.getNodeType(), dataType);
             createTableSql.append("    ").append(formatColumn(columnName, caseStrategy)).append(" ").append(engineFieldType);
             if (!StringUtils.isBlank(columnComment)) {
                 createTableSql.append(" COMMENT '").append(columnComment).append("'");
@@ -327,9 +327,9 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
             String columnTypeName = col.getColDataType().getDataType();
             List<String> columnTypeArgs = col.getColDataType().getArgumentsStringList();
             // construct field type for data source
-            FieldFormat fieldFormat = convertColumnType(columnTypeName, columnTypeArgs);
+            DataType dataType = convertColumnType(columnTypeName, columnTypeArgs);
             // convert to flink type
-            String engineFieldType = flinkTypeConverter.toEngineType(dialect.getNodeType(), fieldFormat);
+            String engineFieldType = flinkTypeConverter.toEngineType(dialect.getNodeType(), dataType);
             // construct to a flink column
             StringBuilder engineColumn = new StringBuilder();
             engineColumn.append(formatColumn(columnName, caseStrategy)).append(" ").append(engineFieldType);
@@ -354,7 +354,7 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
      *
      * @return field type
      */
-    private FieldFormat convertColumnType(String columnTypeName, List<String> columnTypeArgs) {
+    private DataType convertColumnType(String columnTypeName, List<String> columnTypeArgs) {
         Integer precision = null;
         Integer scale = null;
         if (columnTypeArgs != null) {
@@ -380,7 +380,7 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
                 }
             }
         }
-        return new FieldFormat(columnTypeName, precision, scale);
+        return new DataType(columnTypeName, precision, scale);
     }
 
     /**

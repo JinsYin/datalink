@@ -2,7 +2,7 @@ package cn.guruguru.datalink.type.converter;
 
 import cn.guruguru.datalink.exception.UnsupportedDataSourceException;
 import cn.guruguru.datalink.exception.UnsupportedDataTypeException;
-import cn.guruguru.datalink.protocol.field.FieldFormat;
+import cn.guruguru.datalink.protocol.field.DataType;
 import cn.guruguru.datalink.protocol.node.extract.cdc.MysqlCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.OracleCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.DmScanNode;
@@ -36,31 +36,31 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
      *
      * <pre>org.apache.inlong.sort.formats.base.TableFormatUtils#deriveLogicalType(FormatInfo)</pre>
      * @param nodeType node type
-     * @param fieldFormat source field
+     * @param dataType source field
      */
     @Override
-    public String toEngineType(String nodeType, FieldFormat fieldFormat) {
+    public String toEngineType(String nodeType, DataType dataType) {
         switch (nodeType) {
             // Format -------------------
             case "JSON":
             case "CSV":
-                return fieldFormat.getType();
+                return dataType.getType();
             // Scan -------------------
             case MySqlScanNode.TYPE:
-                return convertMysqlType(fieldFormat).asSummaryString();
+                return convertMysqlType(dataType).asSummaryString();
             case OracleScanNode.TYPE:
-                return convertOracleType(fieldFormat).asSummaryString();
+                return convertOracleType(dataType).asSummaryString();
             case DmScanNode.TYPE:
-                return convertDmdbForOracleType(fieldFormat).asSummaryString();
+                return convertDmdbForOracleType(dataType).asSummaryString();
             case LakehouseLoadNode.TYPE:
                 // Lakehouse table may be created by Spark, so it is necessary to convert the lakehouse type to the Flink type
                 // e.g. Spark `TIMESTAMP` -> Arctic `TIMESTAMPTZ` -> Flink `TIMESTAMP(6) WITH LOCAL TIME ZONE`
-                return convertLakehouseMixedIcebergType(fieldFormat);
+                return convertLakehouseMixedIcebergType(dataType);
             // CDC --------------------
             case MysqlCdcNode.TYPE:
-                return convertMysqlCdcType(fieldFormat).asSummaryString();
+                return convertMysqlCdcType(dataType).asSummaryString();
             case OracleCdcNode.TYPE:
-                return convertOracleCdcType(fieldFormat).asSummaryString();
+                return convertOracleCdcType(dataType).asSummaryString();
             default:
                 throw new UnsupportedDataSourceException("Unsupported data source type:" + nodeType);
         }
@@ -72,13 +72,13 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
      * Convert Mysql type to Flink type
      *
      * @see <a href="https://nightlies.apache.org/flink/flink-docs-master/docs/connectors/table/jdbc/#data-type-mapping">Data Type Mapping</a>
-     * @param fieldFormat mysql field format
+     * @param dataType mysql field format
      * @return Flink SQL Field Type
      */
-    private LogicalType convertMysqlType(FieldFormat fieldFormat) {
-        String fieldType = StringUtils.upperCase(fieldFormat.getType());
-        Integer precision = fieldFormat.getPrecision();
-        Integer scale = fieldFormat.getScale();
+    private LogicalType convertMysqlType(DataType dataType) {
+        String fieldType = StringUtils.upperCase(dataType.getType());
+        Integer precision = dataType.getPrecision();
+        Integer scale = dataType.getScale();
         switch (fieldType) {
             case "TINYINT":
                 if (precision == 1) { // TINYINT(1)
@@ -136,13 +136,13 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
      * @see <a href="https://eco.dameng.com/document/dm/zh-cn/pm/dm_sql-introduction.html">DM_SQL 所支持的数据类型</a>
      * @see <a href="https://eco.dameng.com/document/dm/zh-cn/pm/jdbc-rogramming-guide.html">数据类型扩展</a>
      * @see <a href="https://nutz.cn/yvr/t/7piehdm6mmhubpmrsonva6a1fe">达梦数据库的集成（支持oracle、mysql兼容模式）</a>
-     * @param fieldFormat DMDB for MySQL field format
+     * @param dataType DMDB for MySQL field format
      * @return Flink SQL Field Type
      */
-    private LogicalType convertDmdbForMysqlType(FieldFormat fieldFormat) {
-        String fieldType = StringUtils.upperCase(fieldFormat.getType());
-        Integer precision = fieldFormat.getPrecision();
-        Integer scale = fieldFormat.getScale();
+    private LogicalType convertDmdbForMysqlType(DataType dataType) {
+        String fieldType = StringUtils.upperCase(dataType.getType());
+        Integer precision = dataType.getPrecision();
+        Integer scale = dataType.getScale();
         switch (fieldType) {
             case "TINYINT":
                 if (precision == 1) { // TINYINT(1)
@@ -196,13 +196,13 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
     /**
      * Convert DMDB compatibles with Oracle type to Flink type
      *
-     * @param fieldFormat DMDB for Oracle Field Type
+     * @param dataType DMDB for Oracle Field Type
      * @return Flink SQL Field Type
      */
-    private LogicalType convertDmdbForOracleType(FieldFormat fieldFormat) {
-        String fieldType = StringUtils.upperCase(fieldFormat.getType());
-        Integer precision = fieldFormat.getPrecision();
-        Integer scale = fieldFormat.getScale();
+    private LogicalType convertDmdbForOracleType(DataType dataType) {
+        String fieldType = StringUtils.upperCase(dataType.getType());
+        Integer precision = dataType.getPrecision();
+        Integer scale = dataType.getScale();
         switch (fieldType) {
             case "BINARY_FLOAT":
                 return new FloatType();
@@ -246,13 +246,13 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
      * Convert Oracle type to Flink type
      *
      * @see <a href="https://nightlies.apache.org/flink/flink-docs-master/docs/connectors/table/jdbc/#data-type-mapping">Data Type Mapping</a>
-     * @param fieldFormat Oracle Field Type
+     * @param dataType Oracle Field Type
      * @return Flink SQL Field Type
      */
-    private LogicalType convertOracleType(FieldFormat fieldFormat) {
-        String fieldType = StringUtils.upperCase(fieldFormat.getType());
-        Integer precision = fieldFormat.getPrecision();
-        Integer scale = fieldFormat.getScale();
+    private LogicalType convertOracleType(DataType dataType) {
+        String fieldType = StringUtils.upperCase(dataType.getType());
+        Integer precision = dataType.getPrecision();
+        Integer scale = dataType.getScale();
         switch (fieldType) {
             case "BINARY_FLOAT":
                 return new FloatType();
@@ -288,13 +288,13 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
    *
    * @see <a href="https://arctic.netease.com/ch/flink/flink-ddl/#mixed-iceberg-data-types">Mixed Iceberg Data Types</a>
    * @see <a href="https://github.com/DTStack/chunjun/blob/master/chunjun-connectors/chunjun-connector-arctic/src/main/java/com/dtstack/chunjun/connector/arctic/converter/ArcticRawTypeMapper.java">ArcticRawTypeMapper</a>
-   * @param fieldFormat Arctic Mixed Iceberg Field Type
+   * @param dataType Arctic Mixed Iceberg Field Type
    * @return Flink SQL Field Type
    */
-  private String convertLakehouseMixedIcebergType(FieldFormat fieldFormat) {
-      String fieldType = StringUtils.upperCase(fieldFormat.getType());
-      Integer precision = fieldFormat.getPrecision();
-      Integer scale = fieldFormat.getScale();
+  private String convertLakehouseMixedIcebergType(DataType dataType) {
+      String fieldType = StringUtils.upperCase(dataType.getType());
+      Integer precision = dataType.getPrecision();
+      Integer scale = dataType.getScale();
       switch (fieldType) {
           case "STRING":
               return new VarCharType(VarCharType.MAX_LENGTH).asSummaryString();
@@ -339,13 +339,13 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
      * Convert Mysql CDC type to Flink type
      *
      * @see <a href="https://ververica.github.io/flink-cdc-connectors/master/content/connectors/mysql-cdc.html#data-type-mappingg">Data Type Mapping</a>
-     * @param fieldFormat mysql field format
+     * @param dataType mysql field format
      * @return Flink SQL Field Type
      */
-    private LogicalType convertMysqlCdcType(FieldFormat fieldFormat) {
-        String fieldType = StringUtils.upperCase(fieldFormat.getType());
-        Integer precision = fieldFormat.getPrecision();
-        Integer scale = fieldFormat.getScale();
+    private LogicalType convertMysqlCdcType(DataType dataType) {
+        String fieldType = StringUtils.upperCase(dataType.getType());
+        Integer precision = dataType.getPrecision();
+        Integer scale = dataType.getScale();
         switch (fieldType) {
             case "TINYINT":
                 if (precision == 1) { // TINYINT(1)
@@ -402,13 +402,13 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
      * Convert Oracle CDC type to Flink type
      *
      * @see <a href="https://ververica.github.io/flink-cdc-connectors/master/content/connectors/oracle-cdc.html#data-type-mapping">Data Type Mapping</a>
-     * @param fieldFormat Oracle CDC Field Type
+     * @param dataType Oracle CDC Field Type
      * @return Flink SQL Field Type
      */
-    private LogicalType convertOracleCdcType(FieldFormat fieldFormat) {
-        String fieldType = StringUtils.upperCase(fieldFormat.getType());
-        Integer precision = fieldFormat.getPrecision();
-        Integer scale = fieldFormat.getScale();
+    private LogicalType convertOracleCdcType(DataType dataType) {
+        String fieldType = StringUtils.upperCase(dataType.getType());
+        Integer precision = dataType.getPrecision();
+        Integer scale = dataType.getScale();
         switch (fieldType) {
             case "NUMBER":
                 if (precision == null) {

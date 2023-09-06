@@ -2,7 +2,7 @@ package cn.guruguru.datalink.protocol.node.extract.cdc;
 
 import cn.guruguru.datalink.datasource.NodeDataSource;
 import cn.guruguru.datalink.datasource.DataSourceType;
-import cn.guruguru.datalink.protocol.field.FieldFormat;
+import cn.guruguru.datalink.protocol.field.DataType;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.field.WatermarkField;
 import cn.guruguru.datalink.protocol.node.extract.CdcExtractNode;
@@ -70,7 +70,7 @@ public class MongoCdcNode extends CdcExtractNode implements Serializable {
         super(id, name, fields, properties, waterMarkField);
         if (fields.stream().noneMatch(m -> m.getName().equals(ID))) {
             List<DataField> allFields = new ArrayList<>(fields);
-            allFields.add(new DataField(ID, new FieldFormat())); // StringFormatInfo
+            allFields.add(new DataField(ID, new DataType())); // StringFormatInfo
             this.setFields(allFields);
         }
         this.collection = Preconditions.checkNotNull(collection, "collection is null");

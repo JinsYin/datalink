@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCreator;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -16,12 +17,15 @@ import javax.annotation.Nullable;
  */
 @Data
 @NoArgsConstructor
-public class FieldFormat {
-    @JsonProperty("displayType")
-    @Nullable
-    private String displayType;
+public class DataType {
     @JsonProperty("type")
     private String type;
+    /**
+     * formatted display name, like {@code DECIMAL(10, 2)}
+     */
+    @Nullable
+    @JsonProperty("name")
+    private String name;
     @JsonProperty("precision")
     private Integer precision;
     @JsonProperty("scale")
@@ -31,13 +35,13 @@ public class FieldFormat {
     // private String timeZone;
 
     @JsonCreator
-    public FieldFormat(@JsonProperty("type") String type,
-                       @Nullable @JsonProperty("precision") Integer precision,
-                       @Nullable @JsonProperty("scale") Integer scale) {
+    public DataType(@Nonnull @JsonProperty("type") String type,
+                    @Nullable @JsonProperty("precision") Integer precision,
+                    @Nullable @JsonProperty("scale") Integer scale) {
         this.type = type;
         this.precision = precision;
         this.scale = scale;
-        this.displayType = type;
+        this.name = toString();
         //if (!type.contains("(") && precision != null && scale != null) {
         //    this.displayType = String.format("%s(%s,%s)", type, precision, scale);
         //} else if (!type.contains("(") && precision != null) {
@@ -47,7 +51,7 @@ public class FieldFormat {
         //}
     }
 
-    public FieldFormat(@JsonProperty("type") String type) {
+    public DataType(@JsonProperty("type") String type) {
         this.type = type;
     }
 

@@ -1,6 +1,6 @@
 package cn.guruguru.datalink.type.converter;
 
-import cn.guruguru.datalink.protocol.field.FieldFormat;
+import cn.guruguru.datalink.protocol.field.DataType;
 
 import java.io.Serializable;
 
@@ -13,8 +13,8 @@ public interface DataTypeConverter<T> extends Serializable {
      *
      * {@code org.apache.inlong.sort.formats.base.TableFormatUtils#deriveLogicalType(FormatInfo)}
      * @param nodeType node type
-     * @param fieldFormat source field
+     * @param dataType source field
      * @return engine field
      */
-    T toEngineType(String nodeType, FieldFormat fieldFormat);
+    T toEngineType(String nodeType, DataType dataType);
 }

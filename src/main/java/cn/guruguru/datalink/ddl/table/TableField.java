@@ -1,6 +1,6 @@
 package cn.guruguru.datalink.ddl.table;
 
-import cn.guruguru.datalink.protocol.field.FieldFormat;
+import cn.guruguru.datalink.protocol.field.DataType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-public class TableField extends FieldFormat {
+public class TableField extends DataType {
     @JsonProperty("name")
     private String name;
     @JsonProperty("comment")

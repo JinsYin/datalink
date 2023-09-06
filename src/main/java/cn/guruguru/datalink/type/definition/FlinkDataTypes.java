@@ -1,6 +1,6 @@
 package cn.guruguru.datalink.type.definition;
 
-import cn.guruguru.datalink.protocol.field.FieldFormat;
+import cn.guruguru.datalink.protocol.field.DataType;
 
 /**
  * Flink Data Types
@@ -11,77 +11,77 @@ import cn.guruguru.datalink.protocol.field.FieldFormat;
  * @see <a href="https://nightlies.apache.org/flink/flink-docs-master/docs/dev/table/types/">Data Types</a>
  */
 public class FlinkDataTypes {
-    public static FieldFormat CHAR() {
-        return new FieldFormat("CHAR");
+    public static DataType CHAR() {
+        return new DataType("CHAR");
     }
 
-    public static FieldFormat VARCHAR() {
-        return new FieldFormat("VARCHAR");
+    public static DataType VARCHAR() {
+        return new DataType("VARCHAR");
     }
 
-    public static FieldFormat STRING() {
-        return new FieldFormat("STRING");
+    public static DataType STRING() {
+        return new DataType("STRING");
     }
 
-    public static FieldFormat BOOLEAN() {
-        return new FieldFormat("BOOLEAN");
+    public static DataType BOOLEAN() {
+        return new DataType("BOOLEAN");
     }
 
-    public static FieldFormat BINARY() {
-        return new FieldFormat("BINARY");
+    public static DataType BINARY() {
+        return new DataType("BINARY");
     }
 
-    public static FieldFormat VARBINARY() {
-        return new FieldFormat("VARBINARY");
+    public static DataType VARBINARY() {
+        return new DataType("VARBINARY");
     }
-    public static FieldFormat BYTES() {
-        return new FieldFormat("BYTES");
-    }
-
-    public static FieldFormat DECIMAL() {
-        return new FieldFormat("DECIMAL"); // Supports fixed precision and scale.
+    public static DataType BYTES() {
+        return new DataType("BYTES");
     }
 
-    public static FieldFormat TINYINT() {
-        return new FieldFormat("TINYINT");
+    public static DataType DECIMAL() {
+        return new DataType("DECIMAL"); // Supports fixed precision and scale.
     }
 
-    public static FieldFormat SMALLINT() {
-        return new FieldFormat("SMALLINT");
+    public static DataType TINYINT() {
+        return new DataType("TINYINT");
     }
 
-    public static FieldFormat INTEGER() {
-        return new FieldFormat("INTEGER");
-    }
-    public static FieldFormat BIGINT() {
-        return new FieldFormat("BIGINT");
+    public static DataType SMALLINT() {
+        return new DataType("SMALLINT");
     }
 
-    public static FieldFormat FLOAT() {
-        return new FieldFormat("FLOAT");
+    public static DataType INTEGER() {
+        return new DataType("INTEGER");
     }
-    public static FieldFormat DOUBLE() {
-        return new FieldFormat("DOUBLE");
-    }
-
-    public static FieldFormat DATE() {
-        return new FieldFormat("DATE");
+    public static DataType BIGINT() {
+        return new DataType("BIGINT");
     }
 
-    public static FieldFormat TIME() {
-        return new FieldFormat("TIME"); // Supports only a precision of 0.
+    public static DataType FLOAT() {
+        return new DataType("FLOAT");
+    }
+    public static DataType DOUBLE() {
+        return new DataType("DOUBLE");
     }
 
-    public static FieldFormat TIMESTAMP() {
-        return new FieldFormat("TIMESTAMP");
+    public static DataType DATE() {
+        return new DataType("DATE");
     }
 
-    public static FieldFormat TIMESTAMP_LTZ() {
-        return new FieldFormat("TIMESTAMP_LTZ");
+    public static DataType TIME() {
+        return new DataType("TIME"); // Supports only a precision of 0.
     }
 
-    public static FieldFormat INTERVAL() {
-        return new FieldFormat("INTERVAL");
+    public static DataType TIMESTAMP() {
+        return new DataType("TIMESTAMP");
+    }
+
+    public static DataType TIMESTAMP_LTZ() {
+        return new DataType("TIMESTAMP_LTZ");
+    }
+
+    public static DataType INTERVAL() {
+        return new DataType("INTERVAL");
     }
 
 //    public static FieldFormat ARRAY() {

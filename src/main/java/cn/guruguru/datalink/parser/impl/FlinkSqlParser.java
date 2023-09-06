@@ -1,6 +1,6 @@
 package cn.guruguru.datalink.parser.impl;
 
-import cn.guruguru.datalink.protocol.field.FieldFormat;
+import cn.guruguru.datalink.protocol.field.DataType;
 import cn.guruguru.datalink.parser.ParseResult;
 import cn.guruguru.datalink.parser.Parser;
 import cn.guruguru.datalink.parser.result.FlinkSqlParseResult;
@@ -290,33 +290,33 @@ public class FlinkSqlParser implements Parser {
                                      Map<String, FieldRelation> fieldRelationMap, StringBuilder sb) {
         for (DataField field : fields) {
             FieldRelation fieldRelation = fieldRelationMap.get(field.getName());
-            FieldFormat fieldFormat = field.getFieldFormat();
+            DataType dataType = field.getDataType();
             if (fieldRelation == null) {
-                String targetType = typeConverter.toEngineType(nodeType, fieldFormat);
+                String targetType = typeConverter.toEngineType(nodeType, dataType);
                 sb.append("\n    CAST(NULL as ").append(targetType).append(") AS ").append(field.format()).append(",");
                 continue;
             }
-            boolean complexType = "ROW".equals(fieldFormat.getType())
-                    || "ARRAY".equals(fieldFormat.getType())
-                    || "MAP".equals(fieldFormat.getType());
+            boolean complexType = "ROW".equals(dataType.getType())
+                    || "ARRAY".equals(dataType.getType())
+                    || "MAP".equals(dataType.getType());
             Field inputField = fieldRelation.getInputField();
             if (inputField instanceof DataField) {
                 DataField DataField = (DataField) inputField;
-                FieldFormat formatInfo = DataField.getFieldFormat();
+                DataType formatInfo = DataField.getDataType();
                 DataField outputField = fieldRelation.getOutputField();
                 boolean sameType = formatInfo != null
                         && outputField != null
-                        && outputField.getFieldFormat() != null
-                        && outputField.getFieldFormat().getType().equals(formatInfo.getType());
-                if (complexType || sameType || fieldFormat == null) {
+                        && outputField.getDataType() != null
+                        && outputField.getDataType().getType().equals(formatInfo.getType());
+                if (complexType || sameType || dataType == null) {
                     sb.append("\n    ").append(inputField.format()).append(" AS ").append(field.format()).append(",");
                 } else {
-                    String targetType = typeConverter.toEngineType(nodeType, fieldFormat);
+                    String targetType = typeConverter.toEngineType(nodeType, dataType);
                     sb.append("\n    CAST(").append(inputField.format()).append(" as ")
                             .append(targetType).append(") AS ").append(field.format()).append(",");
                 }
             } else {
-                String targetType = typeConverter.toEngineType(nodeType, field.getFieldFormat());
+                String targetType = typeConverter.toEngineType(nodeType, field.getDataType());
                 sb.append("\n    CAST(").append(inputField.format()).append(" as ")
                         .append(targetType).append(") AS ").append(field.format()).append(",");
             }
@@ -472,7 +472,7 @@ public class FlinkSqlParser implements Parser {
                 }
                 sb.append(metadataNode.format(metaFieldInfo.getMetaKey()));
             } else {
-                sb.append(typeConverter.toEngineType(nodeType, field.getFieldFormat()));
+                sb.append(typeConverter.toEngineType(nodeType, field.getDataType()));
             }
             if (StringUtils.isNotBlank(field.getComment())) {
                 sb.append(" COMMENT '").append(field.getComment()).append("'");
