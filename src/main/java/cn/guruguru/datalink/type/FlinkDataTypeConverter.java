@@ -1,4 +1,4 @@
-package cn.guruguru.datalink.ddl.type;
+package cn.guruguru.datalink.type;
 
 import cn.guruguru.datalink.exception.UnsupportedDataSourceException;
 import cn.guruguru.datalink.exception.UnsupportedDataTypeException;
@@ -11,7 +11,6 @@ import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
 import cn.guruguru.datalink.protocol.node.load.LakehouseLoadNode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.flink.table.types.logical.ArrayType;
 import org.apache.flink.table.types.logical.BigIntType;
 import org.apache.flink.table.types.logical.BooleanType;
 import org.apache.flink.table.types.logical.DateType;
@@ -21,8 +20,6 @@ import org.apache.flink.table.types.logical.FloatType;
 import org.apache.flink.table.types.logical.IntType;
 import org.apache.flink.table.types.logical.LocalZonedTimestampType;
 import org.apache.flink.table.types.logical.LogicalType;
-import org.apache.flink.table.types.logical.MapType;
-import org.apache.flink.table.types.logical.RowType;
 import org.apache.flink.table.types.logical.SmallIntType;
 import org.apache.flink.table.types.logical.TimeType;
 import org.apache.flink.table.types.logical.TimestampType;
@@ -30,8 +27,6 @@ import org.apache.flink.table.types.logical.TinyIntType;
 import org.apache.flink.table.types.logical.VarBinaryType;
 import org.apache.flink.table.types.logical.VarCharType;
 import org.apache.flink.table.types.logical.ZonedTimestampType;
-
-import java.util.Collections;
 
 @Slf4j
 public class FlinkDataTypeConverter implements DataTypeConverter<String> {

@@ -1,4 +1,4 @@
-package cn.guruguru.datalink.ddl.type;
+package cn.guruguru.datalink.type;
 
 import cn.guruguru.datalink.protocol.field.FieldFormat;
 
