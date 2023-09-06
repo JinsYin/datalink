@@ -9,7 +9,7 @@ import cn.guruguru.datalink.ddl.table.Affix;
 import cn.guruguru.datalink.ddl.table.TableDuplicateStrategy;
 import cn.guruguru.datalink.ddl.table.TableField;
 import cn.guruguru.datalink.ddl.table.TableSchema;
-import cn.guruguru.datalink.type.FlinkDataTypeConverter;
+import cn.guruguru.datalink.type.converter.FlinkDataTypeConverter;
 import cn.guruguru.datalink.exception.IllegalDDLException;
 import cn.guruguru.datalink.exception.SQLSyntaxException;
 import cn.guruguru.datalink.protocol.field.FieldFormat;

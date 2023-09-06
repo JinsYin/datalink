@@ -1,4 +1,4 @@
-package cn.guruguru.datalink.type;
+package cn.guruguru.datalink.type.converter;
 
 import cn.guruguru.datalink.exception.UnsupportedDataSourceException;
 import cn.guruguru.datalink.exception.UnsupportedDataTypeException;

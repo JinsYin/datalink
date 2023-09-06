@@ -17,7 +17,7 @@ import cn.guruguru.datalink.protocol.node.extract.cdc.MongoCdcNode;
 import cn.guruguru.datalink.protocol.node.transform.TransformNode;
 import cn.guruguru.datalink.protocol.relation.FieldRelation;
 import cn.guruguru.datalink.protocol.relation.NodeRelation;
-import cn.guruguru.datalink.type.FlinkDataTypeConverter;
+import cn.guruguru.datalink.type.converter.FlinkDataTypeConverter;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
