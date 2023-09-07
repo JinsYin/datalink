@@ -80,9 +80,10 @@ public class FlinkDataTypes {
         return new DataType("TIMESTAMP_LTZ");
     }
 
-    public static DataType INTERVAL() {
-        return new DataType("INTERVAL");
-    }
+    // https://nightlies.apache.org/flink/flink-docs-master/docs/dev/table/types/#interval-year-to-month
+//    public static DataType INTERVAL() {
+//        return new DataType("INTERVAL");
+//    }
 
 //    public static FieldFormat ARRAY() {
 //        return new FieldFormat("ARRAY");
