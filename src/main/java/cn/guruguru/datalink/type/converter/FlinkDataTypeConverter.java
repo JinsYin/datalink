@@ -3,6 +3,7 @@ package cn.guruguru.datalink.type.converter;
 import cn.guruguru.datalink.exception.UnsupportedDataSourceException;
 import cn.guruguru.datalink.exception.UnsupportedDataTypeException;
 import cn.guruguru.datalink.protocol.field.DataType;
+import cn.guruguru.datalink.protocol.node.extract.cdc.KafkaNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.MysqlCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.OracleCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.DmScanNode;
@@ -42,8 +43,7 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
     public String toEngineType(String nodeType, DataType dataType) {
         switch (nodeType) {
             // Format -------------------
-            case "JSON":
-            case "CSV":
+            case KafkaNode.TYPE: // JSON, CSV and so on
                 return dataType.getType();
             // Scan -------------------
             case MySqlScanNode.TYPE:

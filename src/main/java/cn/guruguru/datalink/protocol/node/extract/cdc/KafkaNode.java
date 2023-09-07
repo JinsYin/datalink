@@ -48,8 +48,14 @@ public class KafkaNode extends CdcExtractNode implements Metadata, Serializable 
     private String bootstrapServers;
     @JsonProperty("groupId")
     private String groupId;
+    /**
+     * data format
+     *
+     * <p>To be improved, different formats have different properties
+     * @see org.apache.inlong.sort.protocol.node.format.Format
+     */
     @JsonProperty("format")
-    private String format; // InLong: Format
+    private String format;
     @JsonProperty("scanStartupMode")
     private KafkaScanStartupMode scanStartupMode;
     @JsonProperty("scanStartupSpecificOffsets")
@@ -97,6 +103,7 @@ public class KafkaNode extends CdcExtractNode implements Metadata, Serializable 
         Map<String, String> options = super.tableOptions();
         options.put("connector", "kafka");
         options.put("topic", topic);
+        options.put("format", format);
         options.put("properties.bootstrap.servers", bootstrapServers);
         options.put("scan.startup.mode", scanStartupMode.getValue());
         if (StringUtils.isNotEmpty(scanStartupSpecificOffsets)) {

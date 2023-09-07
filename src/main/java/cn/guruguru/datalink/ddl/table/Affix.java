@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Prefix or suffix of database name and table name. If it is null or the affixStrategy is {@link AffixStrategy.NONE},
+ * Prefix or suffix of database name and table name. If it is null or the affixStrategy is {@link AffixStrategy#NONE},
  * it means there is no prefix or suffix.
  */
 @Data
