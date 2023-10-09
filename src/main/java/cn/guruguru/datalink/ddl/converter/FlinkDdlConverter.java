@@ -432,12 +432,10 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
      */
     private String preprocessSqlForOracle(String sql) {
         // remove some keywords and clauses
-        return sql.replaceAll("\\sENABLE", "")
-                .replaceAll("\\enable", "")
-                .replaceAll("USING INDEX ", "")
-                .replaceAll("using index ", "")
-                .replaceAll(",?\\s*\n?\\s*supplemental log data.*columns", "")
-                .replaceAll(",?\\s*\n?\\s*SUPPLEMENTAL LOG DATA.*COLUMNS", "");
+        return sql.replaceAll("(?i)\\sENABLE", "")
+                .replaceAll("(?i)USING INDEX ", "")
+                .replaceAll("(?i)NUMBER\\(\\*,\\s?0\\)", "NUMBER")
+                .replaceAll("(?i),?\\s*\n?\\s*supplemental log data.*columns", "");
     }
 
     /**
