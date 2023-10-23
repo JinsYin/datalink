@@ -9,8 +9,10 @@ import cn.guruguru.datalink.protocol.node.extract.cdc.MysqlCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.OracleCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.DmScanNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.KafkaNode;
+import cn.guruguru.datalink.protocol.node.extract.scan.GreenplumScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
+import cn.guruguru.datalink.protocol.node.extract.scan.PostgresqlScanNode;
 import com.google.common.base.Preconditions;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -43,6 +45,8 @@ import java.util.Map;
         @JsonSubTypes.Type(value = MySqlScanNode.class, name = MySqlScanNode.TYPE),
         @JsonSubTypes.Type(value = OracleScanNode.class, name = OracleScanNode.TYPE),
         @JsonSubTypes.Type(value = DmScanNode.class, name = DmScanNode.TYPE),
+        @JsonSubTypes.Type(value = PostgresqlScanNode.class, name = PostgresqlScanNode.TYPE),
+        @JsonSubTypes.Type(value = GreenplumScanNode.class, name = GreenplumScanNode.TYPE),
 })
 @Data
 @NoArgsConstructor

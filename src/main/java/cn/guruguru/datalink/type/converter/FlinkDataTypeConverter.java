@@ -7,11 +7,15 @@ import cn.guruguru.datalink.protocol.node.extract.cdc.KafkaNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.MysqlCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.OracleCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.DmScanNode;
+import cn.guruguru.datalink.protocol.node.extract.scan.GreenplumScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
+import cn.guruguru.datalink.protocol.node.extract.scan.PostgresqlScanNode;
 import cn.guruguru.datalink.protocol.node.load.LakehouseLoadNode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+
+import org.apache.flink.table.types.logical.ArrayType;
 import org.apache.flink.table.types.logical.BigIntType;
 import org.apache.flink.table.types.logical.BooleanType;
 import org.apache.flink.table.types.logical.DateType;
@@ -52,6 +56,9 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
                 return convertOracleType(dataType).asSummaryString();
             case DmScanNode.TYPE:
                 return convertDmdbForOracleType(dataType).asSummaryString();
+            case PostgresqlScanNode.TYPE:
+            case GreenplumScanNode.TYPE:
+                return convertPostgresqlType(dataType).asSummaryString();
             case LakehouseLoadNode.TYPE:
                 // Lakehouse table may be created by Spark, so it is necessary to convert the lakehouse type to the Flink type
                 // e.g. Spark `TIMESTAMP` -> Arctic `TIMESTAMPTZ` -> Flink `TIMESTAMP(6) WITH LOCAL TIME ZONE`
@@ -285,6 +292,62 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
     }
 
     /**
+     * Convert PostgreSQL/Greenplum type to Flink type
+     *
+     * @see <a href="https://nightlies.apache.org/flink/flink-docs-master/docs/connectors/table/jdbc/#data-type-mapping">Data Type Mapping</a>
+     * @param dataType
+     * @return
+     */
+    private LogicalType convertPostgresqlType(DataType dataType) {
+        String fieldType = StringUtils.upperCase(dataType.getType());
+        Integer precision = dataType.getPrecision();
+        Integer scale = dataType.getScale();
+        switch (fieldType) {
+            case "SMALLINT":
+            case "INT2":
+            case "SMALLSERIAL":
+            case "SERIAL2":
+                return new SmallIntType();
+            case "INTEGER":
+            case "SERIAL":
+                return new IntType();
+            case "BIGINT":
+            case "BIGSERIAL":
+                return new BigIntType();
+            case "REAL":
+            case "FLOAT4":
+                return new FloatType();
+            case "FLOAT8":
+            case "DOUBLE PRECISION": // ?
+                return new DoubleType();
+            case "NUMERIC": // NUMERIC(p, s)
+            case "DECIMAL": // NUMERIC(p, s)
+                return formatDecimalType(precision, scale);
+            case "BOOLEAN":
+                return new BooleanType();
+            case "DATE":
+                return new DateType();
+            case "TIME":
+                return formatTimeType(precision); // TIME [(p)] [WITHOUT TIMEZONE]
+            case "TIMESTAMP": // TODO: TIMESTAMP [(p)] [WITHOUT TIMEZONE]
+                return formatTimestampType(precision); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
+            case "CHAR": // CHAR(n)
+            case "CHARACTER": // CHARACTER(n)
+            case "VARCHAR": // VARCHAR(n)
+            case "CHARACTER VARYING": // CHARACTER VARYING(n)
+            case "TEXT":
+                return new VarCharType(VarCharType.MAX_LENGTH);
+            case "BYTEA":
+                return new VarBinaryType(VarBinaryType.MAX_LENGTH);
+            case "ARRAY": // TODO
+                log.info("Combined PostgreSQL/Greenplum data type:" + fieldType);
+            default:
+                log.error("Unsupported PostgreSQL/Greenplum data type:" + fieldType);
+                throw new UnsupportedDataTypeException("Unsupported PostgreSQL/Greenplum data type:" + fieldType);
+        }
+    }
+
+    /**
     * Convert Arctic mixed iceberg type to Flink type
     *
     * @see <a href="https://arctic.netease.com/ch/flink/flink-ddl/#mixed-iceberg-data-types">Mixed Iceberg Data Types</a>
@@ -483,6 +546,16 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
         }
     }
 
+    private TimeType formatTimeType(Integer precision) {
+        boolean precisionRange = precision != null
+                && precision >= TimeType.MIN_PRECISION
+                && precision >= TimeType.MAX_PRECISION;
+        if (precisionRange) {
+            return new TimeType(precision);
+        }
+        return new TimeType();
+    }
+
     private TimestampType formatTimestampType(Integer precision) {
         boolean precisionRange = precision != null
                 && precision >= TimestampType.MIN_PRECISION
@@ -511,15 +584,5 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
             return new LocalZonedTimestampType(precision);
         }
         return new LocalZonedTimestampType();
-    }
-
-    private TimeType formatTimeType(Integer precision) {
-        boolean precisionRange = precision != null
-                && precision >= TimeType.MIN_PRECISION
-                && precision >= TimeType.MAX_PRECISION;
-        if (precisionRange) {
-            return new TimeType(precision);
-        }
-        return new TimeType();
     }
 }

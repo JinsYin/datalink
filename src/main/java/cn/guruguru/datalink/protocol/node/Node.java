@@ -7,8 +7,10 @@ import cn.guruguru.datalink.protocol.node.extract.cdc.MysqlCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.OracleCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.DmScanNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.KafkaNode;
+import cn.guruguru.datalink.protocol.node.extract.scan.GreenplumScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
+import cn.guruguru.datalink.protocol.node.extract.scan.PostgresqlScanNode;
 import cn.guruguru.datalink.protocol.node.load.LakehouseLoadNode;
 import cn.guruguru.datalink.protocol.node.transform.TransformNode;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonInclude;
@@ -38,6 +40,8 @@ import java.util.TreeMap;
         @JsonSubTypes.Type(value = MySqlScanNode.class, name = MySqlScanNode.TYPE),
         @JsonSubTypes.Type(value = OracleScanNode.class, name = OracleScanNode.TYPE),
         @JsonSubTypes.Type(value = DmScanNode.class, name = DmScanNode.TYPE),
+        @JsonSubTypes.Type(value = PostgresqlScanNode.class, name = PostgresqlScanNode.TYPE),
+        @JsonSubTypes.Type(value = GreenplumScanNode.class, name = GreenplumScanNode.TYPE),
         // transform
         @JsonSubTypes.Type(value = TransformNode.class, name = TransformNode.TYPE),
         // load
