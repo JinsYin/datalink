@@ -4,10 +4,10 @@ package cn.guruguru.datalink.protocol.node.extract.scan;
 import cn.guruguru.datalink.datasource.DataSourceType;
 import cn.guruguru.datalink.datasource.NodeDataSource;
 import cn.guruguru.datalink.protocol.field.DataField;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeName;
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCreator;
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonInclude;
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
