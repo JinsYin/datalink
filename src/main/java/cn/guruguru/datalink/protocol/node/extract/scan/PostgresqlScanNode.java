@@ -22,7 +22,7 @@ import java.util.Map;
  * @see org.apache.inlong.sort.protocol.node.extract.PostgresExtractNode
  * @see <a href="https://nightlies.apache.org/flink/flink-docs-master/docs/connectors/table/jdbc/#connector-options">Connector Options</a>
  */
-@JsonTypeName(MySqlScanNode.TYPE)
+@JsonTypeName(PostgresqlScanNode.TYPE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
