@@ -310,9 +310,11 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
                 return new SmallIntType();
             case "INTEGER":
             case "SERIAL":
+            case "INT4": // it is not mentioned in the Flink document
                 return new IntType();
             case "BIGINT":
             case "BIGSERIAL":
+            case "INT8": // it is not mentioned in the Flink document
                 return new BigIntType();
             case "REAL":
             case "FLOAT4":
