@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * Field type format
+ * Data field type
  *
  * @see org.apache.flink.table.api.DataTypes
  * @see org.apache.inlong.sort.formats.common.FormatInfo

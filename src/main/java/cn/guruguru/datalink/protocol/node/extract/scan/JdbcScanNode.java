@@ -2,11 +2,11 @@ package cn.guruguru.datalink.protocol.node.extract.scan;
 
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.extract.ScanExtractNode;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCreator;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -23,13 +23,13 @@ import java.util.Map;
 @Data
 @NoArgsConstructor(force = true)
 public abstract class JdbcScanNode extends ScanExtractNode implements Serializable {
+    private static final long serialVersionUID = 9052821948375342865L;
 
-    //@JsonProperty
-    //private JdbcDialect dialect; // for converting data types
+    public static final String TYPE = "jdbc";
 
     @JsonProperty("url")
     @Nonnull
-    private String url;
+    private String url; // The jdbc URL can obtain dialect
     @JsonProperty("username")
     private String username;
     @JsonProperty("password")
