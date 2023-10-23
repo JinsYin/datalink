@@ -113,6 +113,7 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
             case "TIME": // TIME [(p)]
                 return formatTimeType(precision); // TIME [(p)] [WITHOUT TIMEZONE]
             case "DATETIME": // DATETIME [(p)]
+            case "TIMESTAMP": // it is not mentioned in the Flink document
                 return formatTimestampType(precision); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
             case "CHAR": // CHAR(n)
             case "VARCHAR": // VARCHAR(n)
@@ -283,55 +284,55 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
         }
     }
 
-  /**
-   * Convert Arctic mixed iceberg type to Flink type
-   *
-   * @see <a href="https://arctic.netease.com/ch/flink/flink-ddl/#mixed-iceberg-data-types">Mixed Iceberg Data Types</a>
-   * @see <a href="https://github.com/DTStack/chunjun/blob/master/chunjun-connectors/chunjun-connector-arctic/src/main/java/com/dtstack/chunjun/connector/arctic/converter/ArcticRawTypeMapper.java">ArcticRawTypeMapper</a>
-   * @param dataType Arctic Mixed Iceberg Field Type
-   * @return Flink SQL Field Type
-   */
-  private String convertLakehouseMixedIcebergType(DataType dataType) {
-      String fieldType = StringUtils.upperCase(dataType.getType());
-      Integer precision = dataType.getPrecision();
-      Integer scale = dataType.getScale();
-      switch (fieldType) {
-          case "STRING":
-              return new VarCharType(VarCharType.MAX_LENGTH).asSummaryString();
-          case "BOOLEAN":
-              return new BooleanType().asSummaryString();
-          case "INT":
-              return new IntType().asSummaryString();
-          case "LONG":
-              return new BigIntType().asSummaryString();
-          case "FLOAT":
-              return new FloatType().asSummaryString();
-          case "DOUBLE":
-              return new DoubleType().asSummaryString();
-          case "DECIMAL": // DECIMAL(p, s)
-              return formatDecimalType(precision, scale).asSummaryString();
-          case "DATE":
-              return new DateType().asSummaryString();
-          case "TIMESTAMP":
-              return new TimestampType(TimestampType.DEFAULT_PRECISION).asSummaryString(); // TIMESTAMP(6)
-          case "TIMESTAMPTZ":
-              return new LocalZonedTimestampType(TimestampType.DEFAULT_PRECISION).asSummaryString(); // TIMESTAMP(6) WITH LOCAL TIME ZONE
-          case "FIXED": // FIXED(p)
-              return new VarBinaryType(precision).asSummaryString(); // BINARY(p)
-          case "UUID":
-              return new VarBinaryType(16).asSummaryString(); // BINARY(16)
-          case "BINARY": // TODO ?
-              return new VarBinaryType(precision).asSummaryString();
-          case "ARRAY":
-          case "MAP":
-          case "STRUCT":
-              log.info("Combined Lakehouse data type:" + fieldType);
-              return fieldType;
-          default:
-              log.info("Unconsidered Lakehouse data type:" + fieldType);
-              return fieldType;
+    /**
+    * Convert Arctic mixed iceberg type to Flink type
+    *
+    * @see <a href="https://arctic.netease.com/ch/flink/flink-ddl/#mixed-iceberg-data-types">Mixed Iceberg Data Types</a>
+    * @see <a href="https://github.com/DTStack/chunjun/blob/master/chunjun-connectors/chunjun-connector-arctic/src/main/java/com/dtstack/chunjun/connector/arctic/converter/ArcticRawTypeMapper.java">ArcticRawTypeMapper</a>
+    * @param dataType Arctic Mixed Iceberg Field Type
+    * @return Flink SQL Field Type
+    */
+    private String convertLakehouseMixedIcebergType(DataType dataType) {
+        String fieldType = StringUtils.upperCase(dataType.getType());
+        Integer precision = dataType.getPrecision();
+        Integer scale = dataType.getScale();
+        switch (fieldType) {
+            case "STRING":
+                return new VarCharType(VarCharType.MAX_LENGTH).asSummaryString();
+            case "BOOLEAN":
+                return new BooleanType().asSummaryString();
+            case "INT":
+                return new IntType().asSummaryString();
+            case "LONG":
+                return new BigIntType().asSummaryString();
+            case "FLOAT":
+                return new FloatType().asSummaryString();
+            case "DOUBLE":
+                return new DoubleType().asSummaryString();
+            case "DECIMAL": // DECIMAL(p, s)
+                // return formatDecimalType(precision, scale).asSummaryString();
+            case "DATE":
+                return new DateType().asSummaryString();
+            case "TIMESTAMP":
+                return new TimestampType(TimestampType.DEFAULT_PRECISION).asSummaryString(); // TIMESTAMP(6)
+            case "TIMESTAMPTZ":
+                return new LocalZonedTimestampType(TimestampType.DEFAULT_PRECISION).asSummaryString(); // TIMESTAMP(6) WITH LOCAL TIME ZONE
+            case "FIXED": // FIXED(p)
+                // return new VarBinaryType(precision).asSummaryString(); // BINARY(p)
+            case "UUID":
+                return new VarBinaryType(16).asSummaryString(); // BINARY(16)
+            case "BINARY": // TODO ?
+                return new VarBinaryType(precision).asSummaryString();
+            case "ARRAY":
+            case "MAP":
+            case "STRUCT":
+                log.info("Combined Lakehouse data type:" + fieldType);
+                return fieldType;
+            default:
+                log.info("Unconsidered Lakehouse data type:" + fieldType);
+                return fieldType;
         }
-  }
+    }
 
     // ~ cdc type converter -------------------------------
 
