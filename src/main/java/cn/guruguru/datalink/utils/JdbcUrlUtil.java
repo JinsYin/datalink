@@ -12,6 +12,9 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 public class JdbcUrlUtil {
+
+    public static final String JDBC_URI_REGEX = "jdbc:(\\w+):.*";
+
     /**
      * Oracle URI
      * <p>SID format: {@code jdbc:oracle:thin:@[HOST][:PORT]:SID}
@@ -20,10 +23,24 @@ public class JdbcUrlUtil {
     public static final String ORACLE_URI_REGEX = "jdbc:oracle:thin:@(?://)?([.\\w]+):(\\d+)[:/](\\w+)";
     public static final String MYSQL_URI_REGEX = "jdbc:mysql://([.\\w]+):(\\d+)/(\\w+)";
 
+    public static final Pattern JDBC_URI_PATTERN = Pattern.compile(JDBC_URI_REGEX);
+
     public static final Pattern ORACLE_URI_PATTERN = Pattern.compile(ORACLE_URI_REGEX);
     public static final Pattern MYSQL_URI_PATTERN = Pattern.compile(MYSQL_URI_REGEX);
 
-    // ~ parser for common ------------------------------------------
+    /**
+     * Extract jdbc dialect from a jdbc url
+     *
+     * @param url jdbc url
+     * @return dialect, database product name
+     */
+    public static String extractDialect(String url) {
+        Matcher matcher = JDBC_URI_PATTERN.matcher(url);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        throw new IllegalArgumentException(String.format("The JDBC URI '%s' is invalid", url));
+    }
 
     /**
      * Extract hostname from a jdbc url
@@ -87,53 +104,5 @@ public class JdbcUrlUtil {
                 log.error("Unsupported data source for parsing jdbc url");
                 throw new UnsupportedDataSourceException("Unsupported data source for parsing jdbc url");
         }
-    }
-
-    // ~ extractor for oracle ---------------------------------------
-
-    /**
-     * Extract hostname from an oracle jdbc url
-     *
-     * <p>SID format: {@code jdbc:oracle:thin:@[HOST][:PORT]:SID}
-     * <p>ServiceName format: {@code jdbc:oracle:thin:@//[HOST][:PORT]/SERVICE}
-     *
-     * @see <a href="https://stackoverflow.com/a/12734630">How to parse a JDBC url to get hostname,port etc</a>
-     * @param url Oracle JDBC URL
-     * @return URL host
-     */
-    public static String extractHostFromOracleUrl(String url) {
-        Matcher matcher = ORACLE_URI_PATTERN.matcher(url);
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        throw new IllegalArgumentException("The Oracle URI '" + url + "' is invalid");
-    }
-
-    /**
-     * Extract port from an oracle jdbc url
-     *
-     * @param url Oracle JDBC URL
-     * @return URL port
-     */
-    public static int extractPort(String url) {
-        Matcher matcher = ORACLE_URI_PATTERN.matcher(url);
-        if (matcher.find()) {
-            return Integer.parseInt(matcher.group(2));
-        }
-        throw new IllegalArgumentException("The Oracle URI '" + url + "' is invalid");
-    }
-
-    /**
-     * Extract database(SID or ServiceName) from an oracle jdbc url
-     *
-     * @param url Oracle JDBC URL
-     * @return  database name
-     */
-    public static String extractDatabaseFromOracleUrl(String url) {
-        Matcher matcher = ORACLE_URI_PATTERN.matcher(url);
-        if (matcher.find()) {
-            return matcher.group(3);
-        }
-        throw new IllegalArgumentException("The Oracle URI '" + url + "' is invalid");
     }
 }
