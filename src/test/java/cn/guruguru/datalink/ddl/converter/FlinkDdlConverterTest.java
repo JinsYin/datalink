@@ -39,6 +39,24 @@ public class FlinkDdlConverterTest {
     }
 
     @Test
+    public void testOracleDDL() {
+        String ddl = "CREATE TABLE DATALAKE_TEST.CORP_INFO_INVESTOR (\n"
+                + " \"id\" NUMBER(38,0) NOT NULL,\n"
+                + " \"lastupdateddt\" TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL\n"
+                + ");";
+        FlinkDdlConverterResult actualResult = flinkSqlConverter.convertSql(
+                JdbcDialect.Oracle, "P1_CATALOG1", "DB1", ddl, CaseStrategy.UPPERCASE);
+        String actualDDL = SqlUtil.compress(actualResult.getSql());
+        String expectedDDL = "CREATE DATABASE IF NOT EXISTS `P1_CATALOG1`.`DATALAKE_TEST`;" +
+                "CREATE TABLE IF NOT EXISTS `P1_CATALOG1`.`DATALAKE_TEST`.`CORP_INFO_INVESTOR` (" +
+                "`ID` DECIMAL(38, 0) NOT NULL, " +
+                "`LASTUPDATEDDT` TIMESTAMP(6) NOT NULL" +
+                ");";
+        System.out.println(actualDDL);
+        Assert.assertEquals(expectedDDL, actualDDL);
+    }
+
+    @Test
     public void testConvertSingleStatementForOracle() {
         String createSQL =
             "CREATE TABLE \"ADM_BDPP\".\"PARAMSYS\" \n"

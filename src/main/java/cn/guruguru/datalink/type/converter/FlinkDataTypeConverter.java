@@ -496,6 +496,8 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
                     return new VarCharType(VarCharType.MAX_LENGTH);
                 } else if (scale > 0) { // NUMBER(p, s > 0)
                     return formatDecimalType(precision, scale);
+                } else {
+                    return formatDecimalType(precision, scale); // it is not mentioned in the Flink document
                 }
             case "FLOAT":
             case "BINARY_FLOAT":
