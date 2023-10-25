@@ -477,7 +477,8 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
         Integer scale = dataType.getScale();
         switch (fieldType) {
             case "NUMBER":
-                if (precision == null) {
+                if (scale == null) scale = 0; // Prevent mathematical operations on the null
+                if (precision == null || precision == 0) {
                     return new DecimalType();
                 }
                 if (precision == 1) { // NUMBER(1)
