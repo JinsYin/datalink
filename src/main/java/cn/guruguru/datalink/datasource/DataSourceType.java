@@ -89,6 +89,7 @@ public enum DataSourceType {
     Lakehouse(100, "Lakehouse", null),
     DMDB(101, "DMDB", null),
     Kafka(102, "Kafka", "2.x"),
+    Greenplum(103, "Greenplum", null),
     ;
 
     public static List<Integer> hadoopDirtyDataSource =
