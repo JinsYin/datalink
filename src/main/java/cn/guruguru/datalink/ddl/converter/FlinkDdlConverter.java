@@ -344,7 +344,10 @@ public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> 
             if (columnCommentMap != null && columnCommentMap.get(columnFullName) != null) {
                 engineColumn.append(" COMMENT ").append(columnCommentMap.get(columnFullName));
             }
-            columns.add(engineColumn.toString());
+            // https://nightlies.apache.org/flink/flink-docs-release-1.15/docs/dev/table/sql/create/#create-table
+            String column = engineColumn.toString()
+                    .replaceAll("PRIMARY KEY NOT NULL", "PRIMARY KEY NOT ENFORCED");
+            columns.add(column);
         }
         return columns;
     }
