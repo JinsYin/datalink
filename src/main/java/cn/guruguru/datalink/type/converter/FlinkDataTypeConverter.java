@@ -222,6 +222,7 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
             case "REAL":
             case "NUMBER": // NUMBER(p, s)
             case "DECIMAL":
+            case "NUMERIC":
                 return formatDecimalType(precision, scale);
             case "INT": // DMDB
             case "INTEGER": // DMDB
