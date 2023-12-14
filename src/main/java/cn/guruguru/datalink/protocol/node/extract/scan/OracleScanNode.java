@@ -27,9 +27,7 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 @NodeDataSource(DataSourceType.Oracle)
 public class OracleScanNode extends JdbcScanNode {
-
     private static final long serialVersionUID = -5521981462461235288L;
-
     public static final String TYPE = "OracleScan";
 
     @JsonCreator

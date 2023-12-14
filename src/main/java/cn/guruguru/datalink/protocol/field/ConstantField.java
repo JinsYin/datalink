@@ -19,9 +19,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Data
 public class ConstantField implements Field, Serializable {
-    public static final String TYPE = "ConstantField";
-
     private static final long serialVersionUID = 7216146498324134122L;
+    public static final String TYPE = "ConstantField";
 
     @JsonProperty("value")
     private Object value;

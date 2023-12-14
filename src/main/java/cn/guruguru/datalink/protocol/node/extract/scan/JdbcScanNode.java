@@ -24,7 +24,6 @@ import java.util.Map;
 @NoArgsConstructor(force = true)
 public abstract class JdbcScanNode extends ScanExtractNode implements Serializable {
     private static final long serialVersionUID = 9052821948375342865L;
-
     public static final String TYPE = "jdbc";
 
     @JsonProperty("url")

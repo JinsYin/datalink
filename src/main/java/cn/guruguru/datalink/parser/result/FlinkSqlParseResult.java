@@ -17,7 +17,6 @@ import java.util.List;
 @Data
 @Slf4j
 public class FlinkSqlParseResult implements ParseResult, Serializable {
-
     private static final long serialVersionUID = -28762188896227462L;
 
     private final List<String> setSqls;

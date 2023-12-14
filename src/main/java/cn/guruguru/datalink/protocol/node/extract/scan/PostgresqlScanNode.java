@@ -29,7 +29,6 @@ import java.util.Map;
 @NodeDataSource(DataSourceType.PostgreSQL)
 public class PostgresqlScanNode extends JdbcScanNode {
     private static final long serialVersionUID = 6436264611745457260L;
-
     public static final String TYPE = "PostgresqlScan";
 
     @JsonCreator

@@ -39,6 +39,8 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 public abstract class CdcExtractNode extends ExtractNode {
+    private static final long serialVersionUID = 1143686897523799048L;
+
     @Nullable
     @JsonProperty("watermarkField")
     @JsonInclude(JsonInclude.Include.NON_NULL)

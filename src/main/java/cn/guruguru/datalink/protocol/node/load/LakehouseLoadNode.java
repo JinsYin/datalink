@@ -30,7 +30,7 @@ import java.util.Map;
 @JsonTypeName(LakehouseLoadNode.TYPE)
 @NodeDataSource(DataSourceType.Lakehouse)
 public class LakehouseLoadNode extends LoadNode {
-
+    private static final long serialVersionUID = -1851004595881606952L;
     public static final String TYPE = "LakehouseLoad";
 
     @Nonnull

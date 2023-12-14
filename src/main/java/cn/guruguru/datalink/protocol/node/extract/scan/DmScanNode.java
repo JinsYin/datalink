@@ -27,9 +27,8 @@ import java.util.Map;
 @NoArgsConstructor
 @NodeDataSource(DataSourceType.DMDB_FOR_ORACLE)
 public class DmScanNode extends JdbcScanNode {
-    public static final String TYPE = "DmScan";
-
     private static final long serialVersionUID = -5521981462461235288L;
+    public static final String TYPE = "DmScan";
 
     // private CompatibleMode compatibleMode;
 

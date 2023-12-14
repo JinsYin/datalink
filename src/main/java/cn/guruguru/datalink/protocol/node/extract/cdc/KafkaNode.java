@@ -41,7 +41,9 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 public class KafkaNode extends CdcExtractNode implements Metadata, Serializable {
+    private static final long serialVersionUID = -6074500799289652678L;
     public static final String TYPE = "Kafka";
+
     @JsonProperty("topic")
     private String topic;
     @JsonProperty("bootstrapServers")

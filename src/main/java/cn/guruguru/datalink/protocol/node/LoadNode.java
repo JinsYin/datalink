@@ -31,6 +31,8 @@ import java.util.Map;
 @NoArgsConstructor
 @Data
 public abstract class LoadNode implements Node, Serializable {
+    private static final long serialVersionUID = -5111509779504480475L;
+
     @JsonProperty("id")
     private String id;
     @JsonInclude(JsonInclude.Include.NON_NULL)

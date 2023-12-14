@@ -29,9 +29,8 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 public class TransformNode implements Node, Serializable {
-    public static final String TYPE = "Transform";
-
     private static final long serialVersionUID = -1202158328274891592L;
+    public static final String TYPE = "Transform";
 
     @JsonProperty("id")
     private String id;

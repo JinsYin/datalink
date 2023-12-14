@@ -51,6 +51,7 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 public abstract class ExtractNode implements Node, Serializable {
+    private static final long serialVersionUID = 5101982774852677003L;
 
     @JsonProperty("id")
     private String id;

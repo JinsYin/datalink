@@ -28,7 +28,6 @@ import java.util.Map;
 @NodeDataSource(DataSourceType.MySQL)
 public class MySqlScanNode extends JdbcScanNode {
     private static final long serialVersionUID = -5521981462461235277L;
-
     public static final String TYPE = "MysqlScan";
 
     @JsonCreator

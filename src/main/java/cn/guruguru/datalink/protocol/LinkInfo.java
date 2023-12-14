@@ -30,6 +30,8 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LinkInfo implements Serializable {
+    private static final long serialVersionUID = 5805129166290430783L;
+
     @JsonProperty("runtimeMode")
     private RuntimeMode runtimeMode;
 
@@ -44,18 +46,21 @@ public class LinkInfo implements Serializable {
     private String description;
 
     @JsonProperty("nodes")
-    @JsonDeserialize(contentUsing = NodeDeserializer.class) // 加在类或者属性上，非集合使用 using
+    // for deserializing non-collection objects, the 'using' parameter needs to be utilized
+    @JsonDeserialize(contentUsing = NodeDeserializer.class)
     private List<Node> nodes;
 
     @JsonProperty("relation")
     private Relation relation;
 
-    // 引擎配置属性，最终将转成 SET 语句
+    /**
+     * Configuration properties for the processing engine that will be translated into SET statements
+     */
     @JsonProperty("properties")
     private Map<String, String> properties;
 
     /**
-     * LinkInfo Constructor
+     * Constructor for the {@link LinkInfo}
      *
      * @param id Uniquely identifies of LinkInfo
      * @param name The node name
@@ -83,7 +88,7 @@ public class LinkInfo implements Serializable {
     // ~ utilities --------------------------------------------------
 
     /**
-     * Converts to LinkInfo from json string
+     * Converts to a {@link LinkInfo} from a json string
      *
      * @param json json string
      * @return LinkInfo

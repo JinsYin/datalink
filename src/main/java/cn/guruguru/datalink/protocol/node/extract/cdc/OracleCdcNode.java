@@ -34,7 +34,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 public class OracleCdcNode extends AbstractCdcNode implements Metadata, Serializable {
-
+    private static final long serialVersionUID = -7716500438430607615L;
     public static final String TYPE = "OracleCdc";
 
     @JsonProperty("schemaName")

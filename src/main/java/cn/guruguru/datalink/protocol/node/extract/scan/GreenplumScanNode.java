@@ -25,7 +25,6 @@ import java.util.Map;
 @NodeDataSource(DataSourceType.GREENPLUM6)
 public class GreenplumScanNode extends JdbcScanNode {
     private static final long serialVersionUID = -7338939879338406887L;
-
     public static final String TYPE = "GreenplumScan";
 
     @JsonCreator

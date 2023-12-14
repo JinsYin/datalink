@@ -15,6 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Relation implements Serializable {
+    private static final long serialVersionUID = 3939629718063925560L;
+
     // 节点位置（仅限画布模式）
     // private Optional<List<NodeLocation>> nodeLocations;
 

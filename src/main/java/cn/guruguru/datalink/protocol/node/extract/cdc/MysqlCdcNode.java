@@ -34,6 +34,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 public class MysqlCdcNode extends AbstractCdcNode implements Metadata, Serializable {
+    private static final long serialVersionUID = -3913588463775567102L;
     public static final String TYPE = "MysqlCdc";
 
     @JsonProperty("serverId")

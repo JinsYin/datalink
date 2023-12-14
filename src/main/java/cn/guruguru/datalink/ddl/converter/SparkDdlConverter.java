@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SparkDdlConverter implements DdlConverter<List<String>> {
+    private static final long serialVersionUID = 7344915230494142187L;
 
     // ~ converter for table schemas --------------------------------------
 

@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 
 @Slf4j
 public class FlinkDdlConverter implements DdlConverter<FlinkDdlConverterResult> {
+    private static final long serialVersionUID = 4400665610164265289L;
 
     private static final FlinkDataTypeConverter flinkTypeConverter = new FlinkDataTypeConverter();
 

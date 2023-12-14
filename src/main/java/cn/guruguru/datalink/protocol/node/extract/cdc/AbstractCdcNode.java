@@ -20,6 +20,7 @@ import java.util.Map;
 @Data
 @NoArgsConstructor(force = true)
 public abstract class AbstractCdcNode extends CdcExtractNode implements Serializable {
+    private static final long serialVersionUID = 1268414865736441916L;
 
     @JsonProperty("hostname")
     private String hostname;

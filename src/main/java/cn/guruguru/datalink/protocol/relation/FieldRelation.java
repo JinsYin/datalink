@@ -21,6 +21,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 public class FieldRelation implements Serializable {
+    private static final long serialVersionUID = -7087545064216528102L;
     public static final String TYPE = "FieldRelation";
 
     @JsonProperty("inputField")

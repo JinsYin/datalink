@@ -31,8 +31,7 @@ import java.util.Map;
 @Data
 @NodeDataSource(DataSourceType.MONGODB)
 public class MongoCdcNode extends CdcExtractNode implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = 157988778709639487L;
     public static final String TYPE = "MongoCdc";
 
     /**

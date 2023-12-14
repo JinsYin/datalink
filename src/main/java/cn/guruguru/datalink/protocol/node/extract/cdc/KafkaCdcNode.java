@@ -34,8 +34,7 @@ import java.util.Set;
 @NoArgsConstructor(force = true)
 @Data
 public class KafkaCdcNode extends CdcExtractNode implements Metadata, Serializable {
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = 919715241203178816L;
     public static final String TYPE = "KafkaCdc";
 
     @Nonnull

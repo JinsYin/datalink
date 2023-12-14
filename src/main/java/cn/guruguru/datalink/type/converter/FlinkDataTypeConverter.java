@@ -35,6 +35,7 @@ import org.apache.flink.table.types.logical.ZonedTimestampType;
 
 @Slf4j
 public class FlinkDataTypeConverter implements DataTypeConverter<String> {
+    private static final long serialVersionUID = 8533377444926358840L;
 
     /**
      * Derive the engine type for the given datasource field type

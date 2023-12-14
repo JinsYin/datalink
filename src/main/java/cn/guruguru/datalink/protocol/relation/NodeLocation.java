@@ -11,6 +11,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 public class NodeLocation implements Serializable {
+    private static final long serialVersionUID = 8780905270167539454L;
     public static final String TYPE = "NodeLocation";
 
     @JsonProperty("Node ID")

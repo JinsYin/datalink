@@ -34,6 +34,8 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 public abstract class ScanExtractNode extends ExtractNode {
+    private static final long serialVersionUID = 7031980177247931394L;
+
     @JsonCreator
     public ScanExtractNode(@JsonProperty("id") String id,
                            @JsonProperty("name") String name,
