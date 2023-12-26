@@ -33,7 +33,7 @@ import java.util.TreeMap;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
         // cdc
-        @JsonSubTypes.Type(value = KafkaNode.class, name = KafkaNode.TYPE),
+        @JsonSubTypes.Type(value = KafkaNode.class, name = KafkaNode.TYPE), // "type"=KafkaNode.TYPE -> KafkaNode.class
         @JsonSubTypes.Type(value = KafkaCdcNode.class, name = KafkaCdcNode.TYPE),
         @JsonSubTypes.Type(value = MysqlCdcNode.class, name = MysqlCdcNode.TYPE),
         @JsonSubTypes.Type(value = OracleCdcNode.class, name = OracleCdcNode.TYPE),
