@@ -3,6 +3,7 @@ package cn.guruguru.datalink.protocol.node;
 import cn.guruguru.datalink.exception.UnsupportedDataSourceException;
 import cn.guruguru.datalink.protocol.node.extract.cdc.KafkaCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.MysqlCdcNode;
+import cn.guruguru.datalink.protocol.node.extract.scan.DmScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.JdbcScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
 import cn.guruguru.datalink.protocol.node.load.LakehouseLoadNode;
@@ -24,7 +25,7 @@ public class NodeDeserializer extends JsonDeserializer<Node> {
         String type = node.get("type").asText();
         switch (type) {
             // ----- 离线抽取节点 -----
-            case "DmScanNode": // InLong 和 Flink 均不支持 DM
+            case DmScanNode.TYPE: // InLong 和 Flink 均不支持 DM
                 return objectMapper.readValue(node.toString(), JdbcScanNode.class);
             case MySqlScanNode.TYPE:
                 return objectMapper.readValue(node.toString(), MySqlScanNode.class);
