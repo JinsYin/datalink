@@ -13,6 +13,8 @@ import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.PostgresqlScanNode;
 import cn.guruguru.datalink.protocol.node.load.LakehouseLoadNode;
 import cn.guruguru.datalink.protocol.node.transform.TransformNode;
+
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonSubTypes;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -84,11 +86,12 @@ public interface Node {
         return null;
     }
 
+    @JsonIgnore
     default String getNodeType() {
         return this.getClass().getAnnotation(JsonTypeName.class).value();
     }
 
-    static Node serialize(String json) throws JsonProcessingException {
+    static Node deserialize(String json) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(json, Node.class);
     }

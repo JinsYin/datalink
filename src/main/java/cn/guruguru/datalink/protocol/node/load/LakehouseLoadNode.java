@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCreator;
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeName;
 
@@ -28,6 +30,7 @@ import java.util.Map;
 @NoArgsConstructor(force = true)
 @EqualsAndHashCode(callSuper = true)
 @JsonTypeName(LakehouseLoadNode.TYPE)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @NodeDataSource(DataSourceType.Lakehouse)
 public class LakehouseLoadNode extends LoadNode {
     private static final long serialVersionUID = -1851004595881606952L;
@@ -100,6 +103,7 @@ public class LakehouseLoadNode extends LoadNode {
         return super.getPartitionFields();
     }
 
+    @JsonIgnore
     public String getCreateCatalog() throws MalformedURLException {
         URL baseUrl = new URL(url);
         String metastoreUrl = new URL(baseUrl, catalog).toString();

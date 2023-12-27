@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @see org.apache.inlong.sort.protocol.node.LoadNode
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", defaultImpl = LakehouseLoadNode.class)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = LakehouseLoadNode.class, name = LakehouseLoadNode.TYPE),
 })

@@ -92,7 +92,7 @@ public class LinkInfo implements Serializable {
      * @return LinkInfo
      * @throws JsonProcessingException a JsonProcessingException
      */
-    public static LinkInfo serialize(String json) throws JsonProcessingException {
+    public static LinkInfo deserialize(String json) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(json, LinkInfo.class);
     }

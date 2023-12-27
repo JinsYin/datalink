@@ -34,7 +34,7 @@ import java.util.Map;
  * @see org.apache.inlong.sort.protocol.enums.ExtractMode
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
-@JsonSubTypes({
+@JsonSubTypes({ // When using the ExtractNode as a generic type for deserialization
         // cdc
         @JsonSubTypes.Type(value = KafkaNode.class, name = KafkaNode.TYPE),
         @JsonSubTypes.Type(value = KafkaCdcNode.class, name = KafkaCdcNode.TYPE),
