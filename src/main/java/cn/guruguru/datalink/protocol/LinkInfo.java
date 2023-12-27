@@ -3,9 +3,7 @@ package cn.guruguru.datalink.protocol;
 
 import cn.guruguru.datalink.protocol.enums.RuntimeMode;
 import cn.guruguru.datalink.protocol.node.Node;
-import cn.guruguru.datalink.protocol.node.NodeDeserializer;
 import cn.guruguru.datalink.protocol.relation.Relation;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.base.Preconditions;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -47,7 +45,7 @@ public class LinkInfo implements Serializable {
 
     @JsonProperty("nodes")
     // for deserializing non-collection objects, the 'using' parameter needs to be utilized
-    @JsonDeserialize(contentUsing = NodeDeserializer.class)
+    // @JsonDeserialize(contentUsing = NodeDeserializer.class) // Use the @JsonSubTypes instead of
     private List<Node> nodes;
 
     @JsonProperty("relation")

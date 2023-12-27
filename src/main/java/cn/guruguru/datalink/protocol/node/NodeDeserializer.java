@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
+@Deprecated
 public class NodeDeserializer extends JsonDeserializer<Node> {
 
     @Override
