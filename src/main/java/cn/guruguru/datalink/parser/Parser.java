@@ -1,5 +1,6 @@
 package cn.guruguru.datalink.parser;
 
+import cn.guruguru.datalink.parser.result.ParseResult;
 import cn.guruguru.datalink.protocol.LinkInfo;
 
 /**

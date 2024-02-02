@@ -1,7 +1,6 @@
 package cn.guruguru.datalink.parser.result;
 
 import cn.guruguru.datalink.exception.UnsupportedEngineException;
-import cn.guruguru.datalink.parser.ParseResult;
 
 /**
  * [TODO] Parser result for spark sql

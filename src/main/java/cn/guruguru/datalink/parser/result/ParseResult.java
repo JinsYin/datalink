@@ -1,4 +1,4 @@
-package cn.guruguru.datalink.parser;
+package cn.guruguru.datalink.parser.result;
 
 /**
  * Parser result

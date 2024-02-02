@@ -1,6 +1,5 @@
 package cn.guruguru.datalink.parser.result;
 
-import cn.guruguru.datalink.parser.ParseResult;
 import com.google.common.base.Preconditions;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +21,8 @@ public class FlinkSqlParseResult implements ParseResult, Serializable {
     private final List<String> setSqls;
     private final List<String> createTableSqls;
     private final List<String> insertSqls;
+    // private final List<String> addJarSqls;
+    // In Flink 1.15, the CREATE FUNCTION syntax does not support the USING JAR clause
     // private final List<String> createFunctionSqls;
 
     public FlinkSqlParseResult(List<String> setSqls, List<String> createTableSqls, List<String> insertSqls) {
