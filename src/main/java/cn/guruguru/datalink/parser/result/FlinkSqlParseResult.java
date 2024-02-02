@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +14,7 @@ import java.util.List;
  */
 @Data
 @Slf4j
-public class FlinkSqlParseResult implements ParseResult, Serializable {
+public class FlinkSqlParseResult implements ParseResult {
     private static final long serialVersionUID = -28762188896227462L;
 
     private final List<String> setSqls;
@@ -25,19 +24,21 @@ public class FlinkSqlParseResult implements ParseResult, Serializable {
     // In Flink 1.15, the CREATE FUNCTION syntax does not support the USING JAR clause
     // private final List<String> createFunctionSqls;
 
-    public FlinkSqlParseResult(List<String> setSqls, List<String> createTableSqls, List<String> insertSqls) {
+    public FlinkSqlParseResult(List<String> setSqls,
+                               List<String> createTableSqls,
+                               List<String> insertSqls) {
         this.setSqls = setSqls;
         this.createTableSqls = Preconditions.checkNotNull(createTableSqls, "createTableSqls is null");
         Preconditions.checkState(!createTableSqls.isEmpty(), "createTableSqls is empty");
-        this.insertSqls = Preconditions.checkNotNull(insertSqls, "loadSqls is null");
-        Preconditions.checkState(!insertSqls.isEmpty(), "loadSqls is empty");
+        this.insertSqls = Preconditions.checkNotNull(insertSqls, "insertSqls is null");
+        Preconditions.checkState(!insertSqls.isEmpty(), "insertSqls is empty");
     }
 
     @Override
-    public String getSqlScript() {
-        List<String> sqls = new ArrayList<>(setSqls);
+    public List<String> getSqlStatements() {
+        List<String> sqls = new ArrayList<>(setSqls); // deep copy a list
         sqls.addAll(createTableSqls);
         sqls.addAll(insertSqls);
-        return String.join(";\n", sqls) + ";";
+        return sqls;
     }
 }
