@@ -22,6 +22,7 @@ public class FlinkSqlParseResult implements ParseResult, Serializable {
     private final List<String> setSqls;
     private final List<String> createTableSqls;
     private final List<String> insertSqls;
+    // private final List<String> createFunctionSqls;
 
     public FlinkSqlParseResult(List<String> setSqls, List<String> createTableSqls, List<String> insertSqls) {
         this.setSqls = setSqls;

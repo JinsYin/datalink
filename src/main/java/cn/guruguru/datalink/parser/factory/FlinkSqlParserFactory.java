@@ -11,6 +11,6 @@ public class FlinkSqlParserFactory implements ParserFactory {
      */
     @Override
     public Parser createParser() {
-        return new FlinkSqlParser(null); // TODO
+        return new FlinkSqlParser();
     }
 }

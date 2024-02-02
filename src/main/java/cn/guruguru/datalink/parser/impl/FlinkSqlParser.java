@@ -39,8 +39,6 @@ import java.util.Set;
 @Slf4j
 public class FlinkSqlParser implements Parser {
 
-    private final LinkInfo linkInfo;
-
     public static final String SOURCE_MULTIPLE_ENABLE_KEY = "source.multiple.enable";
     private final Set<String> hasParsedSet = new HashSet<>();
     private final List<String> setSqls = new ArrayList<>();
@@ -51,27 +49,13 @@ public class FlinkSqlParser implements Parser {
 
     private static final FlinkDataTypeConverter typeConverter = new FlinkDataTypeConverter();
 
-    public FlinkSqlParser(LinkInfo linkInfo) {
-        this.linkInfo = linkInfo;
-    }
-
-    /**
-     * Get an instance of FlinkSqlParser
-     *
-     * @param linkInfo data model abstraction of task execution
-     * @return FlinkSqlParser The flink sql parse handler
-     */
-    public static FlinkSqlParser getInstance(LinkInfo linkInfo) {
-        return new FlinkSqlParser(linkInfo);
-    }
-
     /**
      * Parser a {@link LinkInfo}
      *
      * @see org.apache.inlong.sort.parser.impl.FlinkSqlParser#parse()
      */
     @Override
-    public ParseResult parse() {
+    public ParseResult parse(LinkInfo linkInfo) {
         Preconditions.checkNotNull(linkInfo, "link info is null");
         Preconditions.checkNotNull(linkInfo.getId(), "id is null");
         Preconditions.checkNotNull(linkInfo.getNodes(), "nodes is null");
