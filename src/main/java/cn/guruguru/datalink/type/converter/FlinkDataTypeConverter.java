@@ -15,7 +15,6 @@ import cn.guruguru.datalink.protocol.node.load.LakehouseLoadNode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import org.apache.flink.table.types.logical.ArrayType;
 import org.apache.flink.table.types.logical.BigIntType;
 import org.apache.flink.table.types.logical.BooleanType;
 import org.apache.flink.table.types.logical.DateType;
@@ -26,12 +25,10 @@ import org.apache.flink.table.types.logical.IntType;
 import org.apache.flink.table.types.logical.LocalZonedTimestampType;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.SmallIntType;
-import org.apache.flink.table.types.logical.TimeType;
 import org.apache.flink.table.types.logical.TimestampType;
 import org.apache.flink.table.types.logical.TinyIntType;
 import org.apache.flink.table.types.logical.VarBinaryType;
 import org.apache.flink.table.types.logical.VarCharType;
-import org.apache.flink.table.types.logical.ZonedTimestampType;
 
 @Slf4j
 public class FlinkDataTypeConverter implements DataTypeConverter<String> {
@@ -377,7 +374,7 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
             case "DOUBLE":
                 return new DoubleType().asSummaryString();
             case "DECIMAL": // DECIMAL(p, s)
-                // return formatDecimalType(precision, scale).asSummaryString();
+                return formatDecimalType(precision, scale).asSummaryString();
             case "DATE":
                 return new DateType().asSummaryString();
             case "TIMESTAMP":
@@ -535,61 +532,5 @@ public class FlinkDataTypeConverter implements DataTypeConverter<String> {
                 log.error("Unsupported Oracle CDC data type:" + fieldType);
                 throw new UnsupportedDataTypeException("Unsupported Oracle CDC data type:" + fieldType);
         }
-    }
-
-
-    // ~ format LogicalType -------------------------------
-
-    private DecimalType formatDecimalType(Integer precision, Integer scale) {
-        boolean precisionRange = precision != null
-                && precision >= DecimalType.MIN_PRECISION
-                && precision <= DecimalType.MAX_PRECISION;
-        if (precisionRange && scale != null) {
-            return new DecimalType(precision, scale);
-        } else if (precisionRange) {
-            return new DecimalType(precision);
-        } else {
-            return new DecimalType();
-        }
-    }
-
-    private TimeType formatTimeType(Integer precision) {
-        boolean precisionRange = precision != null
-                && precision >= TimeType.MIN_PRECISION
-                && precision >= TimeType.MAX_PRECISION;
-        if (precisionRange) {
-            return new TimeType(precision);
-        }
-        return new TimeType();
-    }
-
-    private TimestampType formatTimestampType(Integer precision) {
-        boolean precisionRange = precision != null
-                && precision >= TimestampType.MIN_PRECISION
-                && precision >= TimestampType.MAX_PRECISION;
-        if (precisionRange) {
-            return new TimestampType(precision);
-        }
-        return new TimestampType();
-    }
-
-    private ZonedTimestampType formatZonedTimestampType(Integer precision) {
-        boolean precisionRange = precision != null
-                && precision >= ZonedTimestampType.MIN_PRECISION
-                && precision >= ZonedTimestampType.MAX_PRECISION;
-        if (precisionRange) {
-            return new ZonedTimestampType(precision);
-        }
-        return new ZonedTimestampType();
-    }
-
-    private LocalZonedTimestampType formatLocalZonedTimestampType(Integer precision) {
-        boolean precisionRange = precision != null
-                && precision >= LocalZonedTimestampType.MIN_PRECISION
-                && precision >= LocalZonedTimestampType.MAX_PRECISION;
-        if (precisionRange) {
-            return new LocalZonedTimestampType(precision);
-        }
-        return new LocalZonedTimestampType();
     }
 }

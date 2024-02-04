@@ -13,14 +13,13 @@ import java.io.IOException;
 
 public class FlinkSqlParserTest {
 
-    private static final ParserFactory parserFactory = new FlinkSqlParserFactory();
-    private static final Parser flinkSqlParser = parserFactory.createParser();
-
     @Test
     public void parseMysqlScan() throws IOException {
     String json =
         "{\"id\":\"L101\",\"name\":\"mysql2lakehouse\",\"description\":\"insert mysql to lakehouse\",\"relation\":{\"fieldRelations\":[],\"nodeRelations\":[{\"type\":\"Map\",\"inputs\":[\"N10381712676128\"],\"outputs\":[\"N10381714539552\"]}]},\"nodes\":[{\"type\":\"MysqlScan\",\"id\":\"N10381712676128\",\"name\":\"N10381712676128\",\"primaryKey\":\"\",\"url\":\"jdbc:mysql://localhost:3306/mydatabase\",\"username\":\"rqyin\",\"password\":\"easipass\",\"tableName\":\"lake_policy\",\"properties\":{\"a\":1},\"fields\":[{\"nodeId\":\"N10381712676128\",\"type\":\"DataField\",\"name\":\"id\",\"dataType\":{\"type\":\"INT\"}}]},{\"id\":\"N10381714539552\",\"name\":\"N10381714539552\",\"type\":\"LakehouseLoad\",\"catalog\":\"p1_catalog1\",\"database\":\"db\",\"table\":\"orders\",\"properties\":{\"b\":2},\"fields\":[{\"nodeId\":\"N10381714539552\",\"type\":\"DataField\",\"name\":\"id\",\"dataType\":{\"type\":\"STRING\"}}],\"fieldRelations\":[{\"type\":\"FieldRelation\",\"inputField\":{\"nodeId\":\"N10381712676128\",\"type\":\"DataField\",\"name\":\"id\",\"dataType\":{\"type\":\"INT\"}},\"outputField\":{\"nodeId\":\"N10381714539552\",\"type\":\"DataField\",\"name\":\"id\",\"dataType\":{\"type\":\"STRING\"}}}]}]}";
         LinkInfo linkInfo = LinkInfo.deserialize(json);
+        ParserFactory parserFactory = new FlinkSqlParserFactory();
+        final Parser flinkSqlParser = parserFactory.createParser();
         ParseResult parseResult = flinkSqlParser.parse(linkInfo);
         String actual = SqlUtil.compress(parseResult.getSqlScript());
         String expected = "CREATE TABLE IF NOT EXISTS `lake_policy`(`id` INT) WITH (" +
@@ -39,6 +38,8 @@ public class FlinkSqlParserTest {
     String json =
         "{\"id\":\"L101\",\"name\":\"oraclecdc2lakehouse\",\"description\":\"insert oracle-cdc to lakehouse\",\"relation\":{\"fieldRelations\":[],\"nodeRelations\":[{\"type\":\"Map\",\"inputs\":[\"N10381712676128\"],\"outputs\":[\"N10381714539552\"]}]},\"nodes\":[{\"type\":\"OracleCdc\",\"id\":\"N10381712676128\",\"name\":\"N10381712676128\",\"primaryKey\":\"\",\"hostname\":\"localhost\",\"port\":3306,\"username\":\"rqyin\",\"password\":\"easipass\",\"databaseName\":\"test12c\",\"schemaName\":\"s1\",\"tableName\":\"lake_policy\",\"properties\":{\"a\":1},\"fields\":[{\"nodeId\":\"N10381712676128\",\"type\":\"DataField\",\"name\":\"id\",\"dataType\":{\"type\":\"NUMBER\",\"precision\":38,\"scale\":0}}]},{\"id\":\"N10381714539552\",\"name\":\"N10381714539552\",\"type\":\"LakehouseLoad\",\"catalog\":\"p1_catalog1\",\"database\":\"db\",\"table\":\"orders\",\"properties\":{\"b\":2},\"fields\":[{\"nodeId\":\"N10381714539552\",\"type\":\"DataField\",\"name\":\"id\",\"dataType\":{\"type\":\"DECIMAL\",\"precision\":38,\"scale\":0}}],\"fieldRelations\":[{\"type\":\"FieldRelation\",\"inputField\":{\"nodeId\":\"N10381712676128\",\"type\":\"DataField\",\"name\":\"id\",\"dataType\":{\"type\":\"NUMBER\",\"precision\":38,\"scale\":0}},\"outputField\":{\"nodeId\":\"N10381714539552\",\"type\":\"DataField\",\"name\":\"id\",\"dataType\":{\"type\":\"DECIMAL\",\"precision\":38,\"scale\":0}}}]}]}";
         LinkInfo linkInfo = LinkInfo.deserialize(json);
+        ParserFactory parserFactory = new FlinkSqlParserFactory();
+        final Parser flinkSqlParser = parserFactory.createParser();
         ParseResult parseResult = flinkSqlParser.parse(linkInfo);
         String actual = SqlUtil.compress(parseResult.getSqlScript());
         String expected = "CREATE TABLE IF NOT EXISTS `lake_policy`(`id` DECIMAL(38, 0)) WITH (" +
