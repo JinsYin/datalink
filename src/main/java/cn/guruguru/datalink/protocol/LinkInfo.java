@@ -96,5 +96,13 @@ public class LinkInfo implements Serializable {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(json, LinkInfo.class);
     }
+
+    /**
+     * Serialize a {@link LinkInfo} to a json string
+     */
+    public static String serialize(LinkInfo linkInfo) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(linkInfo);
+    }
 }
 

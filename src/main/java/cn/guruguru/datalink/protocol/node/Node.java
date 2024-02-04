@@ -95,4 +95,9 @@ public interface Node {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(json, Node.class);
     }
+
+    static String serialize(Node node) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(node);
+    }
 }
