@@ -2,6 +2,7 @@ package cn.guruguru.datalink.protocol.node.extract.cdc;
 
 import cn.guruguru.datalink.datasource.NodeDataSource;
 import cn.guruguru.datalink.datasource.DataSourceType;
+import cn.guruguru.datalink.parser.Parser;
 import cn.guruguru.datalink.protocol.Metadata;
 import cn.guruguru.datalink.protocol.enums.KafkaScanStartupMode;
 import cn.guruguru.datalink.protocol.enums.MetaKey;
@@ -77,8 +78,8 @@ public class KafkaCdcNode extends CdcExtractNode implements Metadata, Serializab
         return null;
     }
 
-    public Map<String, String> tableOptions() {
-        return super.tableOptions();
+    public Map<String, String> tableOptions(Parser parser) {
+        return super.tableOptions(parser);
     }
 
     public String genTableName() {

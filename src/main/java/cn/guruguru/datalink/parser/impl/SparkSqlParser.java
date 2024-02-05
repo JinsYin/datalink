@@ -1,16 +1,17 @@
 package cn.guruguru.datalink.parser.impl;
 
-import cn.guruguru.datalink.exception.UnsupportedEngineException;
-import cn.guruguru.datalink.parser.result.ParseResult;
-import cn.guruguru.datalink.parser.Parser;
-import cn.guruguru.datalink.protocol.LinkInfo;
+import cn.guruguru.datalink.type.converter.DataTypeConverter;
+import cn.guruguru.datalink.type.converter.SparkDataTypeConverter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * [TODO] Spark sql parser
+ * Spark sql parser
  */
-public class SparkSqlParser implements Parser {
+@Slf4j
+public class SparkSqlParser extends AbstractSqlParser {
+
     @Override
-    public ParseResult parse(LinkInfo linkInfo) {
-        throw new UnsupportedEngineException("Spark engine not supported");
+    public DataTypeConverter<String> getTypeConverter() {
+        return new SparkDataTypeConverter();
     }
 }

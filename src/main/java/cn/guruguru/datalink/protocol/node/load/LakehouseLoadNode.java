@@ -2,6 +2,8 @@ package cn.guruguru.datalink.protocol.node.load;
 
 import cn.guruguru.datalink.datasource.NodeDataSource;
 import cn.guruguru.datalink.datasource.DataSourceType;
+import cn.guruguru.datalink.parser.Parser;
+import cn.guruguru.datalink.parser.impl.SparkSqlParser;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.LoadNode;
 import cn.guruguru.datalink.protocol.relation.FieldRelation;
@@ -83,8 +85,12 @@ public class LakehouseLoadNode extends LoadNode {
     }
 
     @Override
-    public Map<String, String> tableOptions() {
-        return super.tableOptions();
+    public Map<String, String> tableOptions(Parser parser) {
+        Map<String, String> options = super.tableOptions(parser);
+        if (parser instanceof SparkSqlParser) {
+            options.put("USING", "arctic");
+        }
+        return options;
     }
 
     @Override

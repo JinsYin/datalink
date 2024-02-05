@@ -9,14 +9,14 @@ import cn.guruguru.datalink.parser.Parser;
  * <pre>
  *     ParserFactory flinkSqlParserFactory = new FlinkSqlParserFactory();
  *     Parser flinkSqlParser = flinkSqlParserFactory.createParser();
- *     FlinkSqlParseResult flinkSqlResult = flinkSqlParser.parse(linkInfo);
+ *     ParseResult flinkSqlResult = flinkSqlParser.parse(linkInfo);
  * </pre>
  *
  * Usages of the SparkSqlParserFactory:
  * <pre>
  *     ParserFactory sparkSqlParserFactory = new SparkSqlParserFactory();
  *     Parser sparkSqlParser = sparkSqlParserFactory.createParser();
- *     SparkSqlParseResult sparkSqlResult = sparkSqlParser.parse(linkInfo);
+ *     ParseResult sparkSqlResult = sparkSqlParser.parse(linkInfo);
  * </pre>
  */
 public interface ParserFactory {

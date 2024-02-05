@@ -2,6 +2,9 @@ package cn.guruguru.datalink.protocol.node.extract.cdc;
 
 import cn.guruguru.datalink.datasource.NodeDataSource;
 import cn.guruguru.datalink.datasource.DataSourceType;
+import cn.guruguru.datalink.exception.UnsupportedEngineException;
+import cn.guruguru.datalink.parser.Parser;
+import cn.guruguru.datalink.parser.impl.FlinkSqlParser;
 import cn.guruguru.datalink.protocol.Metadata;
 import cn.guruguru.datalink.protocol.enums.MetaKey;
 import cn.guruguru.datalink.protocol.field.DataField;
@@ -77,8 +80,11 @@ public class OracleCdcNode extends AbstractCdcNode implements Metadata, Serializ
     }
 
     @Override
-    public Map<String, String> tableOptions() {
-        Map<String, String> options = super.tableOptions();
+    public Map<String, String> tableOptions(Parser parser) {
+        if (!(parser instanceof FlinkSqlParser)) {
+            throw new UnsupportedEngineException("Unsupported computing engine");
+        }
+        Map<String, String> options = super.tableOptions(parser);
         options.put("connector", "oracle-cdc");
         options.put("hostname", getHostname());
         if (super.getPort() != null) {

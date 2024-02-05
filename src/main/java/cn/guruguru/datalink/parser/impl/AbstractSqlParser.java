@@ -1,11 +1,12 @@
 package cn.guruguru.datalink.parser.impl;
 
-import cn.guruguru.datalink.protocol.field.DataType;
-import cn.guruguru.datalink.parser.result.ParseResult;
+import cn.guruguru.datalink.parser.Parser;
 import cn.guruguru.datalink.parser.result.FlinkSqlParseResult;
+import cn.guruguru.datalink.parser.result.ParseResult;
 import cn.guruguru.datalink.protocol.LinkInfo;
 import cn.guruguru.datalink.protocol.Metadata;
 import cn.guruguru.datalink.protocol.field.DataField;
+import cn.guruguru.datalink.protocol.field.DataType;
 import cn.guruguru.datalink.protocol.field.Field;
 import cn.guruguru.datalink.protocol.field.MetaField;
 import cn.guruguru.datalink.protocol.node.ExtractNode;
@@ -17,10 +18,10 @@ import cn.guruguru.datalink.protocol.node.transform.TransformNode;
 import cn.guruguru.datalink.protocol.relation.FieldRelation;
 import cn.guruguru.datalink.protocol.relation.NodeRelation;
 import cn.guruguru.datalink.type.converter.DataTypeConverter;
-import cn.guruguru.datalink.type.converter.FlinkDataTypeConverter;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonTypeName;
 
 import java.util.ArrayList;
@@ -30,15 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Flink sql parser
- *
- * @see org.apache.inlong.sort.parser.impl.FlinkSqlParser
- * @see org.apache.inlong.sort.parser.impl.NativeFlinkSqlParser
- */
 @Slf4j
-public class FlinkSqlParser extends AbstractSqlParser {
-
+public abstract class AbstractSqlParser implements Parser {
     public static final String SOURCE_MULTIPLE_ENABLE_KEY = "source.multiple.enable";
     private final Set<String> hasParsedSet = new HashSet<>();
     private final List<String> setSqls = new ArrayList<>();
@@ -47,10 +41,12 @@ public class FlinkSqlParser extends AbstractSqlParser {
     private final List<String> loadTableSqls = new ArrayList<>();
     private final List<String> insertSqls = new ArrayList<>();
 
-    @Override
-    protected DataTypeConverter<String> getTypeConverter() {
-        return new FlinkDataTypeConverter();
-    }
+    /**
+     * Specify a data type converter
+     *
+     * @return a data type converter associated with computing engine
+     */
+    protected abstract DataTypeConverter<String> getTypeConverter();
 
     /**
      * Parser a {@link LinkInfo}
@@ -69,24 +65,10 @@ public class FlinkSqlParser extends AbstractSqlParser {
         Preconditions.checkNotNull(linkInfo.getRelation().getFieldRelations(), "field relations is null");
         // Preconditions.checkState(!linkInfo.getRelation().getFieldRelations().isEmpty(), "field relations is empty");
         log.info("start parse LinkInfo, id:{}", linkInfo.getId());
-        // Parse nodes
-        Map<String, Node> nodeMap = new HashMap<>(linkInfo.getNodes().size());
-        linkInfo.getNodes().forEach(s -> {
-            Preconditions.checkNotNull(s.getId(), "node id is null");
-            nodeMap.put(s.getId(), s);
-        });
-        // Parse node relations
-        Map<String, NodeRelation> nodeRelationMap = new HashMap<>();
-        linkInfo.getRelation().getNodeRelations().forEach(r -> {
-            for (String output : r.getOutputs()) {
-                nodeRelationMap.put(output, r);
-            }
-        });
-        linkInfo.getRelation().getNodeRelations().forEach(r -> {
-            parseNodeRelation(r, nodeMap, nodeRelationMap);
-        });
+        // Parse nodes and node relations
+        parseNodeRelations(linkInfo);
         // TODO: Parse field relations
-        // Parse Flink configuration
+        // Parse the configuration of the computing engine
         List<String> setSqls = parseConfiguration(linkInfo);
         log.info("parse LinkInfo success, id:{}", linkInfo.getId());
         // Parse Result
@@ -94,6 +76,54 @@ public class FlinkSqlParser extends AbstractSqlParser {
         createTableSqls.addAll(transformTableSqls);
         createTableSqls.addAll(loadTableSqls);
         return new FlinkSqlParseResult(setSqls, createTableSqls, insertSqls);
+    }
+
+    /**
+     * Parser the configuration of the computing engine
+     */
+    protected List<String> parseConfiguration(LinkInfo linkInfo) {
+        List<String> setSqls = new ArrayList<>();
+        if (linkInfo.getProperties() != null) {
+            linkInfo.getProperties().forEach(
+                    (key, value) -> {
+                        // TODO: Check if the key and value are valid
+                        key = key.trim();
+                        value = value.trim();
+                        String statement = String.format("SET %s=%s", key, value);
+                        setSqls.add(statement);
+                    });
+        }
+        return setSqls;
+    }
+
+    protected Map<String, Node> getNodeMap(LinkInfo linkInfo) {
+        Map<String, Node> nodeMap = new HashMap<>(linkInfo.getNodes().size());
+        linkInfo.getNodes().forEach(s -> {
+            Preconditions.checkNotNull(s.getId(), "node id is null");
+            nodeMap.put(s.getId(), s);
+        });
+        return nodeMap;
+    }
+
+    protected Map<String, NodeRelation> getNodeRelationMap(LinkInfo linkInfo) {
+        Map<String, NodeRelation> nodeRelationMap = new HashMap<>();
+        linkInfo.getRelation().getNodeRelations().forEach(r -> {
+            for (String output : r.getOutputs()) {
+                nodeRelationMap.put(output, r);
+            }
+        });
+        return nodeRelationMap;
+    }
+
+    protected void parseNodeRelations(LinkInfo linkInfo) {
+        // Parse nodes
+        Map<String, Node> nodeMap = getNodeMap(linkInfo);
+        // Parse node relations
+        Map<String, NodeRelation> nodeRelationMap = getNodeRelationMap(linkInfo);
+        // Parser node relations
+        linkInfo.getRelation().getNodeRelations().forEach(r -> {
+            parseNodeRelation(r, nodeMap, nodeRelationMap);
+        });
     }
 
     /**
@@ -267,17 +297,17 @@ public class FlinkSqlParser extends AbstractSqlParser {
                 continue;
             }
             boolean complexType = "ROW".equals(dataType.getType())
-                    || "ARRAY".equals(dataType.getType())
-                    || "MAP".equals(dataType.getType());
+                                  || "ARRAY".equals(dataType.getType())
+                                  || "MAP".equals(dataType.getType());
             Field inputField = fieldRelation.getInputField();
             if (inputField instanceof DataField) {
                 DataField DataField = (DataField) inputField;
                 DataType formatInfo = DataField.getDataType();
                 DataField outputField = fieldRelation.getOutputField();
                 boolean sameType = formatInfo != null
-                        && outputField != null
-                        && outputField.getDataType() != null
-                        && outputField.getDataType().getType().equals(formatInfo.getType());
+                                   && outputField != null
+                                   && outputField.getDataType() != null
+                                   && outputField.getDataType().getType().equals(formatInfo.getType());
                 if (complexType || sameType || dataType == null) {
                     sb.append("\n    ").append(inputField.format()).append(" AS ").append(field.format()).append(",");
                 } else {
@@ -318,7 +348,7 @@ public class FlinkSqlParser extends AbstractSqlParser {
         Preconditions.checkState(relation.getOutputs().size() == 1,
                 "join node only support one output node");
         return genSimpleSelectSql(loadNode, loadNode.getFieldRelations(), relation,
-                    loadNode.getFilterClause(), nodeMap);
+                loadNode.getFilterClause(), nodeMap);
     }
 
     /**
@@ -331,7 +361,7 @@ public class FlinkSqlParser extends AbstractSqlParser {
         if (node instanceof TransformNode) {
             return genCreateTransformSql(node);
         }
-        StringBuilder sb = new StringBuilder("CREATE TABLE IF NOT EXISTS `");
+        StringBuilder sb = new StringBuilder("CREATE TEMPORARY VIEW `");
         sb.append(node.genTableName()).append("`(\n");
         String filterPrimaryKey = getFilterPrimaryKey(node);
         sb.append(parseFields(node.getFields(), node, filterPrimaryKey));
@@ -357,7 +387,7 @@ public class FlinkSqlParser extends AbstractSqlParser {
     private String getFilterPrimaryKey(Node node) {
         if (node instanceof MongoCdcNode) { // MongoCdcNode ?
             if (null != node.getProperties().get(SOURCE_MULTIPLE_ENABLE_KEY)
-                    && node.getProperties().get(SOURCE_MULTIPLE_ENABLE_KEY).equals("true")) {
+                && node.getProperties().get(SOURCE_MULTIPLE_ENABLE_KEY).equals("true")) {
                 return node.getPrimaryKey();
             }
         }
@@ -384,9 +414,14 @@ public class FlinkSqlParser extends AbstractSqlParser {
     private String parseOptions(Map<String, String> options) {
         StringBuilder sb = new StringBuilder();
         if (options != null && !options.isEmpty()) {
-            sb.append(" WITH (");
+            // process the USING clause for Spark SQL
+            if (options.get("USING") != null) {
+                sb.append(" USING ").append(options.get("USING"));
+                options.remove("USING");
+            }
+            sb.append(" OPTIONS (");
             for (Map.Entry<String, String> kv : options.entrySet()) {
-                sb.append("\n    '").append(kv.getKey()).append("' = '").append(kv.getValue()).append("'").append(",");
+                sb.append("\n    ").append(kv.getKey()).append(" \"").append(kv.getValue()).append("\"").append(",");
             }
             if (sb.length() > 0) {
                 sb.delete(sb.lastIndexOf(","), sb.length());
@@ -464,7 +499,7 @@ public class FlinkSqlParser extends AbstractSqlParser {
      */
     private String genPrimaryKey(String primaryKey, String filterPrimaryKey) {
         boolean checkPrimaryKeyFlag = StringUtils.isNotBlank(primaryKey)
-                && (StringUtils.isBlank(filterPrimaryKey) || !primaryKey.equals(filterPrimaryKey));
+                                      && (StringUtils.isBlank(filterPrimaryKey) || !primaryKey.equals(filterPrimaryKey));
         if (checkPrimaryKeyFlag) {
             primaryKey = String.format(",\n    PRIMARY KEY (%s) NOT ENFORCED",
                     StringUtils.join(formatFields(primaryKey.split(",")), ","));

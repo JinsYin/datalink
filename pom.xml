@@ -16,6 +16,7 @@
         <inlong.version>1.6.0</inlong.version>
         <lombok.version>1.18.2</lombok.version>
         <flink.version>1.15.4</flink.version>
+		<spark.version>3.1.1</spark.version>
         <junit.version>4.12</junit.version>
         <jsqlparser.version>4.6</jsqlparser.version>
         <calcite.version>1.27.0</calcite.version>
@@ -55,7 +56,14 @@
             <version>${flink.version}</version>
         </dependency>
 
-        <!-- Test dependency -->
+		<!-- Spark Catalyst for using its types -->
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-catalyst_2.12</artifactId>
+			<version>${spark.version}</version>
+		</dependency>
+
+		<!-- Test dependency -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

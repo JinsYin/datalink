@@ -1,5 +1,9 @@
 package cn.guruguru.datalink.protocol.node.extract.scan;
 
+import cn.guruguru.datalink.exception.UnsupportedEngineException;
+import cn.guruguru.datalink.parser.Parser;
+import cn.guruguru.datalink.parser.impl.FlinkSqlParser;
+import cn.guruguru.datalink.parser.impl.SparkSqlParser;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.extract.ScanExtractNode;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCreator;
@@ -60,13 +64,33 @@ public abstract class JdbcScanNode extends ScanExtractNode implements Serializab
     }
 
     @Override
-    public Map<String, String> tableOptions() {
-        Map<String, String> options = super.tableOptions();
+    public Map<String, String> tableOptions(Parser parser) {
+        if (parser instanceof FlinkSqlParser) {
+            Map<String, String> options = super.tableOptions(parser);
+            return flinkTableOptions(options);
+        }
+        if (parser instanceof SparkSqlParser) {
+            Map<String, String> options = super.tableOptions(parser);
+            return sparkTableOptions(options);
+        }
+        throw new UnsupportedEngineException("Unsupported computing engine");
+    }
+
+    private Map<String, String> flinkTableOptions(Map<String, String> options) {
         options.put("connector", "jdbc");
         options.put("url", url);
         options.put("username", username);
         options.put("password", password);
         options.put("table-name", String.format("%s", tableName));
+        return options;
+    }
+
+    private Map<String, String> sparkTableOptions(Map<String, String> options) {
+        options.put("USING", "org.apache.spark.sql.jdbc");
+        options.put("url", url);
+        options.put("user", username);
+        options.put("password", password);
+        options.put("dbtable", String.format("%s", tableName));
         return options;
     }
 
