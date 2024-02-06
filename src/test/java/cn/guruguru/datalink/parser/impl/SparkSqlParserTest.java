@@ -22,7 +22,7 @@ public class SparkSqlParserTest {
         final Parser sparkSqlParser = parserFactory.createParser();
         ParseResult parseResult = sparkSqlParser.parse(linkInfo);
         String actual = SqlUtil.compress(parseResult.getSqlScript());
-        String expected = "CREATE TEMPORARY VIEW `lake_policy`(`id` INT) " +
+        String expected = "CREATE TABLE IF NOT EXISTS `lake_policy`(`id` INT) " +
                           "USING org.apache.spark.sql.jdbc " +
                           "OPTIONS (" +
                           "a \"1\", " +

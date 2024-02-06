@@ -361,7 +361,7 @@ public abstract class AbstractSqlParser implements Parser {
         if (node instanceof TransformNode) {
             return genCreateTransformSql(node);
         }
-        StringBuilder sb = new StringBuilder("CREATE TEMPORARY VIEW `");
+        StringBuilder sb = new StringBuilder("CREATE TABLE IF NOT EXISTS `");
         sb.append(node.genTableName()).append("`(\n");
         String filterPrimaryKey = getFilterPrimaryKey(node);
         sb.append(parseFields(node.getFields(), node, filterPrimaryKey));
@@ -419,14 +419,16 @@ public abstract class AbstractSqlParser implements Parser {
                 sb.append(" USING ").append(options.get("USING"));
                 options.remove("USING");
             }
-            sb.append(" OPTIONS (");
-            for (Map.Entry<String, String> kv : options.entrySet()) {
-                sb.append("\n    ").append(kv.getKey()).append(" \"").append(kv.getValue()).append("\"").append(",");
+            if (!options.isEmpty()) {
+                sb.append(" OPTIONS (");
+                for (Map.Entry<String, String> kv : options.entrySet()) {
+                    sb.append("\n    ").append(kv.getKey()).append(" \"").append(kv.getValue()).append("\"").append(",");
+                }
+                if (sb.length() > 0) {
+                    sb.delete(sb.lastIndexOf(","), sb.length());
+                }
+                sb.append("\n)");
             }
-            if (sb.length() > 0) {
-                sb.delete(sb.lastIndexOf(","), sb.length());
-            }
-            sb.append("\n)");
         }
         return sb.toString();
     }
@@ -501,7 +503,7 @@ public abstract class AbstractSqlParser implements Parser {
         boolean checkPrimaryKeyFlag = StringUtils.isNotBlank(primaryKey)
                                       && (StringUtils.isBlank(filterPrimaryKey) || !primaryKey.equals(filterPrimaryKey));
         if (checkPrimaryKeyFlag) {
-            primaryKey = String.format(",\n    PRIMARY KEY (%s) NOT ENFORCED",
+            primaryKey = String.format(",\n    PRIMARY KEY (%s)",
                     StringUtils.join(formatFields(primaryKey.split(",")), ","));
         } else {
             primaryKey = "";
