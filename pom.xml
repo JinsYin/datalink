@@ -15,6 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <inlong.version>1.6.0</inlong.version>
         <lombok.version>1.18.2</lombok.version>
+		<scala.version>2.12.10</scala.version>
         <flink.version>1.15.4</flink.version>
 		<spark.version>3.1.1</spark.version>
         <junit.version>4.12</junit.version>
@@ -49,11 +50,24 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Flink Table Common for using its types -->
+		<!-- Spark and Flink use the same scala version -->
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>${scala.version}</version>
+		</dependency>
+
+		<!-- Flink Table Common for using its types -->
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-table-common</artifactId>
             <version>${flink.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.scala-lang</groupId>
+					<artifactId>scala-library</artifactId>
+				</exclusion>
+			</exclusions>
         </dependency>
 
 		<!-- Spark Catalyst for using its types -->
@@ -61,6 +75,12 @@
 			<groupId>org.apache.spark</groupId>
 			<artifactId>spark-catalyst_2.12</artifactId>
 			<version>${spark.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.scala-lang</groupId>
+					<artifactId>scala-library</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- Test dependency -->
