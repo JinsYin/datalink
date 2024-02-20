@@ -26,7 +26,11 @@ public class SimpleParserFactory {
             case "Flink":
                 return new FlinkSqlParser();
             default:
-                throw new UnsupportedEngineException("Unsupported computing engine");
+                throw new UnsupportedEngineException("Unsupported engine：" + engineType);
         }
+    }
+
+    public static Parser of(String engineType) {
+        return createParser(engineType);
     }
 }

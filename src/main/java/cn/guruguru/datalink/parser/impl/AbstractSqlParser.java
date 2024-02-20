@@ -358,6 +358,9 @@ public abstract class AbstractSqlParser implements Parser {
      * @return The creation sql pf table
      */
     private String genCreateSql(Node node) {
+        if (node instanceof ExtractNode) {
+            return genCreateExtractSql(node);
+        }
         if (node instanceof TransformNode) {
             return genCreateTransformSql(node);
         }
@@ -392,6 +395,17 @@ public abstract class AbstractSqlParser implements Parser {
             }
         }
         return null;
+    }
+
+    /**
+     * Generate create extract sql
+     *
+     * @param node The extract node
+     * @return The creation sql of extract node
+     */
+    private String genCreateExtractSql(Node node) {
+        return "CREATE OR REPLACE TEMPORARY VIEW `" + node.genTableName() + "`\n"
+               + parseOptions(node.tableOptions(this));
     }
 
     /**
