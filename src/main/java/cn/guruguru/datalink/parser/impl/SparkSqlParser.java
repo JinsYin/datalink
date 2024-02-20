@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SparkSqlParser extends AbstractSqlParser {
 
     @Override
-    public DataTypeConverter<String> getTypeConverter() {
+    public DataTypeConverter getTypeConverter() {
         return new SparkDataTypeConverter();
     }
 }

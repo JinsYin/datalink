@@ -20,7 +20,7 @@ public class SimpleTypeConverterFactory {
     /**
      * Creates a data converter based on the type of computing engine
      */
-    public static DataTypeConverter<String> createInstance(String engineType) {
+    public static DataTypeConverter createInstance(String engineType) {
         switch (engineType) {
             case "Spark":
                 return new SparkDataTypeConverter();
@@ -31,7 +31,7 @@ public class SimpleTypeConverterFactory {
         }
     }
 
-    public static DataTypeConverter<String> of(String engineType) {
+    public static DataTypeConverter of(String engineType) {
         return createInstance(engineType);
     }
 }

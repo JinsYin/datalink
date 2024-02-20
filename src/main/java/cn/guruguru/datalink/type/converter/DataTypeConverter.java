@@ -13,7 +13,7 @@ import java.io.Serializable;
 /**
  * Type converter interface
  */
-public interface DataTypeConverter<T> extends Serializable {
+public interface DataTypeConverter extends Serializable { // DataTypeConverter<T>
 
     /**
      * Converts field type
@@ -23,5 +23,5 @@ public interface DataTypeConverter<T> extends Serializable {
      * @param dataType source field
      * @return engine field
      */
-    T toEngineType(String nodeType, DataType dataType);
+    String toEngineType(String nodeType, DataType dataType);
 }

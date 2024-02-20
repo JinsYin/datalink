@@ -33,7 +33,7 @@ import org.apache.flink.table.types.logical.VarCharType;
 import org.apache.flink.table.types.logical.ZonedTimestampType;
 
 @Slf4j
-public class FlinkDataTypeConverter implements DataTypeConverter<String> {
+public class FlinkDataTypeConverter implements DataTypeConverter {
     private static final long serialVersionUID = 8533377444926358840L;
 
     /**

@@ -16,7 +16,7 @@ import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.DecimalType;
 
 @Slf4j
-public class SparkDataTypeConverter implements DataTypeConverter<String> { // DataTypeConverter<DataType>
+public class SparkDataTypeConverter implements DataTypeConverter { // DataTypeConverter<DataType>
 
     private static final long serialVersionUID = 3025705873795163603L;
 

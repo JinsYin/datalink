@@ -48,7 +48,7 @@ public class FlinkSqlParser extends AbstractSqlParser {
     private final List<String> insertSqls = new ArrayList<>();
 
     @Override
-    protected DataTypeConverter<String> getTypeConverter() {
+    protected DataTypeConverter getTypeConverter() {
         return new FlinkDataTypeConverter();
     }
 

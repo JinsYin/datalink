@@ -46,7 +46,7 @@ public abstract class AbstractSqlParser implements Parser {
      *
      * @return a data type converter associated with computing engine
      */
-    protected abstract DataTypeConverter<String> getTypeConverter();
+    protected abstract DataTypeConverter getTypeConverter();
 
     /**
      * Parser a {@link LinkInfo}
