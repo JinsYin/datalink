@@ -71,6 +71,6 @@ public class TransformNode implements Node, Serializable {
 
     @Override
     public String genTableName() {
-        return "transform_" + id; // InLong Sort: "tansform_" + id
+        return quoteIdentifier("transform_" + id); // InLong Sort: "tansform_" + id
     }
 }

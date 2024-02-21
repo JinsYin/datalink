@@ -92,6 +92,15 @@ public interface Node {
         return this.getClass().getAnnotation(JsonTypeName.class).value();
     }
 
+    @JsonIgnore
+    default String quoteIdentifier(String identifier) {
+        // if it is a schema object
+        //if (identifier.contains(".")) {
+        //    return "`" + identifier.replaceAll("\\.", "`.`") + "`";
+        //}
+        return "`" + identifier + "`";
+    }
+
     static Node deserialize(String json) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(json, Node.class);

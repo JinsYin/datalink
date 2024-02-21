@@ -96,7 +96,7 @@ public abstract class JdbcScanNode extends ScanExtractNode implements Serializab
 
     @Override
     public String genTableName() {
-        return tableName;
+        return quoteIdentifier(tableName);
     }
 
     @Override

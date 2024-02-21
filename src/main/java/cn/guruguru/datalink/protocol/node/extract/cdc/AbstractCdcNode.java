@@ -65,7 +65,7 @@ public abstract class AbstractCdcNode extends CdcExtractNode implements Serializ
 
     @Override
     public String genTableName() {
-        return tableName;
+        return quoteIdentifier(tableName);
     }
 
     @Override

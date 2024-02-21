@@ -261,7 +261,7 @@ public abstract class AbstractSqlParser implements Parser {
         });
         parseFieldRelations(node.getNodeType(), node.getFields(), fieldRelationMap, sb);
         String tableName = nodeMap.get(relation.getInputs().get(0)).genTableName();
-        sb.append("\n    FROM `").append(tableName).append("` ");
+        sb.append("\n    FROM ").append(tableName).append(" ");
         parseFilterFields(filterClause, sb);
         return sb.toString();
     }
@@ -337,7 +337,7 @@ public abstract class AbstractSqlParser implements Parser {
         Preconditions.checkState(!loadNode.getFieldRelations().isEmpty(),
                 "field relations is empty");
         String selectSql = genLoadSelectSql(loadNode, relation, nodeMap);
-        return "INSERT INTO `" + loadNode.genTableName() + "`\n    " + selectSql;
+        return "INSERT INTO " + loadNode.genTableName() + "\n    " + selectSql;
     }
 
     private String genLoadSelectSql(LoadNode loadNode, NodeRelation relation,
@@ -364,8 +364,8 @@ public abstract class AbstractSqlParser implements Parser {
         if (node instanceof TransformNode) {
             return genCreateTransformSql(node);
         }
-        StringBuilder sb = new StringBuilder("CREATE TABLE IF NOT EXISTS `");
-        sb.append(node.genTableName()).append("`(\n");
+        StringBuilder sb = new StringBuilder("CREATE TABLE IF NOT EXISTS ");
+        sb.append(node.genTableName()).append("(\n");
         String filterPrimaryKey = getFilterPrimaryKey(node);
         sb.append(parseFields(node.getFields(), node, filterPrimaryKey));
         sb.append(genPrimaryKey(node.getPrimaryKey(), filterPrimaryKey));
@@ -404,7 +404,8 @@ public abstract class AbstractSqlParser implements Parser {
      * @return The creation sql of extract node
      */
     private String genCreateExtractSql(Node node) {
-        return "CREATE OR REPLACE TEMPORARY VIEW `" + node.genTableName() + "`\n"
+        // Spark view does not support schema
+        return "CREATE OR REPLACE TEMPORARY VIEW " + node.genTableName() + "\n"
                + parseOptions(node.tableOptions(this));
     }
 
@@ -415,7 +416,7 @@ public abstract class AbstractSqlParser implements Parser {
      * @return The creation sql of transform node
      */
     private String genCreateTransformSql(Node node) {
-        return String.format("CREATE VIEW `%s` (%s)",
+        return String.format("CREATE VIEW %s (%s)",
                 node.genTableName(), parseTransformNodeFields(node.getFields()));
     }
 

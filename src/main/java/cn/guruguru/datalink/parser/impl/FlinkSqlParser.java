@@ -231,7 +231,7 @@ public class FlinkSqlParser extends AbstractSqlParser {
         });
         parseFieldRelations(node.getNodeType(), node.getFields(), fieldRelationMap, sb);
         String tableName = nodeMap.get(relation.getInputs().get(0)).genTableName();
-        sb.append("\n    FROM `").append(tableName).append("` ");
+        sb.append("\n    FROM ").append(tableName).append(" ");
         parseFilterFields(filterClause, sb);
         return sb.toString();
     }
@@ -307,7 +307,7 @@ public class FlinkSqlParser extends AbstractSqlParser {
         Preconditions.checkState(!loadNode.getFieldRelations().isEmpty(),
                 "field relations is empty");
         String selectSql = genLoadSelectSql(loadNode, relation, nodeMap);
-        return "INSERT INTO `" + loadNode.genTableName() + "`\n    " + selectSql;
+        return "INSERT INTO " + loadNode.genTableName() + "\n    " + selectSql;
     }
 
     private String genLoadSelectSql(LoadNode loadNode, NodeRelation relation,
@@ -331,8 +331,8 @@ public class FlinkSqlParser extends AbstractSqlParser {
         if (node instanceof TransformNode) {
             return genCreateTransformSql(node);
         }
-        StringBuilder sb = new StringBuilder("CREATE TABLE IF NOT EXISTS `");
-        sb.append(node.genTableName()).append("`(\n");
+        StringBuilder sb = new StringBuilder("CREATE TABLE IF NOT EXISTS ");
+        sb.append(node.genTableName()).append("(\n");
         String filterPrimaryKey = getFilterPrimaryKey(node);
         sb.append(parseFields(node.getFields(), node, filterPrimaryKey));
         sb.append(genPrimaryKey(node.getPrimaryKey(), filterPrimaryKey));
@@ -371,7 +371,7 @@ public class FlinkSqlParser extends AbstractSqlParser {
      * @return The creation sql of transform node
      */
     private String genCreateTransformSql(Node node) {
-        return String.format("CREATE VIEW `%s` (%s)",
+        return String.format("CREATE VIEW %s (%s)",
                 node.genTableName(), parseTransformNodeFields(node.getFields()));
     }
 

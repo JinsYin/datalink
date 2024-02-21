@@ -128,7 +128,7 @@ public class KafkaNode extends CdcExtractNode implements Metadata, Serializable 
 
     @Override
     public String genTableName() {
-        return topic;
+        return quoteIdentifier(topic);
     }
 
     @Override

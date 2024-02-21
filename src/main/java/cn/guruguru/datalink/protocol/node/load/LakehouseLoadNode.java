@@ -96,7 +96,10 @@ public class LakehouseLoadNode extends LoadNode {
     @Override
     public String genTableName() {
         // TODO
-        return String.format("%s`.`%s`.`%s", catalog, database, table);
+        return String.format("%s.%s.%s",
+                quoteIdentifier(catalog),
+                quoteIdentifier(database),
+                quoteIdentifier(table));
     }
 
     @Override
