@@ -1,7 +1,6 @@
 package cn.guruguru.datalink.parser.impl;
 
 import cn.guruguru.datalink.parser.Parser;
-import cn.guruguru.datalink.parser.result.FlinkSqlParseResult;
 import cn.guruguru.datalink.parser.result.ParseResult;
 import cn.guruguru.datalink.protocol.LinkInfo;
 import cn.guruguru.datalink.protocol.Metadata;
@@ -13,7 +12,6 @@ import cn.guruguru.datalink.protocol.node.ExtractNode;
 import cn.guruguru.datalink.protocol.node.LoadNode;
 import cn.guruguru.datalink.protocol.node.Node;
 import cn.guruguru.datalink.protocol.node.extract.CdcExtractNode;
-import cn.guruguru.datalink.protocol.node.extract.cdc.MongoCdcNode;
 import cn.guruguru.datalink.protocol.node.transform.TransformNode;
 import cn.guruguru.datalink.protocol.relation.FieldRelation;
 import cn.guruguru.datalink.protocol.relation.NodeRelation;
@@ -33,13 +31,14 @@ import java.util.Set;
 
 @Slf4j
 public abstract class AbstractSqlParser implements Parser {
+
     public static final String SOURCE_MULTIPLE_ENABLE_KEY = "source.multiple.enable";
-    private final Set<String> hasParsedSet = new HashSet<>();
-    private final List<String> setSqls = new ArrayList<>();
-    private final List<String> extractTableSqls = new ArrayList<>();
-    private final List<String> transformTableSqls = new ArrayList<>();
-    private final List<String> loadTableSqls = new ArrayList<>();
-    private final List<String> insertSqls = new ArrayList<>();
+    protected final Set<String> hasParsedSet = new HashSet<>();
+    protected List<String> setSqls = new ArrayList<>();
+    protected final List<String> extractTableSqls = new ArrayList<>();
+    protected final List<String> transformTableSqls = new ArrayList<>();
+    protected final List<String> loadTableSqls = new ArrayList<>();
+    protected final List<String> insertSqls = new ArrayList<>();
 
     /**
      * Specify a data type converter
@@ -47,6 +46,11 @@ public abstract class AbstractSqlParser implements Parser {
      * @return a data type converter associated with computing engine
      */
     protected abstract DataTypeConverter getTypeConverter();
+
+    protected abstract ParseResult getParseResult(LinkInfo linkInfo);
+
+
+    // ~ Entrypoint ---------------------------------------
 
     /**
      * Parser a {@link LinkInfo}
@@ -68,15 +72,12 @@ public abstract class AbstractSqlParser implements Parser {
         // Parse nodes and node relations
         parseNodeRelations(linkInfo);
         // TODO: Parse field relations
-        // Parse the configuration of the computing engine
-        List<String> setSqls = parseConfiguration(linkInfo);
         log.info("parse LinkInfo success, id:{}", linkInfo.getId());
         // Parse Result
-        List<String> createTableSqls = new ArrayList<>(extractTableSqls);
-        createTableSqls.addAll(transformTableSqls);
-        createTableSqls.addAll(loadTableSqls);
-        return new FlinkSqlParseResult(setSqls, createTableSqls, insertSqls);
+        return getParseResult(linkInfo);
     }
+
+    // ~ SET Commands -------------------------------------
 
     /**
      * Parser the configuration of the computing engine
@@ -96,24 +97,7 @@ public abstract class AbstractSqlParser implements Parser {
         return setSqls;
     }
 
-    protected Map<String, Node> getNodeMap(LinkInfo linkInfo) {
-        Map<String, Node> nodeMap = new HashMap<>(linkInfo.getNodes().size());
-        linkInfo.getNodes().forEach(s -> {
-            Preconditions.checkNotNull(s.getId(), "node id is null");
-            nodeMap.put(s.getId(), s);
-        });
-        return nodeMap;
-    }
-
-    protected Map<String, NodeRelation> getNodeRelationMap(LinkInfo linkInfo) {
-        Map<String, NodeRelation> nodeRelationMap = new HashMap<>();
-        linkInfo.getRelation().getNodeRelations().forEach(r -> {
-            for (String output : r.getOutputs()) {
-                nodeRelationMap.put(output, r);
-            }
-        });
-        return nodeRelationMap;
-    }
+    // ~ Node Relations -----------------------------------
 
     protected void parseNodeRelations(LinkInfo linkInfo) {
         // Parse nodes
@@ -126,6 +110,25 @@ public abstract class AbstractSqlParser implements Parser {
         });
     }
 
+    private Map<String, Node> getNodeMap(LinkInfo linkInfo) {
+        Map<String, Node> nodeMap = new HashMap<>(linkInfo.getNodes().size());
+        linkInfo.getNodes().forEach(s -> {
+            Preconditions.checkNotNull(s.getId(), "node id is null");
+            nodeMap.put(s.getId(), s);
+        });
+        return nodeMap;
+    }
+
+    private Map<String, NodeRelation> getNodeRelationMap(LinkInfo linkInfo) {
+        Map<String, NodeRelation> nodeRelationMap = new HashMap<>();
+        linkInfo.getRelation().getNodeRelations().forEach(r -> {
+            for (String output : r.getOutputs()) {
+                nodeRelationMap.put(output, r);
+            }
+        });
+        return nodeRelationMap;
+    }
+
     /**
      * parse node relation
      * Here we only parse the output node in the relation,
@@ -135,7 +138,7 @@ public abstract class AbstractSqlParser implements Parser {
      * @param nodeMap Store the mapping relation between node id and node
      * @param relationMap Store the mapping relation between node id and relation
      */
-    private void parseNodeRelation(NodeRelation relation, Map<String, Node> nodeMap,
+    protected void parseNodeRelation(NodeRelation relation, Map<String, Node> nodeMap,
                                    Map<String, NodeRelation> relationMap) {
         log.info("start parse node relation, relation:{}", relation);
         Preconditions.checkNotNull(relation, "relation is null");
@@ -172,18 +175,6 @@ public abstract class AbstractSqlParser implements Parser {
                         "can not find any node by node id " + upstreamNodeId);
                 parseSingleNode(upstreamNode, relationMap.get(upstreamNodeId), nodeMap);
             }
-        }
-    }
-
-    private void registerTableSql(Node node, String sql) {
-        if (node instanceof ExtractNode) {
-            extractTableSqls.add(sql);
-        } else if (node instanceof TransformNode) {
-            transformTableSqls.add(sql);
-        } else if (node instanceof LoadNode) {
-            loadTableSqls.add(sql);
-        } else {
-            throw new UnsupportedOperationException("Only support [ExtractNode|TransformNode|LoadNode]");
         }
     }
 
@@ -240,6 +231,30 @@ public abstract class AbstractSqlParser implements Parser {
                 transformNode.getFilterClause(), nodeMap);
     }
 
+    private void registerTableSql(Node node, String sql) {
+        if (node instanceof ExtractNode) {
+            extractTableSqls.add(sql);
+        } else if (node instanceof TransformNode) {
+            transformTableSqls.add(sql);
+        } else if (node instanceof LoadNode) {
+            loadTableSqls.add(sql);
+        } else {
+            throw new UnsupportedOperationException("Only support [ExtractNode|TransformNode|LoadNode]");
+        }
+    }
+
+    protected String genLoadSelectSql(
+            LoadNode loadNode, NodeRelation relation,
+            Map<String, Node> nodeMap) {
+        // parse base relation that one to one and generate the select sql
+        Preconditions.checkState(relation.getInputs().size() == 1,
+                "simple transform only support one input node");
+        Preconditions.checkState(relation.getOutputs().size() == 1,
+                "join node only support one output node");
+        return genSimpleSelectSql(loadNode, loadNode.getFieldRelations(), relation,
+                loadNode.getFilterClause(), nodeMap);
+    }
+
     /**
      * Generate the most basic conversion sql one-to-one
      *
@@ -250,7 +265,7 @@ public abstract class AbstractSqlParser implements Parser {
      * @param nodeMap Store the mapping relation between node id and node
      * @return Select sql for this node logic
      */
-    private String genSimpleSelectSql(Node node, List<FieldRelation> fieldRelations,
+    protected String genSimpleSelectSql(Node node, List<FieldRelation> fieldRelations,
                                       NodeRelation relation, String filterClause,
                                       Map<String, Node> nodeMap) {
         StringBuilder sb = new StringBuilder();
@@ -287,78 +302,26 @@ public abstract class AbstractSqlParser implements Parser {
      * @param fieldRelationMap The field relation map
      * @param sb Container for storing sql
      */
-    private void parseFieldRelations(String nodeType,
+    protected abstract void parseFieldRelations(String nodeType,
                                      String primaryKey,
                                      List<DataField> fields,
                                      Map<String, FieldRelation> fieldRelationMap,
-                                     StringBuilder sb) {
-        for (DataField field : fields) {
-            FieldRelation fieldRelation = fieldRelationMap.get(field.getName());
-            DataType dataType = field.getDataType();
-            if (fieldRelation == null) {
-                String targetType = getTypeConverter().toEngineType(nodeType, dataType);
-                sb.append("\n    CAST(NULL as ").append(targetType).append(") AS ").append(field.format()).append(",");
-                continue;
-            }
-            boolean complexType = "ROW".equals(dataType.getType())
-                                  || "ARRAY".equals(dataType.getType())
-                                  || "MAP".equals(dataType.getType());
-            Field inputField = fieldRelation.getInputField();
-            if (inputField instanceof DataField) {
-                DataField dataField = (DataField) inputField;
-                DataType formatInfo = dataField.getDataType();
-                DataField outputField = fieldRelation.getOutputField();
-                boolean sameType = formatInfo != null
-                                   && outputField != null
-                                   && outputField.getDataType() != null
-                                   && outputField.getDataType().getType().equals(formatInfo.getType());
-                if (complexType || sameType || dataType == null) {
-                    sb.append("\n    ").append(inputField.format()).append(" AS ").append(field.format()).append(",");
-                } else {
-                    // https://github.com/apache/iceberg/issues/2456
-                    // https://developer.aliyun.com/ask/550123
-                    // 主键列一定是非空的
-                    // 实测只有使用 `coalesce(field, not_null)` 可以
-                    // 形如 COALESCE(CAST(`ID` as DECIMAL(10,0)), "0") AS `ID`
-                    List<String> pkColumns = formatFields(primaryKey.split(","));
-                    String sourceIdentifier = inputField.format();
-                    if(pkColumns.contains(sourceIdentifier)) {
-                        String targetIdentifier = field.format();
-                        String targetType = getTypeConverter().toEngineType(nodeType, field.getDataType());
-                        String castSourceColumn = "CAST(" + sourceIdentifier + " as " + targetType + ")";
-                        sb.append("\n    COALESCE(").append(castSourceColumn).append(", ")
-                                .append(getDefaultValueForType(field.getDataType())).append(")")
-                                .append(" AS ").append(targetIdentifier).append(",");
-                    } else {
-                        String targetType = getTypeConverter().toEngineType(nodeType, dataType);
-                        sb.append("\n    CAST(").append(inputField.format()).append(" as ")
-                                .append(targetType).append(") AS ").append(field.format()).append(",");
-                    }
-                }
-            } else {
-                String targetType = getTypeConverter().toEngineType(nodeType, field.getDataType());
-                sb.append("\n    CAST(").append(inputField.format()).append(" as ")
-                        .append(targetType).append(") AS ").append(field.format()).append(",");
-            }
-        }
-        sb.deleteCharAt(sb.length() - 1);
-    }
+                                     StringBuilder sb);
 
-    private void castFiled(StringBuilder sb,
-                      String nodeType,
-                      DataType dataType,
-                      DataField inputField,
-                      DataField outputField) {
+    protected void castFiled(StringBuilder sb,
+                             String nodeType,
+                             DataType dataType,
+                             String sourceColumn,
+                             String targetColumn) {
         String targetType = getTypeConverter().toEngineType(nodeType, dataType);
-        sb.append("\n    CAST(").append(inputField.format()).append(" as ")
-                .append(targetType).append(") AS ").append(outputField.format()).append(",");
+        sb.append("\n    CAST(").append(sourceColumn).append(" as ").append(targetType).append(")")
+                .append(" AS ").append(targetColumn).append(",");
     }
 
-    private void coalesceField(StringBuilder sb,
-                          String nodeType,
-                          DataType dataType,
-                          DataField inputField,
-                          DataField outputField) {
+    protected void coalesceField(StringBuilder sb,
+                                 String nodeType,
+                                 Field inputField,
+                                 DataField outputField) {
         String sourceIdentifier = inputField.format();
         String targetIdentifier = outputField.format();
         String targetType = getTypeConverter().toEngineType(nodeType, outputField.getDataType());
@@ -371,7 +334,7 @@ public abstract class AbstractSqlParser implements Parser {
     /**
      * Return default value based on provided type
      */
-    private Object getDefaultValueForType(DataType dataType) {
+    protected Object getDefaultValueForType(DataType dataType) {
         String fullType = dataType.getType();
         String typeName = fullType.replaceAll("(\\S)(\\(.*\\))?", "$1");
         switch (typeName) {
@@ -385,45 +348,20 @@ public abstract class AbstractSqlParser implements Parser {
     }
 
     /**
-     * Generate load node insert sql
-     *
-     * @param loadNode The real data write node
-     * @param relation The relation between nods
-     * @param nodeMap The node map
-     * @return Insert sql
-     */
-    private String genLoadNodeInsertSql(LoadNode loadNode, NodeRelation relation, Map<String, Node> nodeMap) {
-        Preconditions.checkNotNull(loadNode.getFieldRelations(), "field relations is null");
-        Preconditions.checkState(!loadNode.getFieldRelations().isEmpty(),
-                "field relations is empty");
-        String selectSql = genLoadSelectSql(loadNode, relation, nodeMap);
-        return "INSERT INTO " + loadNode.genTableName() + "\n    " + selectSql;
-    }
-
-    private String genLoadSelectSql(LoadNode loadNode, NodeRelation relation,
-                                    Map<String, Node> nodeMap) {
-        // parse base relation that one to one and generate the select sql
-        Preconditions.checkState(relation.getInputs().size() == 1,
-                "simple transform only support one input node");
-        Preconditions.checkState(relation.getOutputs().size() == 1,
-                "join node only support one output node");
-        return genSimpleSelectSql(loadNode, loadNode.getFieldRelations(), relation,
-                loadNode.getFilterClause(), nodeMap);
-    }
-
-    /**
      * Generate create sql
      *
      * @param node The abstract of extract, transform, load
      * @return The creation sql pf table
      */
-    private String genCreateSql(Node node) {
-        if (node instanceof ExtractNode) {
-            return genCreateExtractSql(node);
-        }
-        if (node instanceof TransformNode) {
-            return genCreateTransformSql(node);
-        }
+    protected abstract String genCreateSql(Node node);
+
+    /**
+     * Generate generic create sql
+     *
+     * @param node The abstract of extract, transform, load
+     * @return The creation sql pf table
+     */
+    protected String genGenericCreateSql(Node node) {
         StringBuilder sb = new StringBuilder("CREATE TABLE IF NOT EXISTS ");
         sb.append(node.genTableName()).append("(\n");
         String filterPrimaryKey = getFilterPrimaryKey(node);
@@ -445,28 +383,26 @@ public abstract class AbstractSqlParser implements Parser {
     }
 
     /**
-     * Get filter PrimaryKey for Mongo when multi-sink mode
+     * Generate load node insert sql
+     *
+     * @param loadNode The real data write node
+     * @param relation The relation between nods
+     * @param nodeMap The node map
+     * @return Insert sql
      */
-    private String getFilterPrimaryKey(Node node) {
-        if (node instanceof MongoCdcNode) { // MongoCdcNode ?
-            if (null != node.getProperties().get(SOURCE_MULTIPLE_ENABLE_KEY)
-                && node.getProperties().get(SOURCE_MULTIPLE_ENABLE_KEY).equals("true")) {
-                return node.getPrimaryKey();
-            }
-        }
-        return null;
+    protected String genLoadNodeInsertSql(LoadNode loadNode, NodeRelation relation, Map<String, Node> nodeMap) {
+        Preconditions.checkNotNull(loadNode.getFieldRelations(), "field relations is null");
+        Preconditions.checkState(!loadNode.getFieldRelations().isEmpty(),
+                "field relations is empty");
+        String selectSql = genLoadSelectSql(loadNode, relation, nodeMap);
+        return "INSERT INTO " + loadNode.genTableName() + "\n    " + selectSql;
     }
 
     /**
-     * Generate create extract sql
-     *
-     * @param node The extract node
-     * @return The creation sql of extract node
+     * Get filter PrimaryKey for Mongo when multi-sink mode
      */
-    private String genCreateExtractSql(Node node) {
-        // Spark view does not support schema
-        return "CREATE OR REPLACE TEMPORARY VIEW " + node.genTableName() + "\n"
-               + parseOptions(node.tableOptions(this));
+    protected String getFilterPrimaryKey(Node node) {
+        return null;
     }
 
     /**
@@ -475,7 +411,7 @@ public abstract class AbstractSqlParser implements Parser {
      * @param node The transform node
      * @return The creation sql of transform node
      */
-    private String genCreateTransformSql(Node node) {
+    protected String genCreateTransformSql(Node node) {
         return String.format("CREATE VIEW %s (%s)",
                 node.genTableName(), parseTransformNodeFields(node.getFields()));
     }
@@ -486,27 +422,7 @@ public abstract class AbstractSqlParser implements Parser {
      * @param options The options defined in node
      * @return The with option string
      */
-    private String parseOptions(Map<String, String> options) {
-        StringBuilder sb = new StringBuilder();
-        if (options != null && !options.isEmpty()) {
-            // process the USING clause for Spark SQL
-            if (options.get("USING") != null) {
-                sb.append(" USING ").append(options.get("USING"));
-                options.remove("USING");
-            }
-            if (!options.isEmpty()) {
-                sb.append(" OPTIONS (");
-                for (Map.Entry<String, String> kv : options.entrySet()) {
-                    sb.append("\n    ").append(kv.getKey()).append(" \"").append(kv.getValue()).append("\"").append(",");
-                }
-                if (sb.length() > 0) {
-                    sb.delete(sb.lastIndexOf(","), sb.length());
-                }
-                sb.append("\n)");
-            }
-        }
-        return sb.toString();
-    }
+    protected abstract String parseOptions(Map<String, String> options);
 
     /**
      * Parse transform node fields
@@ -514,7 +430,7 @@ public abstract class AbstractSqlParser implements Parser {
      * @param fields The fields defined in node
      * @return Field formats in select sql
      */
-    private String parseTransformNodeFields(List<DataField> fields) {
+    protected String parseTransformNodeFields(List<DataField> fields) {
         StringBuilder sb = new StringBuilder();
         for (DataField field : fields) {
             sb.append("\n    `").append(field.getName()).append("`,");
@@ -533,7 +449,7 @@ public abstract class AbstractSqlParser implements Parser {
      * @param filterPrimaryKey filter PrimaryKey, use for mongo
      * @return Field formats in select sql
      */
-    private String parseFields(List<DataField> fields, Node node, String filterPrimaryKey) {
+    protected String parseFields(List<DataField> fields, Node node, String filterPrimaryKey) {
         StringBuilder sb = new StringBuilder();
         String nodeType = node.getClass().getAnnotation(JsonTypeName.class).value();
         for (DataField field : fields) {
@@ -574,17 +490,7 @@ public abstract class AbstractSqlParser implements Parser {
      * @param filterPrimaryKey filter PrimaryKey, use for mongo
      * @return Primary key format in sql
      */
-    private String genPrimaryKey(String primaryKey, String filterPrimaryKey) {
-        boolean checkPrimaryKeyFlag = StringUtils.isNotBlank(primaryKey)
-                                      && (StringUtils.isBlank(filterPrimaryKey) || !primaryKey.equals(filterPrimaryKey));
-        if (checkPrimaryKeyFlag) {
-            primaryKey = String.format(",\n    PRIMARY KEY (%s)",
-                    StringUtils.join(formatFields(primaryKey.split(",")), ","));
-        } else {
-            primaryKey = "";
-        }
-        return primaryKey;
-    }
+    protected abstract String genPrimaryKey(String primaryKey, String filterPrimaryKey);
 
     /**
      * Format fields with '`'
@@ -592,7 +498,7 @@ public abstract class AbstractSqlParser implements Parser {
      * @param fields The fields that need format
      * @return list of field after format
      */
-    private List<String> formatFields(String... fields) {
+    protected List<String> formatFields(String... fields) {
         List<String> formatFields = new ArrayList<>(fields.length);
         for (String field : fields) {
             if (!field.contains("`")) {
@@ -607,7 +513,7 @@ public abstract class AbstractSqlParser implements Parser {
     /**
      * Format fields with '`'
      */
-    private List<String> formatFields(List<DataField> fields) {
+    protected List<String> formatFields(List<DataField> fields) {
         List<String> formatFields = new ArrayList<>(fields.size());
         for (DataField field : fields) {
             formatFields.add(field.format());
