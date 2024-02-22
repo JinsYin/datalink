@@ -259,7 +259,7 @@ public abstract class AbstractSqlParser implements Parser {
         fieldRelations.forEach(s -> {
             fieldRelationMap.put(s.getOutputField().getName(), s);
         });
-        parseFieldRelations(node.getNodeType(), node.getFields(), fieldRelationMap, sb);
+        parseFieldRelations(node.getNodeType(), node.getPrimaryKey(), node.getFields(), fieldRelationMap, sb);
         String tableName = nodeMap.get(relation.getInputs().get(0)).genTableName();
         sb.append("\n    FROM ").append(tableName).append(" ");
         parseFilterFields(filterClause, sb);
@@ -283,11 +283,15 @@ public abstract class AbstractSqlParser implements Parser {
      * Parse field relation
      *
      * @param fields The fields defined in node
+     * @param primaryKey The primary key
      * @param fieldRelationMap The field relation map
      * @param sb Container for storing sql
      */
-    private void parseFieldRelations(String nodeType, List<DataField> fields,
-                                     Map<String, FieldRelation> fieldRelationMap, StringBuilder sb) {
+    private void parseFieldRelations(String nodeType,
+                                     String primaryKey,
+                                     List<DataField> fields,
+                                     Map<String, FieldRelation> fieldRelationMap,
+                                     StringBuilder sb) {
         for (DataField field : fields) {
             FieldRelation fieldRelation = fieldRelationMap.get(field.getName());
             DataType dataType = field.getDataType();
@@ -301,8 +305,8 @@ public abstract class AbstractSqlParser implements Parser {
                                   || "MAP".equals(dataType.getType());
             Field inputField = fieldRelation.getInputField();
             if (inputField instanceof DataField) {
-                DataField DataField = (DataField) inputField;
-                DataType formatInfo = DataField.getDataType();
+                DataField dataField = (DataField) inputField;
+                DataType formatInfo = dataField.getDataType();
                 DataField outputField = fieldRelation.getOutputField();
                 boolean sameType = formatInfo != null
                                    && outputField != null
@@ -311,9 +315,25 @@ public abstract class AbstractSqlParser implements Parser {
                 if (complexType || sameType || dataType == null) {
                     sb.append("\n    ").append(inputField.format()).append(" AS ").append(field.format()).append(",");
                 } else {
-                    String targetType = getTypeConverter().toEngineType(nodeType, dataType);
-                    sb.append("\n    CAST(").append(inputField.format()).append(" as ")
-                            .append(targetType).append(") AS ").append(field.format()).append(",");
+                    // https://github.com/apache/iceberg/issues/2456
+                    // https://developer.aliyun.com/ask/550123
+                    // 主键列一定是非空的
+                    // 实测只有使用 `coalesce(field, not_null)` 可以
+                    // 形如 COALESCE(CAST(`ID` as DECIMAL(10,0)), "0") AS `ID`
+                    List<String> pkColumns = formatFields(primaryKey.split(","));
+                    String sourceIdentifier = inputField.format();
+                    if(pkColumns.contains(sourceIdentifier)) {
+                        String targetIdentifier = field.format();
+                        String targetType = getTypeConverter().toEngineType(nodeType, field.getDataType());
+                        String castSourceColumn = "CAST(" + sourceIdentifier + " as " + targetType + ")";
+                        sb.append("\n    COALESCE(").append(castSourceColumn).append(", ")
+                                .append(getDefaultValueForType(field.getDataType())).append(")")
+                                .append(" AS ").append(targetIdentifier).append(",");
+                    } else {
+                        String targetType = getTypeConverter().toEngineType(nodeType, dataType);
+                        sb.append("\n    CAST(").append(inputField.format()).append(" as ")
+                                .append(targetType).append(") AS ").append(field.format()).append(",");
+                    }
                 }
             } else {
                 String targetType = getTypeConverter().toEngineType(nodeType, field.getDataType());
@@ -322,6 +342,46 @@ public abstract class AbstractSqlParser implements Parser {
             }
         }
         sb.deleteCharAt(sb.length() - 1);
+    }
+
+    private void castFiled(StringBuilder sb,
+                      String nodeType,
+                      DataType dataType,
+                      DataField inputField,
+                      DataField outputField) {
+        String targetType = getTypeConverter().toEngineType(nodeType, dataType);
+        sb.append("\n    CAST(").append(inputField.format()).append(" as ")
+                .append(targetType).append(") AS ").append(outputField.format()).append(",");
+    }
+
+    private void coalesceField(StringBuilder sb,
+                          String nodeType,
+                          DataType dataType,
+                          DataField inputField,
+                          DataField outputField) {
+        String sourceIdentifier = inputField.format();
+        String targetIdentifier = outputField.format();
+        String targetType = getTypeConverter().toEngineType(nodeType, outputField.getDataType());
+        String castSourceColumn = "CAST(" + sourceIdentifier + " as " + targetType + ")";
+        sb.append("\n    COALESCE(").append(castSourceColumn).append(", ")
+                .append(getDefaultValueForType(outputField.getDataType())).append(")")
+                .append(" AS ").append(targetIdentifier).append(",");
+    }
+
+    /**
+     * Return default value based on provided type
+     */
+    private Object getDefaultValueForType(DataType dataType) {
+        String fullType = dataType.getType();
+        String typeName = fullType.replaceAll("(\\S)(\\(.*\\))?", "$1");
+        switch (typeName) {
+            case "DECIMAL":
+                return 0;
+            case "STRING":
+                return "\"\"";
+            default:
+                return "NULL";
+        }
     }
 
     /**
