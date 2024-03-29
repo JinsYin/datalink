@@ -7,7 +7,7 @@ import cn.guruguru.datalink.type.converter.SparkDataTypeConverter;
 
 /**
  * Simple Converter Factory for creating a {@link
- * cn.guruguru.datalink.type.converter.DataTypeConverter}
+ * DataTypeConverter}
  *
  * <p>Usages:
  * <pre>

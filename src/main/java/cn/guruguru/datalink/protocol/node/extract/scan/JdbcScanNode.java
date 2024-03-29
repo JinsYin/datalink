@@ -6,6 +6,7 @@ import cn.guruguru.datalink.parser.impl.FlinkSqlParser;
 import cn.guruguru.datalink.parser.impl.SparkSqlParser;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.extract.ScanExtractNode;
+
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCreator;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

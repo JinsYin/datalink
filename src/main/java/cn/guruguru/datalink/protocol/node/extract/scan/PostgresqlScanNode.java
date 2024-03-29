@@ -4,6 +4,7 @@ package cn.guruguru.datalink.protocol.node.extract.scan;
 import cn.guruguru.datalink.datasource.DataSourceType;
 import cn.guruguru.datalink.datasource.NodeDataSource;
 import cn.guruguru.datalink.protocol.field.DataField;
+
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonCreator;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonProperty;

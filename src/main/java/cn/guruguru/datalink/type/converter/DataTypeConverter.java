@@ -2,12 +2,6 @@ package cn.guruguru.datalink.type.converter;
 
 import cn.guruguru.datalink.protocol.field.DataType;
 
-import org.apache.flink.table.types.logical.DecimalType;
-import org.apache.flink.table.types.logical.LocalZonedTimestampType;
-import org.apache.flink.table.types.logical.TimeType;
-import org.apache.flink.table.types.logical.TimestampType;
-import org.apache.flink.table.types.logical.ZonedTimestampType;
-
 import java.io.Serializable;
 
 /**

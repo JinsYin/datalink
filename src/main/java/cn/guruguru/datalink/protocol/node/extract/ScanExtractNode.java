@@ -2,7 +2,6 @@ package cn.guruguru.datalink.protocol.node.extract;
 
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.ExtractNode;
-import cn.guruguru.datalink.protocol.node.extract.cdc.KafkaNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
