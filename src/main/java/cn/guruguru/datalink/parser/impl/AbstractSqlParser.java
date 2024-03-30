@@ -81,6 +81,9 @@ public abstract class AbstractSqlParser implements Parser {
 
     /**
      * Parser the configuration of the computing engine
+     *
+     * @param linkInfo a {@link LinkInfo}
+     * @return s set of set statements
      */
     protected List<String> parseConfiguration(LinkInfo linkInfo) {
         List<String> setSqls = new ArrayList<>();
@@ -142,9 +145,9 @@ public abstract class AbstractSqlParser implements Parser {
                                    Map<String, NodeRelation> relationMap) {
         log.info("start parse node relation, relation:{}", relation);
         Preconditions.checkNotNull(relation, "relation is null");
-        Preconditions.checkState(relation.getInputs().size() > 0,
+        Preconditions.checkState(!relation.getInputs().isEmpty(),
                 "relation must have at least one input node");
-        Preconditions.checkState(relation.getOutputs().size() > 0,
+        Preconditions.checkState(!relation.getOutputs().isEmpty(),
                 "relation must have at least one output node");
         relation.getOutputs().forEach(s -> {
             Preconditions.checkNotNull(s, "node id in outputs is null");
@@ -297,8 +300,9 @@ public abstract class AbstractSqlParser implements Parser {
     /**
      * Parse field relation
      *
-     * @param fields The fields defined in node
+     * @param nodeType node type
      * @param primaryKey The primary key
+     * @param fields The fields defined in node
      * @param fieldRelationMap The field relation map
      * @param sb Container for storing sql
      */
@@ -333,6 +337,9 @@ public abstract class AbstractSqlParser implements Parser {
 
     /**
      * Return default value based on provided type
+     *
+     * @param dataType data type of column
+     * @return default value of a data type
      */
     protected Object getDefaultValueForType(DataType dataType) {
         String fullType = dataType.getType();
@@ -400,6 +407,9 @@ public abstract class AbstractSqlParser implements Parser {
 
     /**
      * Get filter PrimaryKey for Mongo when multi-sink mode
+     *
+     * @param node a node
+     * @return a primary key
      */
     protected String getFilterPrimaryKey(Node node) {
         return null;
@@ -512,6 +522,9 @@ public abstract class AbstractSqlParser implements Parser {
 
     /**
      * Format fields with '`'
+     *
+     * @param fields a set of columns
+     * @return a list of quoted columns
      */
     protected List<String> formatFields(List<DataField> fields) {
         List<String> formatFields = new ArrayList<>(fields.size());

@@ -99,6 +99,10 @@ public class LinkInfo implements Serializable {
 
     /**
      * Serialize a {@link LinkInfo} to a json string
+     *
+     * @param linkInfo {@link LinkInfo}
+     * @return json string
+     * @throws JsonProcessingException a {@link JsonProcessingException}
      */
     public static String serialize(LinkInfo linkInfo) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();

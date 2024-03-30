@@ -22,6 +22,8 @@ import cn.guruguru.datalink.parser.Parser;
 public interface ParserFactory {
     /**
      * Creates a SQL parser
+     *
+     * @return a SQL parser
      */
     Parser createParser();
 }

@@ -19,6 +19,9 @@ public class SimpleTypeConverterFactory {
 
     /**
      * Creates a data converter based on the type of computing engine
+     *
+     * @param engineType engine type
+     * @return a concrete type converter
      */
     public static DataTypeConverter createInstance(String engineType) {
         switch (engineType) {

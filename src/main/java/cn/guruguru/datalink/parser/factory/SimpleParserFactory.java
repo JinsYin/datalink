@@ -18,6 +18,9 @@ public class SimpleParserFactory {
 
     /**
      * Creates a sql parser based on the type of computing engine
+     *
+     * @param engineType engine type
+     * @return a concrete sql parser
      */
     public static Parser createParser(String engineType) {
         switch (engineType) {
