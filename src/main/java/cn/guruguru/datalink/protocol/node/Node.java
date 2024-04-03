@@ -12,7 +12,7 @@ import cn.guruguru.datalink.protocol.node.extract.scan.GreenplumScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.PostgresqlScanNode;
-import cn.guruguru.datalink.protocol.node.load.LakehouseLoadNode;
+import cn.guruguru.datalink.protocol.node.load.AmoroLoadNode;
 import cn.guruguru.datalink.protocol.node.transform.TransformNode;
 
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.annotation.JsonIgnore;
@@ -50,7 +50,7 @@ import java.util.TreeMap;
         // transform
         @JsonSubTypes.Type(value = TransformNode.class, name = TransformNode.TYPE),
         // load
-        @JsonSubTypes.Type(value = LakehouseLoadNode.class, name = LakehouseLoadNode.TYPE),
+        @JsonSubTypes.Type(value = AmoroLoadNode.class, name = AmoroLoadNode.TYPE),
 
 })
 public interface Node {

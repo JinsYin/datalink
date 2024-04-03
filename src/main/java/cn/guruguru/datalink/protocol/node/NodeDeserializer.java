@@ -6,7 +6,7 @@ import cn.guruguru.datalink.protocol.node.extract.cdc.MysqlCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.DmScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.JdbcScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
-import cn.guruguru.datalink.protocol.node.load.LakehouseLoadNode;
+import cn.guruguru.datalink.protocol.node.load.AmoroLoadNode;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -36,8 +36,8 @@ public class NodeDeserializer extends JsonDeserializer<Node> {
             case KafkaCdcNode.TYPE:
                 return objectMapper.readValue(node.toString(), KafkaCdcNode.class);
             // ----- 目标写入节点 -----
-            case LakehouseLoadNode.TYPE:
-                return objectMapper.readValue(node.toString(), LakehouseLoadNode.class);
+            case AmoroLoadNode.TYPE:
+                return objectMapper.readValue(node.toString(), AmoroLoadNode.class);
             default:
                 throw new UnsupportedDataSourceException("Unsupported node type: " + type);
         }

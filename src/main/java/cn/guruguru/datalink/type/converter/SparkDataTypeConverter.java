@@ -8,7 +8,7 @@ import cn.guruguru.datalink.protocol.node.extract.scan.GreenplumScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.MySqlScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.OracleScanNode;
 import cn.guruguru.datalink.protocol.node.extract.scan.PostgresqlScanNode;
-import cn.guruguru.datalink.protocol.node.load.LakehouseLoadNode;
+import cn.guruguru.datalink.protocol.node.load.AmoroLoadNode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -40,10 +40,10 @@ public class SparkDataTypeConverter implements DataTypeConverter { // DataTypeCo
             case PostgresqlScanNode.TYPE:
             case GreenplumScanNode.TYPE:
                 return convertPostgresqlType(dataType).simpleString().toUpperCase();
-            case LakehouseLoadNode.TYPE:
-                // Lakehouse table may be created by Spark, so it is necessary to convert the lakehouse type to the Flink type
+            case AmoroLoadNode.TYPE:
+                // Amoro table may be created by Spark, so it is necessary to convert the amoro type to the Flink type
                 // e.g. Spark `TIMESTAMP` -> Arctic `TIMESTAMPTZ` -> Flink `TIMESTAMP(6) WITH LOCAL TIME ZONE`
-                return convertLakehouseMixedIcebergType(dataType);
+                return convertAmoroMixedIcebergType(dataType);
             // Other --------------------------------------
             default:
                 throw new UnsupportedDataSourceException("Unsupported data source type:" + nodeType);
@@ -326,7 +326,7 @@ public class SparkDataTypeConverter implements DataTypeConverter { // DataTypeCo
      * @param dataType Arctic Mixed Iceberg Field Type
      * @return Flink SQL Field Type
      */
-    private String convertLakehouseMixedIcebergType(DataType dataType) {
+    private String convertAmoroMixedIcebergType(DataType dataType) {
         String fieldType = StringUtils.upperCase(dataType.getType());
         Integer precision = dataType.getPrecision();
         Integer scale = dataType.getScale();
@@ -357,10 +357,10 @@ public class SparkDataTypeConverter implements DataTypeConverter { // DataTypeCo
             case "ARRAY":
             case "MAP":
             case "STRUCT":
-                log.info("Combined Lakehouse data type:" + fieldType);
+                log.info("Combined Amoro data type:" + fieldType);
                 return fieldType;
             default:
-                log.info("Unconsidered Lakehouse data type:" + fieldType);
+                log.info("Unconsidered Amoro data type:" + fieldType);
                 return fieldType;
         }
     }

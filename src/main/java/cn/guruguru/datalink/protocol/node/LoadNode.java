@@ -3,7 +3,7 @@ package cn.guruguru.datalink.protocol.node;
 import cn.guruguru.datalink.datasource.NodeDataSource;
 import cn.guruguru.datalink.datasource.DataSourceType;
 import cn.guruguru.datalink.protocol.field.DataField;
-import cn.guruguru.datalink.protocol.node.load.LakehouseLoadNode;
+import cn.guruguru.datalink.protocol.node.load.AmoroLoadNode;
 import cn.guruguru.datalink.protocol.relation.FieldRelation;
 import com.google.common.base.Preconditions;
 import lombok.Data;
@@ -24,9 +24,9 @@ import java.util.Map;
  *
  * @see org.apache.inlong.sort.protocol.node.LoadNode
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", defaultImpl = LakehouseLoadNode.class)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", defaultImpl = AmoroLoadNode.class)
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = LakehouseLoadNode.class, name = LakehouseLoadNode.TYPE),
+        @JsonSubTypes.Type(value = AmoroLoadNode.class, name = AmoroLoadNode.TYPE),
 })
 @NoArgsConstructor
 @Data

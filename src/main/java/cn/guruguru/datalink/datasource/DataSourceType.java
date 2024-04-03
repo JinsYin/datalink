@@ -86,7 +86,7 @@ public enum DataSourceType {
     DMDB_FOR_ORACLE(67, "DMDB", "For Oracle"),
 
     /*** new data types **/
-    Lakehouse(100, "Lakehouse", null),
+    Amoro(100, "Amoro", null),
     DMDB(101, "DMDB", null),
     Kafka(102, "Kafka", "2.x"),
     Greenplum(103, "Greenplum", null),

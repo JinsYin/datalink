@@ -24,19 +24,20 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Lakehouse Load Node
+ * Load Node for Apache Amoro
  *
+ * @see <a href="https://github.com/apache/amoro">Apache Amoro</a>
  * @see <a href="https://amoro.netease.com/docs/latest/flink-ddl/">Flink DDL</a>
  */
 @Data
 @NoArgsConstructor(force = true)
 @EqualsAndHashCode(callSuper = true)
-@JsonTypeName(LakehouseLoadNode.TYPE)
+@JsonTypeName(AmoroLoadNode.TYPE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@NodeDataSource(DataSourceType.Lakehouse)
-public class LakehouseLoadNode extends LoadNode {
+@NodeDataSource(DataSourceType.Amoro)
+public class AmoroLoadNode extends LoadNode {
     private static final long serialVersionUID = -1851004595881606952L;
-    public static final String TYPE = "LakehouseLoad";
+    public static final String TYPE = "AmoroLoad";
 
     @Nonnull
     @JsonProperty("url")
@@ -65,17 +66,17 @@ public class LakehouseLoadNode extends LoadNode {
     //private boolean autoCreateTable;
 
     @JsonCreator
-    public LakehouseLoadNode(@JsonProperty("id") String id,
-                             @JsonProperty("name") String name,
-                             @JsonProperty("fields") List<DataField> fields,
-                             @JsonProperty("fieldRelations") List<FieldRelation> fieldRelations,
-                             @Nullable @JsonProperty("filterClause") String filterClause,
-                             @Nullable @JsonProperty("properties") Map<String, String> properties,
-                             @Nonnull @JsonProperty("url") String url,
-                             @Nonnull @JsonProperty("catalog") String catalog,
-                             @JsonProperty("database") String database,
-                             @JsonProperty("table") String table,
-                             @Nullable @JsonProperty("primaryKey") String primaryKey) {
+    public AmoroLoadNode(@JsonProperty("id") String id,
+                         @JsonProperty("name") String name,
+                         @JsonProperty("fields") List<DataField> fields,
+                         @JsonProperty("fieldRelations") List<FieldRelation> fieldRelations,
+                         @Nullable @JsonProperty("filterClause") String filterClause,
+                         @Nullable @JsonProperty("properties") Map<String, String> properties,
+                         @Nonnull @JsonProperty("url") String url,
+                         @Nonnull @JsonProperty("catalog") String catalog,
+                         @JsonProperty("database") String database,
+                         @JsonProperty("table") String table,
+                         @Nullable @JsonProperty("primaryKey") String primaryKey) {
         super(id, name, fields, fieldRelations, filterClause, properties);
         this.url = url;
         this.catalog = catalog;
