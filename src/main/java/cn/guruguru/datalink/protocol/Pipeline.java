@@ -27,7 +27,7 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LinkInfo implements Serializable {
+public class Pipeline implements Serializable {
     private static final long serialVersionUID = 5805129166290430783L;
 
     @JsonProperty("runtimeMode")
@@ -58,17 +58,17 @@ public class LinkInfo implements Serializable {
     private Map<String, String> properties;
 
     /**
-     * Constructor for the {@link LinkInfo}
+     * Constructor for the {@link Pipeline}
      *
-     * @param id Uniquely identifies of LinkInfo
+     * @param id Uniquely identifies of {@link Pipeline}
      * @param name The node name
      * @param description The node description
-     * @param nodes The node list that LinkInfo contains
-     * @param relation The relation that LinkInfo contains
+     * @param nodes The node list that the {@link Pipeline}  contains
+     * @param relation The relation that the {@link Pipeline} contains
      * @param properties flink configuration properties
      */
     @JsonCreator
-    public LinkInfo(@JsonProperty("id") String id,
+    public Pipeline(@JsonProperty("id") String id,
                     @JsonProperty("name") String name,
                     @Nullable @JsonProperty("description") String description,
                     @JsonProperty("nodes") List<Node> nodes,
@@ -86,27 +86,27 @@ public class LinkInfo implements Serializable {
     // ~ utilities --------------------------------------------------
 
     /**
-     * Converts to a {@link LinkInfo} from a json string
+     * Converts to a {@link Pipeline} from a json string
      *
      * @param json json string
-     * @return LinkInfo
+     * @return a {@link Pipeline}
      * @throws JsonProcessingException a JsonProcessingException
      */
-    public static LinkInfo deserialize(String json) throws JsonProcessingException {
+    public static Pipeline deserialize(String json) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(json, LinkInfo.class);
+        return objectMapper.readValue(json, Pipeline.class);
     }
 
     /**
-     * Serialize a {@link LinkInfo} to a json string
+     * Serialize a {@link Pipeline} to a json string
      *
-     * @param linkInfo {@link LinkInfo}
+     * @param pipeline {@link Pipeline}
      * @return json string
      * @throws JsonProcessingException a {@link JsonProcessingException}
      */
-    public static String serialize(LinkInfo linkInfo) throws JsonProcessingException {
+    public static String serialize(Pipeline pipeline) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.writeValueAsString(linkInfo);
+        return objectMapper.writeValueAsString(pipeline);
     }
 }
 

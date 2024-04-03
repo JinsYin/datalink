@@ -1,7 +1,7 @@
 package cn.guruguru.datalink.parser;
 
 import cn.guruguru.datalink.parser.result.ParseResult;
-import cn.guruguru.datalink.protocol.LinkInfo;
+import cn.guruguru.datalink.protocol.Pipeline;
 
 /**
  * Parser interface
@@ -12,8 +12,8 @@ public interface Parser {
     /**
      * Parse data model to generate flink sql or flink stream api
      *
-     * @param linkInfo a {@link LinkInfo}
+     * @param pipeline a {@link Pipeline}
      * @return ParseResult the result of parsing
      */
-    ParseResult parse(LinkInfo linkInfo);
+    ParseResult parse(Pipeline pipeline);
 }

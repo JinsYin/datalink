@@ -2,7 +2,7 @@ package cn.guruguru.datalink.parser.impl;
 
 import cn.guruguru.datalink.parser.result.ParseResult;
 import cn.guruguru.datalink.parser.result.SparkSqlParseResult;
-import cn.guruguru.datalink.protocol.LinkInfo;
+import cn.guruguru.datalink.protocol.Pipeline;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.field.DataType;
 import cn.guruguru.datalink.protocol.field.Field;
@@ -32,9 +32,9 @@ public class SparkSqlParser extends AbstractSqlParser {
     }
 
     @Override
-    protected ParseResult getParseResult(LinkInfo linkInfo) {
+    protected ParseResult getParseResult(Pipeline pipeline) {
         // Parse the configuration of the computing engine
-        List<String> setSqls = parseConfiguration(linkInfo);
+        List<String> setSqls = parseConfiguration(pipeline);
         List<String> createTableSqls = new ArrayList<>(extractTableSqls);
         createTableSqls.addAll(transformTableSqls);
         createTableSqls.addAll(loadTableSqls);

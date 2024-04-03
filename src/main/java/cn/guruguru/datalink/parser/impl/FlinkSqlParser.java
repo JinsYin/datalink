@@ -3,7 +3,7 @@ package cn.guruguru.datalink.parser.impl;
 import cn.guruguru.datalink.protocol.field.DataType;
 import cn.guruguru.datalink.parser.result.ParseResult;
 import cn.guruguru.datalink.parser.result.FlinkSqlParseResult;
-import cn.guruguru.datalink.protocol.LinkInfo;
+import cn.guruguru.datalink.protocol.Pipeline;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.field.Field;
 import cn.guruguru.datalink.protocol.node.Node;
@@ -34,9 +34,9 @@ public class FlinkSqlParser extends AbstractSqlParser {
     }
 
     @Override
-    protected ParseResult getParseResult(LinkInfo linkInfo) {
+    protected ParseResult getParseResult(Pipeline pipeline) {
         // Parse Flink configuration
-        List<String> setSqls = parseConfiguration(linkInfo);
+        List<String> setSqls = parseConfiguration(pipeline);
         List<String> createTableSqls = new ArrayList<>(extractTableSqls);
         createTableSqls.addAll(transformTableSqls);
         createTableSqls.addAll(loadTableSqls);

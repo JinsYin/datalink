@@ -2,7 +2,7 @@ package cn.guruguru.datalink.parser.impl;
 
 import cn.guruguru.datalink.parser.Parser;
 import cn.guruguru.datalink.parser.result.ParseResult;
-import cn.guruguru.datalink.protocol.LinkInfo;
+import cn.guruguru.datalink.protocol.Pipeline;
 import cn.guruguru.datalink.protocol.Metadata;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.field.DataType;
@@ -47,34 +47,34 @@ public abstract class AbstractSqlParser implements Parser {
      */
     protected abstract DataTypeConverter getTypeConverter();
 
-    protected abstract ParseResult getParseResult(LinkInfo linkInfo);
+    protected abstract ParseResult getParseResult(Pipeline pipeline);
 
 
     // ~ Entrypoint ---------------------------------------
 
     /**
-     * Parser a {@link LinkInfo}
+     * Parser a {@link Pipeline}
      *
      * @see org.apache.inlong.sort.parser.impl.FlinkSqlParser#parse()
      */
     @Override
-    public ParseResult parse(LinkInfo linkInfo) {
-        Preconditions.checkNotNull(linkInfo, "link info is null");
-        Preconditions.checkNotNull(linkInfo.getId(), "id is null");
-        Preconditions.checkNotNull(linkInfo.getNodes(), "nodes is null");
-        Preconditions.checkState(!linkInfo.getNodes().isEmpty(), "nodes is empty");
-        Preconditions.checkNotNull(linkInfo.getRelation(), "relation is null");
-        Preconditions.checkNotNull(linkInfo.getRelation().getNodeRelations(), "node relations is null");
-        Preconditions.checkState(!linkInfo.getRelation().getNodeRelations().isEmpty(), "node relations is empty");
-        Preconditions.checkNotNull(linkInfo.getRelation().getFieldRelations(), "field relations is null");
-        // Preconditions.checkState(!linkInfo.getRelation().getFieldRelations().isEmpty(), "field relations is empty");
-        log.info("start parse LinkInfo, id:{}", linkInfo.getId());
+    public ParseResult parse(Pipeline pipeline) {
+        Preconditions.checkNotNull(pipeline, "the pipeline is null");
+        Preconditions.checkNotNull(pipeline.getId(), "id is null");
+        Preconditions.checkNotNull(pipeline.getNodes(), "nodes is null");
+        Preconditions.checkState(!pipeline.getNodes().isEmpty(), "nodes is empty");
+        Preconditions.checkNotNull(pipeline.getRelation(), "relation is null");
+        Preconditions.checkNotNull(pipeline.getRelation().getNodeRelations(), "node relations is null");
+        Preconditions.checkState(!pipeline.getRelation().getNodeRelations().isEmpty(), "node relations is empty");
+        Preconditions.checkNotNull(pipeline.getRelation().getFieldRelations(), "field relations is null");
+        // Preconditions.checkState(!pipeline.getRelation().getFieldRelations().isEmpty(), "field relations is empty");
+        log.info("start parse the Pipeline, id:{}", pipeline.getId());
         // Parse nodes and node relations
-        parseNodeRelations(linkInfo);
+        parseNodeRelations(pipeline);
         // TODO: Parse field relations
-        log.info("parse LinkInfo success, id:{}", linkInfo.getId());
+        log.info("parse the Pipeline success, id:{}", pipeline.getId());
         // Parse Result
-        return getParseResult(linkInfo);
+        return getParseResult(pipeline);
     }
 
     // ~ SET Commands -------------------------------------
@@ -82,13 +82,13 @@ public abstract class AbstractSqlParser implements Parser {
     /**
      * Parser the configuration of the computing engine
      *
-     * @param linkInfo a {@link LinkInfo}
+     * @param pipeline a {@link Pipeline}
      * @return s set of set statements
      */
-    protected List<String> parseConfiguration(LinkInfo linkInfo) {
+    protected List<String> parseConfiguration(Pipeline pipeline) {
         List<String> setSqls = new ArrayList<>();
-        if (linkInfo.getProperties() != null) {
-            linkInfo.getProperties().forEach(
+        if (pipeline.getProperties() != null) {
+            pipeline.getProperties().forEach(
                     (key, value) -> {
                         // TODO: Check if the key and value are valid
                         key = key.trim();
@@ -102,29 +102,29 @@ public abstract class AbstractSqlParser implements Parser {
 
     // ~ Node Relations -----------------------------------
 
-    protected void parseNodeRelations(LinkInfo linkInfo) {
+    protected void parseNodeRelations(Pipeline pipeline) {
         // Parse nodes
-        Map<String, Node> nodeMap = getNodeMap(linkInfo);
+        Map<String, Node> nodeMap = getNodeMap(pipeline);
         // Parse node relations
-        Map<String, NodeRelation> nodeRelationMap = getNodeRelationMap(linkInfo);
+        Map<String, NodeRelation> nodeRelationMap = getNodeRelationMap(pipeline);
         // Parser node relations
-        linkInfo.getRelation().getNodeRelations().forEach(r -> {
+        pipeline.getRelation().getNodeRelations().forEach(r -> {
             parseNodeRelation(r, nodeMap, nodeRelationMap);
         });
     }
 
-    private Map<String, Node> getNodeMap(LinkInfo linkInfo) {
-        Map<String, Node> nodeMap = new HashMap<>(linkInfo.getNodes().size());
-        linkInfo.getNodes().forEach(s -> {
+    private Map<String, Node> getNodeMap(Pipeline pipeline) {
+        Map<String, Node> nodeMap = new HashMap<>(pipeline.getNodes().size());
+        pipeline.getNodes().forEach(s -> {
             Preconditions.checkNotNull(s.getId(), "node id is null");
             nodeMap.put(s.getId(), s);
         });
         return nodeMap;
     }
 
-    private Map<String, NodeRelation> getNodeRelationMap(LinkInfo linkInfo) {
+    private Map<String, NodeRelation> getNodeRelationMap(Pipeline pipeline) {
         Map<String, NodeRelation> nodeRelationMap = new HashMap<>();
-        linkInfo.getRelation().getNodeRelations().forEach(r -> {
+        pipeline.getRelation().getNodeRelations().forEach(r -> {
             for (String output : r.getOutputs()) {
                 nodeRelationMap.put(output, r);
             }

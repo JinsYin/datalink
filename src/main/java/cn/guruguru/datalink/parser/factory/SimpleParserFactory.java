@@ -11,7 +11,7 @@ import cn.guruguru.datalink.parser.impl.SparkSqlParser;
  * Usages:
  * <pre>
  *     Parser parser = SimpleParserFactory.createParser("Spark");
- *     ParseResult parseResult = parser.parser(linkInfo);
+ *     ParseResult parseResult = parser.parser(pipeline);
  * </pre>
  */
 public class SimpleParserFactory {
