@@ -27,7 +27,7 @@ DataLink 是一个建立在 DataX（开发中）、Spark、Flink 之上的轻量
 
 ```xml
 <dependency>
-    <groupId>io.github.jinsyin</groupId>
+    <groupId>cn.guruguru</groupId>
     <artifactId>datalink</artifactId>
     <version>0.0.2</version>
 </dependency>
