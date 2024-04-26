@@ -1,6 +1,7 @@
 package cn.guruguru.datalink.type.converter.factory;
 
 import cn.guruguru.datalink.exception.UnsupportedEngineException;
+import cn.guruguru.datalink.parser.EngineType;
 import cn.guruguru.datalink.type.converter.DataTypeConverter;
 import cn.guruguru.datalink.type.converter.FlinkDataTypeConverter;
 import cn.guruguru.datalink.type.converter.SparkDataTypeConverter;
@@ -11,7 +12,7 @@ import cn.guruguru.datalink.type.converter.SparkDataTypeConverter;
  *
  * <p>Usages:
  * <pre>
- *     DataTypeConverter typeConverter = SimpleTypeConverterFactory.createInstance("Spark");
+ *     DataTypeConverter typeConverter = SimpleTypeConverterFactory.createInstance(EngineType.SPARK_SQL);
  *     String fieldType = parser.toEngineType(nodeType, dataType);
  * </pre>
  */
@@ -23,18 +24,18 @@ public class SimpleTypeConverterFactory {
      * @param engineType engine type
      * @return a concrete type converter
      */
-    public static DataTypeConverter createInstance(String engineType) {
+    public static DataTypeConverter createInstance(EngineType engineType) {
         switch (engineType) {
-            case "Spark":
+            case SPARK_SQL:
                 return new SparkDataTypeConverter();
-            case "Flink":
+            case FLINK_SQL:
                 return new FlinkDataTypeConverter();
             default:
                 throw new UnsupportedEngineException("Unsupported engine:" + engineType);
         }
     }
 
-    public static DataTypeConverter of(String engineType) {
+    public static DataTypeConverter of(EngineType engineType) {
         return createInstance(engineType);
     }
 }

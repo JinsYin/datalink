@@ -1,6 +1,7 @@
 package cn.guruguru.datalink.parser.factory;
 
 import cn.guruguru.datalink.exception.UnsupportedEngineException;
+import cn.guruguru.datalink.parser.EngineType;
 import cn.guruguru.datalink.parser.Parser;
 import cn.guruguru.datalink.parser.impl.FlinkSqlParser;
 import cn.guruguru.datalink.parser.impl.SparkSqlParser;
@@ -10,7 +11,7 @@ import cn.guruguru.datalink.parser.impl.SparkSqlParser;
  *
  * Usages:
  * <pre>
- *     Parser parser = SimpleParserFactory.createParser("Spark");
+ *     Parser parser = SimpleParserFactory.createParser(EngineType.SPARK_SQL);
  *     ParseResult parseResult = parser.parser(pipeline);
  * </pre>
  */
@@ -22,18 +23,18 @@ public class SimpleParserFactory {
      * @param engineType engine type
      * @return a concrete sql parser
      */
-    public static Parser createParser(String engineType) {
+    public static Parser createParser(EngineType engineType) {
         switch (engineType) {
-            case "Spark":
+            case SPARK_SQL:
                 return new SparkSqlParser();
-            case "Flink":
+            case FLINK_SQL:
                 return new FlinkSqlParser();
             default:
                 throw new UnsupportedEngineException("Unsupported engine：" + engineType);
         }
     }
 
-    public static Parser of(String engineType) {
+    public static Parser of(EngineType engineType) {
         return createParser(engineType);
     }
 }
