@@ -274,8 +274,10 @@ public class FlinkDataTypeConverter implements DataTypeConverter {
             case "REAL":
             case "NUMBER": // NUMBER(p, s)
                 return formatDecimalType(precision, scale);
+            // Official document is error
+            // The DATE data type stores century, year, month, day, hours, minutes, seconds
             case "DATE":
-                return new DateType();
+                return new TimestampType();
             case "TIMESTAMP": // TODO: TIMESTAMP [(p)] [WITHOUT TIMEZONE]
                 return formatTimestampType(precision); // TIMESTAMP [(p)] [WITHOUT TIMEZONE]
             case "CHAR": // CHAR(n)

@@ -242,8 +242,8 @@ public class SparkDataTypeConverter implements DataTypeConverter { // DataTypeCo
             case "REAL":
             case "NUMBER": // NUMBER(p, s)
                 return formatDecimalType(precision, scale);
+            // The DATE data type stores century, year, month, day, hours, minutes, seconds
             case "DATE":
-                return DataTypes.DateType;
             case "TIMESTAMP":
                 return DataTypes.TimestampType;
             case "CHAR": // CHAR(n)
