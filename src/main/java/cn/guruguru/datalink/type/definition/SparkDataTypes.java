@@ -1,4 +1,63 @@
 package cn.guruguru.datalink.type.definition;
 
-public class SparkDataTypes {
+import org.apache.spark.sql.types.DataType;
+import org.apache.spark.sql.types.DateType;
+import org.apache.spark.sql.types.NumericType;
+import org.apache.spark.sql.types.TimestampType;
+
+/**
+ * Data types for Spark SQL
+ *
+ * @see <a href="https://spark.apache.org/docs/latest/sql-ref-datatypes.html">Data types</a>
+ */
+public class SparkDataTypes implements DataTypes {
+
+    // ~ For classification -------------------------------
+
+    /**
+     * Check if a type is a numerical type
+     *
+     * @see
+     * @param typeString a type string for Spark
+     * @return true or false
+     */
+    @Override
+    public boolean isNumericType(String typeString) {
+        DataType dataType = DateType.fromDDL("`any_field` " + typeString);
+        return isNumericType(dataType);
+    }
+
+    /**
+     * Check if a type is a numerical type
+     *
+     * @param dataType a data type for Spark
+     * @return true or false
+     */
+    public boolean isNumericType(DataType dataType) {
+        return dataType instanceof NumericType;
+    }
+
+    /**
+     * Check if a type is a date or time type
+     *
+     * @param typeString a type string for Spark
+     * @return true or false
+     */
+    @Override
+    public boolean isDatetimeType(String typeString) {
+        DataType dataType = DateType.fromDDL("`any_field` " + typeString);
+        return isDatetimeType(dataType);
+    }
+
+    /**
+     * Check if a type is a date or time type
+     *
+     * @param dataType a data type for Spark
+     * @return true or false
+     */
+    public boolean isDatetimeType(DataType dataType) {
+        return dataType instanceof DateType
+                || dataType instanceof TimestampType
+                || dataType.getClass().getSimpleName().equals("TimestampNTZType");
+    }
 }

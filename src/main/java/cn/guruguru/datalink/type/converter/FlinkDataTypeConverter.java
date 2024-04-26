@@ -40,6 +40,7 @@ public class FlinkDataTypeConverter implements DataTypeConverter {
      * Derive the engine type for the given datasource field type
      *
      * <pre>org.apache.inlong.sort.formats.base.TableFormatUtils#deriveLogicalType(FormatInfo)</pre>
+     * @see org.apache.flink.table.types.logical.utils.LogicalTypeParser
      * @param nodeType node type
      * @param dataType source field
      */

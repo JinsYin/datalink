@@ -2,15 +2,34 @@ package cn.guruguru.datalink.type.definition;
 
 import cn.guruguru.datalink.protocol.field.DataType;
 
+import lombok.NoArgsConstructor;
+
+import org.apache.flink.table.types.logical.BigIntType;
+import org.apache.flink.table.types.logical.DateType;
+import org.apache.flink.table.types.logical.DecimalType;
+import org.apache.flink.table.types.logical.DoubleType;
+import org.apache.flink.table.types.logical.FloatType;
+import org.apache.flink.table.types.logical.IntType;
+import org.apache.flink.table.types.logical.LocalZonedTimestampType;
+import org.apache.flink.table.types.logical.LogicalType;
+import org.apache.flink.table.types.logical.SmallIntType;
+import org.apache.flink.table.types.logical.TimeType;
+import org.apache.flink.table.types.logical.TimestampType;
+import org.apache.flink.table.types.logical.TinyIntType;
+import org.apache.flink.table.types.logical.ZonedTimestampType;
+import org.apache.flink.table.types.logical.utils.LogicalTypeParser;
+
 /**
  * Flink Data Types
  *
  * @see org.apache.flink.table.api.DataTypes
  * @see org.apache.inlong.sort.formats.common.FormatInfo
  * @see org.apache.inlong.sort.formats.common.TypeInfo
+ * @see LogicalTypeParser
  * @see <a href="https://nightlies.apache.org/flink/flink-docs-master/docs/dev/table/types/">Data Types</a>
  */
-public class FlinkDataTypes {
+@NoArgsConstructor
+public class FlinkDataTypes implements DataTypes {
     public static DataType CHAR() {
         return new DataType("CHAR");
     }
@@ -80,6 +99,16 @@ public class FlinkDataTypes {
         return new DataType("TIMESTAMP_LTZ");
     }
 
+    public static ZonedTimestampType TIMESTAMP_LTZ(Integer precision) {
+        boolean precisionRange = precision != null
+                && precision >= ZonedTimestampType.MIN_PRECISION
+                && precision >= ZonedTimestampType.MAX_PRECISION;
+        if (precisionRange) {
+            return new ZonedTimestampType(precision);
+        }
+        return new ZonedTimestampType();
+    }
+
     // https://nightlies.apache.org/flink/flink-docs-master/docs/dev/table/types/#interval-year-to-month
 //    public static DataType INTERVAL() {
 //        return new DataType("INTERVAL");
@@ -104,4 +133,54 @@ public class FlinkDataTypes {
 //    public static FieldFormat RAW() {
 //        return new FieldFormat("RAW");
 //    }
+
+    // ~ For classification -------------------------------
+
+    /**
+     * Check if a type is a numerical type
+     *
+     * @param typeString a type string for Flink
+     * @return true or false
+     */
+    @Override
+    public boolean isNumericType(String typeString) {
+        LogicalType dataType = LogicalTypeParser.parse(typeString);
+        return isDatetimeType(dataType);
+    }
+
+    /**
+     * Check if a type is a numerical type
+     *
+     * @param dataType a data type for Flink
+     * @return true or false
+     */
+    public boolean isNumericType(LogicalType dataType) {
+        return dataType instanceof TinyIntType
+                || dataType instanceof SmallIntType
+                || dataType instanceof IntType
+                || dataType instanceof BigIntType
+                || dataType instanceof FloatType
+                || dataType instanceof DoubleType
+                || dataType instanceof DecimalType;
+    }
+
+    @Override
+    public boolean isDatetimeType(String typeString) {
+        LogicalType dataType = LogicalTypeParser.parse(typeString);
+        return isDatetimeType(dataType);
+    }
+
+    /**
+     * Check if a type is a date or time type
+     *
+     * @param dataType a data type for Flink
+     * @return true or false
+     */
+    public boolean isDatetimeType(LogicalType dataType) {
+        return dataType instanceof DateType
+                || dataType instanceof TimeType
+                || dataType instanceof TimestampType
+                || dataType instanceof ZonedTimestampType
+                || dataType instanceof LocalZonedTimestampType;
+    }
 }
