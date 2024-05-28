@@ -15,6 +15,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Oracle Scan Node
@@ -42,5 +44,44 @@ public class OracleScanNode extends JdbcScanNode {
                          @Nonnull @JsonProperty("tableName") String tableName,
                          @Nullable @JsonProperty("primaryKey") String primaryKey) {
         super(id, name, fields, properties, url, username, password, tableName, primaryKey);
+    }
+
+    /**
+     * Format table name for the Oracle, e.g. DB1.tb1 -> DB1."tb1"
+     *
+     * @return a formatted table name
+     */
+    @Override
+    protected String fmtTableName() {
+        Pattern pattern = Pattern.compile("(\\w+)\\.(\\w+)");
+        Matcher matcher = pattern.matcher(super.fmtTableName());
+        if (matcher.find()) {
+            String schema = matcher.group(1);
+            String table = matcher.group(2);
+            if (containsLowerCase(schema)) {
+                schema = "\"" + schema.toLowerCase() + "\"";
+            }
+            if (containsLowerCase(table)) {
+                table = "\"" + table.toLowerCase() + "\"";
+            }
+            return String.format("%s.%s", schema, table);
+        }
+        return super.fmtTableName();
+    }
+
+    /**
+     * Check if the string contains a lowercase letter
+     *
+     * @param input a string
+     * @return true or false
+     */
+    public boolean containsLowerCase(String input) {
+        if (input == null)
+            return false;
+        for (char c : input.toCharArray()) {
+            if (Character.isLowerCase(c))
+                return true;
+        }
+        return false;
     }
 }

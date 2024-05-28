@@ -169,7 +169,9 @@ public class SparkSqlParser extends AbstractSqlParser {
             if (!options.isEmpty()) {
                 sb.append(" OPTIONS (");
                 for (Map.Entry<String, String> kv : options.entrySet()) {
-                    sb.append("\n    ").append(kv.getKey()).append(" \"").append(kv.getValue()).append("\"").append(",");
+                    sb.append("\n    ").append(kv.getKey())
+                            .append(" '").append(kv.getValue()).append("'")
+                            .append(",");
                 }
                 if (sb.length() > 0) {
                     sb.delete(sb.lastIndexOf(","), sb.length());

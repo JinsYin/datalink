@@ -82,7 +82,7 @@ public abstract class JdbcScanNode extends ScanExtractNode implements Serializab
         options.put("url", url);
         options.put("username", username);
         options.put("password", password);
-        options.put("table-name", String.format("%s", tableName));
+        options.put("table-name", fmtTableName());
         return options;
     }
 
@@ -91,8 +91,12 @@ public abstract class JdbcScanNode extends ScanExtractNode implements Serializab
         options.put("url", url);
         options.put("user", username);
         options.put("password", password);
-        options.put("dbtable", String.format("%s", tableName));
+        options.put("dbtable", fmtTableName());
         return options;
+    }
+
+    protected String fmtTableName() {
+        return String.format("%s", tableName);
     }
 
     @Override
