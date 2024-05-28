@@ -11,6 +11,7 @@ import cn.guruguru.datalink.protocol.field.MetaField;
 import cn.guruguru.datalink.protocol.node.ExtractNode;
 import cn.guruguru.datalink.protocol.node.LoadNode;
 import cn.guruguru.datalink.protocol.node.Node;
+import cn.guruguru.datalink.protocol.node.NodePropDescriptor;
 import cn.guruguru.datalink.protocol.node.extract.CdcExtractNode;
 import cn.guruguru.datalink.protocol.node.transform.TransformNode;
 import cn.guruguru.datalink.protocol.relation.FieldRelation;
@@ -369,7 +370,9 @@ public abstract class AbstractSqlParser implements Parser {
             sb.append(String.format(" PARTITIONED BY (%s)",
                     StringUtils.join(formatFields(node.getPartitionFields()), ",")));
         }
-        sb.append(parseOptions(node.tableOptions(getEngineType())));
+        String parsedOptions = parseOptions(node.getPropDescriptor(getEngineType()),
+                node.tableOptions(getEngineType()));
+        sb.append(parsedOptions);
         return sb.toString();
     }
 
@@ -413,10 +416,12 @@ public abstract class AbstractSqlParser implements Parser {
     /**
      * Parse options to generate with options
      *
+     * @param propDescriptor property descriptor
      * @param options The options defined in node
      * @return The with option string
      */
-    protected abstract String parseOptions(Map<String, String> options);
+    protected abstract String parseOptions(NodePropDescriptor propDescriptor,
+                                           Map<String, String> options);
 
     /**
      * Parse transform node fields

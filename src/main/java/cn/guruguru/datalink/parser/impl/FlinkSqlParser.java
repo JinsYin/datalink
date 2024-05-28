@@ -8,6 +8,7 @@ import cn.guruguru.datalink.protocol.Pipeline;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.field.Field;
 import cn.guruguru.datalink.protocol.node.Node;
+import cn.guruguru.datalink.protocol.node.NodePropDescriptor;
 import cn.guruguru.datalink.protocol.node.extract.cdc.MongoCdcNode;
 import cn.guruguru.datalink.protocol.node.transform.TransformNode;
 import cn.guruguru.datalink.protocol.relation.FieldRelation;
@@ -129,10 +130,10 @@ public class FlinkSqlParser extends AbstractSqlParser {
      * @return The with option string
      */
     @Override
-    protected String parseOptions(Map<String, String> options) {
+    protected String parseOptions(NodePropDescriptor propDescriptor, Map<String, String> options) {
         StringBuilder sb = new StringBuilder();
         if (options != null && !options.isEmpty()) {
-            sb.append(" WITH (");
+            sb.append(" ").append(propDescriptor.name()).append(" (");
             for (Map.Entry<String, String> kv : options.entrySet()) {
                 sb.append("\n    '").append(kv.getKey()).append("' = '").append(kv.getValue()).append("'").append(",");
             }

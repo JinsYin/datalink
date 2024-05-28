@@ -2,6 +2,7 @@ package cn.guruguru.datalink.protocol.node;
 
 import cn.guruguru.datalink.datasource.NodeDataSource;
 import cn.guruguru.datalink.datasource.DataSourceType;
+import cn.guruguru.datalink.parser.EngineType;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.load.AmoroLoadNode;
 import cn.guruguru.datalink.protocol.relation.FieldRelation;
@@ -55,6 +56,10 @@ public abstract class LoadNode implements Node, Serializable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("properties")
     private Map<String, String> properties;
+    @Nullable
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("propDescriptor")
+    private NodePropDescriptor propDescriptor;
 
     @JsonCreator
     public LoadNode(@JsonProperty("id") String id,
@@ -62,7 +67,8 @@ public abstract class LoadNode implements Node, Serializable {
                     @JsonProperty("fields") List<DataField> fields,
                     @JsonProperty("fieldRelations") List<FieldRelation> fieldRelations,
                     @Nullable @JsonProperty("filterClause") String filterClause,
-                    @Nullable @JsonProperty("properties") Map<String, String> properties) {
+                    @Nullable @JsonProperty("properties") Map<String, String> properties,
+                    @Nullable @JsonProperty("propDescriptor") NodePropDescriptor propDescriptor) {
         this.id = Preconditions.checkNotNull(id, "id is null");
         this.name = name;
         this.fields = Preconditions.checkNotNull(fields, "fields is null");
@@ -73,6 +79,15 @@ public abstract class LoadNode implements Node, Serializable {
         // TODO: check syntax
         this.filterClause = filterClause;
         this.properties = properties;
+        this.propDescriptor = propDescriptor;
+    }
+
+    @Override
+    public NodePropDescriptor getPropDescriptor(EngineType engineType) {
+        if (propDescriptor == null) {
+            return Node.super.getPropDescriptor(engineType);
+        }
+        return propDescriptor;
     }
 
     DataSourceType getDataSourceType() {

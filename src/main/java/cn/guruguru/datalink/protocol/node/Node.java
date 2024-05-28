@@ -67,6 +67,18 @@ public interface Node {
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    default NodePropDescriptor getPropDescriptor(EngineType engineType) {
+        switch (engineType) {
+            case FLINK_SQL:
+                return NodePropDescriptor.WITH;
+            case SPARK_SQL:
+                return NodePropDescriptor.OPTIONS; // The default is `OPTIONS`, it can also be set to `TBLPROPERTIES`
+            default:
+                return null;
+        }
+    }
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     default Map<String, String> tableOptions(EngineType engineType) {
         Map<String, String> options = new LinkedHashMap<>();
         if (getProperties() != null && !getProperties().isEmpty()) {
@@ -75,6 +87,7 @@ public interface Node {
         return options;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     String genTableName();
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

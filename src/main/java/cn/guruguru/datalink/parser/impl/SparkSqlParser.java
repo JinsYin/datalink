@@ -9,6 +9,7 @@ import cn.guruguru.datalink.protocol.field.DataType;
 import cn.guruguru.datalink.protocol.field.Field;
 import cn.guruguru.datalink.protocol.node.ExtractNode;
 import cn.guruguru.datalink.protocol.node.Node;
+import cn.guruguru.datalink.protocol.node.NodePropDescriptor;
 import cn.guruguru.datalink.protocol.node.transform.TransformNode;
 import cn.guruguru.datalink.protocol.relation.FieldRelation;
 import cn.guruguru.datalink.type.converter.DataTypeConverter;
@@ -148,7 +149,8 @@ public class SparkSqlParser extends AbstractSqlParser {
     private String genCreateExtractSql(Node node) {
         // Spark view does not support schema
         return "CREATE OR REPLACE TEMPORARY VIEW " + node.genTableName() + "\n"
-               + parseOptions(node.tableOptions(getEngineType()));
+               + parseOptions(node.getPropDescriptor(getEngineType()),
+                node.tableOptions(getEngineType()));
     }
 
     /**
@@ -158,7 +160,7 @@ public class SparkSqlParser extends AbstractSqlParser {
      * @return The with option string
      */
     @Override
-    protected String parseOptions(Map<String, String> options) {
+    protected String parseOptions(NodePropDescriptor propDescriptor, Map<String, String> options) {
         StringBuilder sb = new StringBuilder();
         if (options != null && !options.isEmpty()) {
             // process the USING clause for Spark SQL
@@ -167,7 +169,7 @@ public class SparkSqlParser extends AbstractSqlParser {
                 options.remove("USING");
             }
             if (!options.isEmpty()) {
-                sb.append(" OPTIONS (");
+                sb.append(" ").append(propDescriptor.name()).append(" (");
                 for (Map.Entry<String, String> kv : options.entrySet()) {
                     sb.append("\n    ").append(kv.getKey())
                             .append(" '").append(kv.getValue()).append("'")
