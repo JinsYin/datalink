@@ -5,6 +5,7 @@ import cn.guruguru.datalink.protocol.field.DataType;
 import lombok.NoArgsConstructor;
 
 import org.apache.flink.table.types.logical.BigIntType;
+import org.apache.flink.table.types.logical.CharType;
 import org.apache.flink.table.types.logical.DateType;
 import org.apache.flink.table.types.logical.DecimalType;
 import org.apache.flink.table.types.logical.DoubleType;
@@ -12,12 +13,18 @@ import org.apache.flink.table.types.logical.FloatType;
 import org.apache.flink.table.types.logical.IntType;
 import org.apache.flink.table.types.logical.LocalZonedTimestampType;
 import org.apache.flink.table.types.logical.LogicalType;
+import org.apache.flink.table.types.logical.LogicalTypeRoot;
 import org.apache.flink.table.types.logical.SmallIntType;
 import org.apache.flink.table.types.logical.TimeType;
 import org.apache.flink.table.types.logical.TimestampType;
 import org.apache.flink.table.types.logical.TinyIntType;
+import org.apache.flink.table.types.logical.VarCharType;
 import org.apache.flink.table.types.logical.ZonedTimestampType;
 import org.apache.flink.table.types.logical.utils.LogicalTypeParser;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Flink Data Types
@@ -134,6 +141,13 @@ public class FlinkDataTypes implements DataTypes {
 //        return new FieldFormat("RAW");
 //    }
 
+    @Override
+    public List<String> getAllTypes() {
+        return Arrays.stream(LogicalTypeRoot.values())
+                .map(Enum::toString)
+                .collect(Collectors.toList());
+    }
+
     // ~ For classification -------------------------------
 
     /**
@@ -164,6 +178,12 @@ public class FlinkDataTypes implements DataTypes {
                 || dataType instanceof DecimalType;
     }
 
+    /**
+     * Check if a type is a date or time type
+     *
+     * @param typeString a type string for various engines
+     * @return true or false
+     */
     @Override
     public boolean isDatetimeType(String typeString) {
         LogicalType dataType = LogicalTypeParser.parse(typeString);
@@ -182,5 +202,18 @@ public class FlinkDataTypes implements DataTypes {
                 || dataType instanceof TimestampType
                 || dataType instanceof ZonedTimestampType
                 || dataType instanceof LocalZonedTimestampType;
+    }
+
+    /**
+     * Check if a type is a character type
+     *
+     * @param typeString a type string for various engines
+     * @return true or false
+     */
+    @Override
+    public boolean isCharacterType(String typeString) {
+        LogicalType dataType = LogicalTypeParser.parse(typeString);
+        return dataType instanceof CharType
+                || dataType instanceof VarCharType;
     }
 }

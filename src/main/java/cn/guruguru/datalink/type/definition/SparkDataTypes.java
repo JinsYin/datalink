@@ -5,12 +5,19 @@ import org.apache.spark.sql.types.DateType;
 import org.apache.spark.sql.types.NumericType;
 import org.apache.spark.sql.types.TimestampType;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Data types for Spark SQL
  *
  * @see <a href="https://spark.apache.org/docs/latest/sql-ref-datatypes.html">Data types</a>
  */
 public class SparkDataTypes implements DataTypes {
+    @Override
+    public List<String> getAllTypes() {
+        return Collections.emptyList();
+    }
 
     // ~ For classification -------------------------------
 
@@ -59,5 +66,18 @@ public class SparkDataTypes implements DataTypes {
         return dataType instanceof DateType
                 || dataType instanceof TimestampType
                 || dataType.getClass().getSimpleName().equals("TimestampNTZType");
+    }
+
+    /**
+     * Check if a type is a character type
+     *
+     * @param typeString a type string for various engines
+     * @return true or false
+     */
+    public boolean isCharacterType(String typeString) {
+        typeString = String.valueOf(typeString).toUpperCase();
+        return typeString.equals("CHAR")
+                || typeString.equals("VARCHAR")
+                || typeString.equals("STRING");
     }
 }
