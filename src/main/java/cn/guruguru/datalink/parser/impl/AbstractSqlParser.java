@@ -16,6 +16,8 @@ import cn.guruguru.datalink.protocol.node.transform.TransformNode;
 import cn.guruguru.datalink.protocol.relation.FieldRelation;
 import cn.guruguru.datalink.protocol.relation.NodeRelation;
 import cn.guruguru.datalink.type.converter.DataTypeConverter;
+import cn.guruguru.datalink.type.definition.DataTypes;
+import cn.guruguru.datalink.type.definition.DataTypesFactory;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -330,28 +332,10 @@ public abstract class AbstractSqlParser implements Parser {
         String targetIdentifier = outputField.format();
         String targetType = getTypeConverter().toEngineType(nodeType, outputField.getDataType());
         String castSourceColumn = "CAST(" + sourceIdentifier + " as " + targetType + ")";
+        DataTypes dataTypes = DataTypesFactory.of(getEngineType());
         sb.append("\n    COALESCE(").append(castSourceColumn).append(", ")
-                .append(getDefaultValueForType(outputField.getDataType())).append(")")
+                .append(dataTypes.getDefaultValue(outputField.getDataType())).append(")")
                 .append(" AS ").append(targetIdentifier).append(",");
-    }
-
-    /**
-     * Return default value based on provided type
-     *
-     * @param dataType data type of column
-     * @return default value of a data type
-     */
-    protected Object getDefaultValueForType(DataType dataType) {
-        String fullType = dataType.getType();
-        String typeName = fullType.replaceAll("(\\S)(\\(.*\\))?", "$1");
-        switch (typeName) {
-            case "DECIMAL":
-                return 0;
-            case "STRING":
-                return "\"\"";
-            default:
-                return "NULL";
-        }
     }
 
     /**

@@ -14,6 +14,12 @@ import java.util.List;
  * @see <a href="https://spark.apache.org/docs/latest/sql-ref-datatypes.html">Data types</a>
  */
 public class SparkDataTypes implements DataTypes {
+
+    /**
+     * Get all data types of the engine
+     *
+     * @return a list of data type
+     */
     @Override
     public List<String> getAllTypes() {
         return Collections.emptyList();

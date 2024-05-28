@@ -141,6 +141,11 @@ public class FlinkDataTypes implements DataTypes {
 //        return new FieldFormat("RAW");
 //    }
 
+    /**
+     * Get all data types of the engine
+     *
+     * @return a list of data type
+     */
     @Override
     public List<String> getAllTypes() {
         return Arrays.stream(LogicalTypeRoot.values())
