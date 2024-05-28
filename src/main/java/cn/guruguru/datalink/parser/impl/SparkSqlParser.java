@@ -13,6 +13,7 @@ import cn.guruguru.datalink.protocol.node.transform.TransformNode;
 import cn.guruguru.datalink.protocol.relation.FieldRelation;
 import cn.guruguru.datalink.type.converter.DataTypeConverter;
 import cn.guruguru.datalink.type.converter.SparkDataTypeConverter;
+import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -81,17 +82,23 @@ public class SparkSqlParser extends AbstractSqlParser {
                                    && outputField.getDataType() != null
                                    && outputField.getDataType().getType().equals(formatInfo.getType());
                 if (complexType || sameType || dataType == null) {
-                    sb.append("\n    ").append(inputField.format()).append(" AS ").append(field.format()).append(",");
+                    if (isPrimaryKey(primaryKey, inputField.format())) {
+                        castAndCoalesceField(sb, nodeType, inputField, field);
+                    } else {
+                        sb.append("\n    ")
+                                .append(inputField.format())
+                                .append(" AS ")
+                                .append(field.format())
+                                .append(",");
+                    }
                 } else {
                     // https://github.com/apache/iceberg/issues/2456
                     // https://developer.aliyun.com/ask/550123
                     // Spark will perform a nullable check on the target to be written,
                     // And the primary key of the target cannot be null.
                     // Solution: COALESCE(CAST(`ID` as DECIMAL(10,0)), "0") AS `ID`
-                    List<String> pkColumns = formatFields(primaryKey.split(","));
-                    String sourceIdentifier = inputField.format();
-                    if(pkColumns.contains(sourceIdentifier)) {
-                        coalesceField(sb, nodeType, inputField, field);
+                    if (isPrimaryKey(primaryKey, inputField.format())) {
+                        castAndCoalesceField(sb, nodeType, inputField, field);
                     } else {
                         castFiled(sb, nodeType, dataType, inputField.format(), field.format());
                     }
@@ -101,6 +108,18 @@ public class SparkSqlParser extends AbstractSqlParser {
             }
         }
         sb.deleteCharAt(sb.length() - 1);
+    }
+
+    /**
+     * Check if the input field is a primary key
+     *
+     * @param primaryKeys comma separated primary key string
+     * @param fieldFormat input field format
+     * @return true or false
+     */
+    private boolean isPrimaryKey(String primaryKeys, String fieldFormat) {
+        return !Strings.isNullOrEmpty(primaryKeys)
+                && formatFields(primaryKeys.split(",")).contains(fieldFormat);
     }
 
     /**

@@ -324,10 +324,10 @@ public abstract class AbstractSqlParser implements Parser {
                 .append(" AS ").append(targetColumn).append(",");
     }
 
-    protected void coalesceField(StringBuilder sb,
-                                 String nodeType,
-                                 Field inputField,
-                                 DataField outputField) {
+    protected void castAndCoalesceField(StringBuilder sb,
+                                        String nodeType,
+                                        Field inputField,
+                                        DataField outputField) {
         String sourceIdentifier = inputField.format();
         String targetIdentifier = outputField.format();
         String targetType = getTypeConverter().toEngineType(nodeType, outputField.getDataType());

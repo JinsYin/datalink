@@ -30,14 +30,23 @@ public class SparkDataTypes implements DataTypes {
     /**
      * Check if a type is a numerical type
      *
-     * @see
+     * <pre>
+     *     DataType dataType = DataType.fromDDL("`any_field` " + typeString);
+     *     return isNumericType(dataType);
+     * </pre>
      * @param typeString a type string for Spark
      * @return true or false
      */
     @Override
     public boolean isNumericType(String typeString) {
-        DataType dataType = DateType.fromDDL("`any_field` " + typeString);
-        return isNumericType(dataType);
+        typeString = String.valueOf(typeString).toUpperCase();
+        return typeString.equals("TINYINT")
+                || typeString.equals("SMALLINT")
+                || typeString.equals("INT")
+                || typeString.equals("BIGINT")
+                || typeString.equals("FLOAT")
+                || typeString.equals("DOUBLE")
+                || typeString.equals("DECIMAL");
     }
 
     /**
@@ -53,13 +62,18 @@ public class SparkDataTypes implements DataTypes {
     /**
      * Check if a type is a date or time type
      *
+     * <pre>
+     *     DataType dataType = DateType.fromDDL("`any_field` " + typeString);
+     *     return isDatetimeType(dataType);
+     * </pre>
      * @param typeString a type string for Spark
      * @return true or false
      */
     @Override
     public boolean isDatetimeType(String typeString) {
-        DataType dataType = DateType.fromDDL("`any_field` " + typeString);
-        return isDatetimeType(dataType);
+        typeString = String.valueOf(typeString).toUpperCase();
+        return typeString.equals("DATE")
+                || typeString.equals("TIMESTAMP");
     }
 
     /**
@@ -80,6 +94,7 @@ public class SparkDataTypes implements DataTypes {
      * @param typeString a type string for various engines
      * @return true or false
      */
+    @Override
     public boolean isCharacterType(String typeString) {
         typeString = String.valueOf(typeString).toUpperCase();
         return typeString.equals("CHAR")
