@@ -79,7 +79,7 @@ public class KafkaCdcNode extends CdcExtractNode implements Metadata, Serializab
     }
 
     public Map<String, String> tableOptions(Parser parser) {
-        return super.tableOptions(parser);
+        return super.tableOptions(parser.getEngineType());
     }
 
     public String genTableName() {

@@ -16,4 +16,11 @@ public interface Parser {
      * @return ParseResult the result of parsing
      */
     ParseResult parse(Pipeline pipeline);
+
+    /**
+     * Get the engine type corresponding to the parser
+     *
+     * @return {@link EngineType}
+     */
+    EngineType getEngineType();
 }

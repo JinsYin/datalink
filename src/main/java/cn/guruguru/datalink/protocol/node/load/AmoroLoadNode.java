@@ -2,8 +2,7 @@ package cn.guruguru.datalink.protocol.node.load;
 
 import cn.guruguru.datalink.datasource.NodeDataSource;
 import cn.guruguru.datalink.datasource.DataSourceType;
-import cn.guruguru.datalink.parser.Parser;
-import cn.guruguru.datalink.parser.impl.SparkSqlParser;
+import cn.guruguru.datalink.parser.EngineType;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.LoadNode;
 import cn.guruguru.datalink.protocol.relation.FieldRelation;
@@ -86,9 +85,9 @@ public class AmoroLoadNode extends LoadNode {
     }
 
     @Override
-    public Map<String, String> tableOptions(Parser parser) {
-        Map<String, String> options = super.tableOptions(parser);
-        if (parser instanceof SparkSqlParser) {
+    public Map<String, String> tableOptions(EngineType engineType) {
+        Map<String, String> options = super.tableOptions(engineType);
+        if (engineType == EngineType.SPARK_SQL) {
             options.put("USING", "arctic");
         }
         return options;

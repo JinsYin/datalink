@@ -1,6 +1,6 @@
 package cn.guruguru.datalink.protocol.node;
 
-import cn.guruguru.datalink.parser.Parser;
+import cn.guruguru.datalink.parser.EngineType;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.extract.cdc.KafkaCdcNode;
 import cn.guruguru.datalink.protocol.node.extract.cdc.MongoCdcNode;
@@ -67,7 +67,7 @@ public interface Node {
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    default Map<String, String> tableOptions(Parser parser) {
+    default Map<String, String> tableOptions(EngineType engineType) {
         Map<String, String> options = new LinkedHashMap<>();
         if (getProperties() != null && !getProperties().isEmpty()) {
             options.putAll(getProperties());

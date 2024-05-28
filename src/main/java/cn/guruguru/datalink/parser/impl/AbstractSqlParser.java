@@ -385,7 +385,7 @@ public abstract class AbstractSqlParser implements Parser {
             sb.append(String.format(" PARTITIONED BY (%s)",
                     StringUtils.join(formatFields(node.getPartitionFields()), ",")));
         }
-        sb.append(parseOptions(node.tableOptions(this)));
+        sb.append(parseOptions(node.tableOptions(getEngineType())));
         return sb.toString();
     }
 

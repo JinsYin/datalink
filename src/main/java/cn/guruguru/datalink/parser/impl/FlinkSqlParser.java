@@ -1,5 +1,6 @@
 package cn.guruguru.datalink.parser.impl;
 
+import cn.guruguru.datalink.parser.EngineType;
 import cn.guruguru.datalink.protocol.field.DataType;
 import cn.guruguru.datalink.parser.result.ParseResult;
 import cn.guruguru.datalink.parser.result.FlinkSqlParseResult;
@@ -27,6 +28,11 @@ import java.util.Map;
  */
 @Slf4j
 public class FlinkSqlParser extends AbstractSqlParser {
+
+    @Override
+    public EngineType getEngineType() {
+        return EngineType.FLINK_SQL;
+    }
 
     @Override
     protected DataTypeConverter getTypeConverter() {

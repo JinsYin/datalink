@@ -3,8 +3,7 @@ package cn.guruguru.datalink.protocol.node.extract.cdc;
 import cn.guruguru.datalink.datasource.NodeDataSource;
 import cn.guruguru.datalink.datasource.DataSourceType;
 import cn.guruguru.datalink.exception.UnsupportedEngineException;
-import cn.guruguru.datalink.parser.Parser;
-import cn.guruguru.datalink.parser.impl.FlinkSqlParser;
+import cn.guruguru.datalink.parser.EngineType;
 import cn.guruguru.datalink.protocol.Metadata;
 import cn.guruguru.datalink.protocol.enums.KafkaScanStartupMode;
 import cn.guruguru.datalink.protocol.enums.MetaKey;
@@ -104,11 +103,11 @@ public class KafkaNode extends CdcExtractNode implements Metadata, Serializable 
     }
 
     @Override
-    public Map<String, String> tableOptions(Parser parser) {
-        if (!(parser instanceof FlinkSqlParser)) {
+    public Map<String, String> tableOptions(EngineType engineType) {
+        if (engineType != EngineType.FLINK_SQL) {
             throw new UnsupportedEngineException("Unsupported computing engine");
         }
-        Map<String, String> options = super.tableOptions(parser);
+        Map<String, String> options = super.tableOptions(engineType);
         options.put("connector", "kafka");
         options.put("topic", topic);
         options.put("format", format);

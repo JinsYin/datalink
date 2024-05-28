@@ -1,9 +1,7 @@
 package cn.guruguru.datalink.protocol.node.extract.scan;
 
 import cn.guruguru.datalink.exception.UnsupportedEngineException;
-import cn.guruguru.datalink.parser.Parser;
-import cn.guruguru.datalink.parser.impl.FlinkSqlParser;
-import cn.guruguru.datalink.parser.impl.SparkSqlParser;
+import cn.guruguru.datalink.parser.EngineType;
 import cn.guruguru.datalink.protocol.field.DataField;
 import cn.guruguru.datalink.protocol.node.extract.ScanExtractNode;
 
@@ -65,16 +63,18 @@ public abstract class JdbcScanNode extends ScanExtractNode implements Serializab
     }
 
     @Override
-    public Map<String, String> tableOptions(Parser parser) {
-        if (parser instanceof FlinkSqlParser) {
-            Map<String, String> options = super.tableOptions(parser);
-            return flinkTableOptions(options);
+    public Map<String, String> tableOptions(EngineType engineType) {
+        Map<String, String> options;
+        switch (engineType) {
+            case SPARK_SQL:
+                options = super.tableOptions(engineType);
+                return sparkTableOptions(options);
+            case FLINK_SQL:
+                options = super.tableOptions(engineType);
+                return flinkTableOptions(options);
+            default:
+                throw new UnsupportedEngineException("Unsupported computing engine");
         }
-        if (parser instanceof SparkSqlParser) {
-            Map<String, String> options = super.tableOptions(parser);
-            return sparkTableOptions(options);
-        }
-        throw new UnsupportedEngineException("Unsupported computing engine");
     }
 
     private Map<String, String> flinkTableOptions(Map<String, String> options) {

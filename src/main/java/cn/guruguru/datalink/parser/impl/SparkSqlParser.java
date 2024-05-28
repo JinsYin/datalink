@@ -1,5 +1,6 @@
 package cn.guruguru.datalink.parser.impl;
 
+import cn.guruguru.datalink.parser.EngineType;
 import cn.guruguru.datalink.parser.result.ParseResult;
 import cn.guruguru.datalink.parser.result.SparkSqlParseResult;
 import cn.guruguru.datalink.protocol.Pipeline;
@@ -25,6 +26,11 @@ import java.util.Map;
  */
 @Slf4j
 public class SparkSqlParser extends AbstractSqlParser {
+
+    @Override
+    public EngineType getEngineType() {
+        return EngineType.SPARK_SQL;
+    }
 
     @Override
     public DataTypeConverter getTypeConverter() {
@@ -123,7 +129,7 @@ public class SparkSqlParser extends AbstractSqlParser {
     private String genCreateExtractSql(Node node) {
         // Spark view does not support schema
         return "CREATE OR REPLACE TEMPORARY VIEW " + node.genTableName() + "\n"
-               + parseOptions(node.tableOptions(this));
+               + parseOptions(node.tableOptions(getEngineType()));
     }
 
     /**
