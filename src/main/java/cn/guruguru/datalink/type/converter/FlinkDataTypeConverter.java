@@ -153,6 +153,8 @@ public class FlinkDataTypeConverter implements DataTypeConverter {
         Integer precision = dataType.getPrecision();
         Integer scale = dataType.getScale();
         switch (fieldType) {
+            case "BIT":
+                return new BooleanType();
             case "TINYINT":
                 if (precision == 1) { // TINYINT(1)
                     return new BooleanType();
@@ -214,12 +216,15 @@ public class FlinkDataTypeConverter implements DataTypeConverter {
         Integer precision = dataType.getPrecision();
         Integer scale = dataType.getScale();
         switch (fieldType) {
+            case "BIT":
+                return new BooleanType();
             case "BINARY_FLOAT":
                 return new FloatType();
             case "BINARY_DOUBLE":
                 return new DoubleType();
             case "SMALLINT":
             case "FLOAT": // FLOAT(s)
+            case "DOUBLE":
             case "DOUBLE PRECISION":
             case "REAL":
             case "NUMBER": // NUMBER(p, s)

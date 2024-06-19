@@ -127,6 +127,8 @@ public class SparkDataTypeConverter implements DataTypeConverter { // DataTypeCo
         Integer precision = dataType.getPrecision();
         Integer scale = dataType.getScale();
         switch (fieldType) {
+            case "BIT":
+                return DataTypes.BooleanType;
             case "TINYINT":
                 return DataTypes.ByteType;
             case "SMALLINT":
@@ -181,12 +183,15 @@ public class SparkDataTypeConverter implements DataTypeConverter { // DataTypeCo
         Integer precision = dataType.getPrecision();
         Integer scale = dataType.getScale();
         switch (fieldType) {
+            case "BIT":
+                return DataTypes.BooleanType;
             case "BINARY_FLOAT":
                 return DataTypes.FloatType;
             case "BINARY_DOUBLE":
                 return DataTypes.DoubleType;
             case "SMALLINT":
             case "FLOAT": // FLOAT(s)
+            case "DOUBLE":
             case "DOUBLE PRECISION":
             case "REAL":
             case "NUMBER": // NUMBER(p, s)
